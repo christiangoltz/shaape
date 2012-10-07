@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
 <meta name="generator" content="AsciiDoc 8.6.6" />
-<title>Shaape README</title>
+<title>README</title>
 <style type="text/css">
 /* Shared CSS for AsciiDoc xhtml11 and html5 backends */
 
@@ -735,17 +735,39 @@ asciidoc.install();
 </head>
 <body class="article">
 <div id="header">
-<h1>Shaape README</h1>
-<span id="author">Christian Goltz</span><br />
-<span id="email"><tt>&lt;<a href="mailto:goltzchristian@googlemail.com">goltzchristian@googlemail.com</a>&gt;</tt></span><br />
+<h1>README</h1>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_about">About</h2>
+<h2 id="_copyright">Copyright</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Shaape - Ascii art to image converter
+Copyright &#169; 2012  Christian Goltz</p></div>
+<div class="paragraph"><p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p></div>
+<div class="paragraph"><p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.</p></div>
+<div class="paragraph"><p>You should have received a copy of the GNU General Public License
+along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_about_shaape">About Shaape</h2>
 <div class="sectionbody">
 <div class="paragraph"><p>Shaape processes ascii drawings of diagrams and converts them to pixel or
 vector graphics. Shaape is meant to be used inside asciidoc documents to
 enable writers to easily draw diagrams inside their asciidoc source documents.</p></div>
+<div class="paragraph"><p>The word <strong>Shaape</strong> itself is a neologism from <strong>shape</strong> and <strong>ascii art</strong>.</p></div>
+<div class="sect2">
+<h3 id="_why_to_use_shaape">Why to use Shaape</h3>
+<div class="paragraph"><p>There are already other projects, namely ditaa and aafigure, out there that
+have a similar functionality as Shaape. However those are either inconsistent
+between source and image, do not support diagonal lines or encourage you to use
+too much markup inside the drawing.</p></div>
 <div class="paragraph"><p>Shaape supports a very natural form of ascii drawing (see the examples below)
 and uses <strong>absolutely no special markup</strong> inside the drawing. Special markup
 inside drawings makes those hard to read in the asciidoc document and thus have
@@ -753,6 +775,88 @@ to be avoided.</p></div>
 <div class="paragraph"><p>This way Shaape encourages you to keep an easy to read and clean drawing style
 and makes sure your diagrams are consistent between the asciidoc source
 document and it&#8217;s output.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_what_is_supported">What is supported</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+abritrary shapes
+</p>
+</li>
+<li>
+<p>
+arbitrary connected lines
+</p>
+</li>
+<li>
+<p>
+lines ending with arrows
+</p>
+</li>
+<li>
+<p>
+gradient filled polygons
+</p>
+</li>
+<li>
+<p>
+shadows for polygons, lines and arrows
+</p>
+</li>
+<li>
+<p>
+monospaced text in the whole drawing
+</p>
+</li>
+<li>
+<p>
+png rendering
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_what_will_be_supported">What will be supported</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+rounded corners with the <em>*</em> character
+</p>
+</li>
+<li>
+<p>
+styles for background, polygons, lines and text including colors, fills and
+  line styles without markup inside the drawing
+</p>
+</li>
+<li>
+<p>
+text styles without markup inside the drawing
+</p>
+</li>
+<li>
+<p>
+svg rendering
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_what_will_strong_not_strong_be_supported">What will <strong>not</strong> be supported</h3>
+<div class="ulist"><ul>
+<li>
+<p>
+rotated text (cannot be displayed in ascii art)
+</p>
+</li>
+<li>
+<p>
+circles (cannot be displayed consistently in ascii art)
+</p>
+</li>
+</ul></div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -1470,7 +1574,7 @@ s6764QAAAABJRU5ErkJggg==" />
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2012-10-07 23:05:35 CEST
+Last updated 2012-10-08 00:29:26 CEST
 </div>
 </div>
 </body>

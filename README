@@ -1,13 +1,38 @@
-Shaape README
-=============
-:Author: Christian Goltz
-:Email: goltzchristian@googlemail.com
+README
+======
 
-About
------
+Copyright
+---------
+Shaape - Ascii art to image converter
+Copyright (C) 2012  Christian Goltz
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+About Shaape
+------------
 Shaape processes ascii drawings of diagrams and converts them to pixel or
 vector graphics. Shaape is meant to be used inside asciidoc documents to 
 enable writers to easily draw diagrams inside their asciidoc source documents.
+
+The word *Shaape* itself is a neologism from *shape* and *ascii art*.
+
+Why to use Shaape
+~~~~~~~~~~~~~~~~~
+There are already other projects, namely ditaa and aafigure, out there that
+have a similar functionality as Shaape. However those are either inconsistent
+between source and image, do not support diagonal lines or encourage you to use 
+too much markup inside the drawing.
 
 Shaape supports a very natural form of ascii drawing (see the examples below)
 and uses *absolutely no special markup* inside the drawing. Special markup
@@ -17,6 +42,29 @@ to be avoided.
 This way Shaape encourages you to keep an easy to read and clean drawing style
 and makes sure your diagrams are consistent between the asciidoc source
 document and it's output.
+
+What is supported
+~~~~~~~~~~~~~~~~~
+- abritrary shapes
+- arbitrary connected lines
+- lines ending with arrows
+- gradient filled polygons
+- shadows for polygons, lines and arrows
+- monospaced text in the whole drawing
+- png rendering
+
+What will be supported
+~~~~~~~~~~~~~~~~~~~~~~
+- rounded corners with the '*' character
+- styles for background, polygons, lines and text including colors, fills and
+  line styles without markup inside the drawing
+- text styles without markup inside the drawing
+- svg rendering
+
+What will *not* be supported
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- rotated text (cannot be displayed in ascii art)
+- circles (cannot be displayed consistently in ascii art)
 
 Dependencies
 ------------
