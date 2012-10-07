@@ -3,7 +3,7 @@ from ShaapeDrawable import *
 class ShaapeDrawingBackend(object):
     def __init__(self):
         self._canvas_size = [0, 0]
-        self.__pixels_per_unit = (20, 40)
+        self.__pixels_per_unit = (10, 20)
         return
 
     def run(self, drawable_objects, filename):

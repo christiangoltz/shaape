@@ -11,8 +11,12 @@ enable writers to easily draw diagrams inside their asciidoc source documents.
 
 Shaape supports a very natural form of ascii drawing (see the examples below)
 and uses *absolutely no special markup* inside the drawing. Special markup
-inside drawings make those hard to read in the asciidoc document and thus have
+inside drawings makes those hard to read in the asciidoc document and thus have
 to be avoided.
+
+This way Shaape encourages you to keep an easy to read and clean drawing style
+and makes sure your diagrams are consistent between the asciidoc source
+document and it's output.
 
 Dependencies
 ------------
@@ -107,12 +111,14 @@ Again some examples:
 
 ["shaape"]
 ---------------------------------------------------------------------
-   +--------+    +-------------+
-   |        |     \           /
-   | Hello  |----->\ Goodbye /
-   |   ;)   |      /         \
-   |        |     /           \
-   +--------+    +-------------+
+   +--------+    +-------------+   +------+
+   |        |     \           /    |'.xml'|\
+   | Hello  |----->\ Goodbye /     |      +-+
+   |   ;)   |      /         \     |'Docu-' |
+   |        |     /           \    |  'ment'|
+   +---+----+    +------+------+   +---+----+
+       |                |              | 
+       +------has nothing to do with---+                  
                                  'a'<----+
                                   v       \
 in>-+----+------> out1            |        \

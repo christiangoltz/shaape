@@ -52,6 +52,9 @@ class ShaapePolygon(ShaapeDrawable):
     def get_max(self):
         return (max([n[0] for n in self.__node_list]), max([n[1] for n in self.__node_list]))
 
+    def get_min(self):
+        return (min([n[0] for n in self.__node_list]), min([n[1] for n in self.__node_list]))
+
     def scale(self, scale):
         for n in range(0, len(self.__node_list)):
             node = self.__node_list[n]

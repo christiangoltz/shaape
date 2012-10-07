@@ -9,6 +9,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
     def __init__(self):
         super(ShaapeCairoBackend, self).__init__()
         self.margin = [10, 10, 10, 10]
+        
         return
 
     def create_canvas(self):
@@ -25,9 +26,31 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         return
 
     def draw_polygon(self, polygon):
+
+        # draw shadow
+        node = polygon.get_nodes()[0]
+        self.ctx.set_source_rgba(0.0, 0.0, 0.0, 0.1)
+        for i in range(0, 6):
+            self.ctx.save()
+            self.ctx.translate(1 * i, 1 * i)
+            self.apply_transform(polygon)
+            self.ctx.move_to(node[0], node[1])
+            for node in polygon.get_nodes():
+                self.ctx.line_to(node[0], node[1])
+            self.ctx.close_path()
+            self.ctx.fill()
+            self.ctx.restore()
+
+        # draw fill
         self.ctx.save()
+        minimum = polygon.get_min()
+        maximum = polygon.get_max()
+        linear_gradient = cairo.LinearGradient(minimum[0], minimum[1], maximum[0], maximum[1])
+        linear_gradient.add_color_stop_rgba(0.00,  0.9, 0.9, 0.9, 1)
+        linear_gradient.add_color_stop_rgba(1.00,  0.6, 0.6, 0.6, 1)
         self.apply_transform(polygon)
-        self.ctx.set_source_rgb(0.5, 0.5, 0.5)
+
+        self.ctx.set_source(linear_gradient)
         node = polygon.get_nodes()[0]
         self.ctx.move_to(node[0], node[1])
         for node in polygon.get_nodes():
@@ -54,6 +77,20 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         return
 
     def draw_open_graph(self, open_graph):
+        self.ctx.set_line_width(2)
+        self.ctx.set_source_rgba(0, 0, 0, 0.1)
+        for i in range(0,6):
+            self.ctx.save()
+            self.ctx.translate(1 * i, 1 * i)
+            self.apply_transform(open_graph)
+            graph = open_graph.get_graph()
+            for edge in graph.edges():
+                self.ctx.move_to(edge[0][0], edge[0][1])
+                self.ctx.line_to(edge[1][0], edge[1][1])
+            self.ctx.stroke()
+            self.ctx.restore()
+
+        self.ctx.set_source_rgb(0, 0, 0)
         self.ctx.save()
         self.apply_transform(open_graph)
         graph = open_graph.get_graph()
@@ -61,8 +98,6 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
             self.ctx.move_to(edge[0][0], edge[0][1])
             self.ctx.line_to(edge[1][0], edge[1][1])
         self.ctx.restore()
-        self.ctx.set_source_rgb(0, 0, 0)
-        self.ctx.set_line_width(2)
         self.ctx.stroke()
         return
 
