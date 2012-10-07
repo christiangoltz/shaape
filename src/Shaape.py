@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from ShaapeOptionParser import ShaapeOptionParser
 from ShaapeOverlayParser import ShaapeOverlayParser
 from ShaapeTextParser import ShaapeTextParser
@@ -6,12 +8,18 @@ from ShaapeBackgroundParser import ShaapeBackgroundParser
 from ShaapeCairoBackend import ShaapeCairoBackend
 
 import argparse
+import sys
+import os
+
+def print_verbose(line):
+    sys.stderr.write(str(line))
+    sys.stderr.write(os.linesep)
 
 class Shaape:
-    def __init__(self, input_file, output_file):
+    def __init__(self, source, output_file):
         self.__parsers = []
         self.__backends = []
-        self.__infile = input_file
+        self.__source = source
         self.__outfile = output_file
 
     def register_parser(self, parser):
@@ -23,14 +31,12 @@ class Shaape:
         return
 
     def run(self):
-        file_data = open(self.__infile, 'r')
-        raw_data = list(file_data)
+        raw_data = source
         drawable_objects = []
         for parser in self.__parsers:
             parser.run(raw_data, drawable_objects)
             raw_data = parser.parsed_data()
             drawable_objects = parser.drawable_objects()
-            print(drawable_objects)
 
         for backend in self.__backends:
             backend.run(drawable_objects, self.__outfile)
@@ -43,7 +49,13 @@ args = parser.parse_args()
 if None == args.outfile:
     args.outfile = args.infile + ".png"
 
-shaape = Shaape(args.infile, args.outfile)
+if args.infile == '-':
+    source = sys.stdin.readlines()
+else:
+    file_data = open(args.infile, 'r')
+    source = list(file_data)
+
+shaape = Shaape(source, args.outfile)
 shaape.register_parser(ShaapeBackgroundParser())
 shaape.register_parser(ShaapeOptionParser())
 shaape.register_parser(ShaapeTextParser())

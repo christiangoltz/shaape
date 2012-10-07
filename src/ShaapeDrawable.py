@@ -38,8 +38,6 @@ class ShaapeTranslatable(object):
 
     def scale(self, scale):
         self.__position = (self.__position[0] * scale[0], self.__position[1] * scale[1])
-        print(self.__position)
-        print(self)
         return
 
 

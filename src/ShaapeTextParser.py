@@ -23,12 +23,9 @@ class ShaapeTextParser(ShaapeParser):
                 span = match.span()
                 line = line[:span[0]] + ''.join([' ' for n in range(span[0], span[1])]) + line[span[1] :]
                 drawable_objects.append(ShaapeText(match.group(1), (span[0], line_number))) 
-                print(line_number)
             raw_data[line_number] = line
             line_number = line_number + 1
                 
         self._parsed_data = raw_data
         self._drawable_objects = drawable_objects
-        for line in self._parsed_data:
-            print(line)
         return

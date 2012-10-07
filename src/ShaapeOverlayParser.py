@@ -89,7 +89,9 @@ class ShaapeOverlayParser(ShaapeParser):
         for overlay in self.__sub_overlays:
             graphs.append(overlay.substitutes(raw_data))
 
-        graph = nx.compose_all(graphs)
+        graph = graphs.pop(0)
+        for h in graphs:
+            graph = nx.compose(graph, h)
 
         mapping = dict(zip(graph , graph)) 
         graph=nx.relabel_nodes(graph, mapping)                 
