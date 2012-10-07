@@ -3,15 +3,124 @@ Shaape README
 :Author: Christian Goltz
 :Email: goltzchristian@googlemail.com
 
-Examples
---------
+About
+-----
+Shaape processes ascii drawings of diagrams and converts them to pixel or
+vector graphics. Shaape is meant to be used inside asciidoc documents to 
+enable writers to easily draw diagrams inside their asciidoc source documents.
+
+Shaape supports a very natural form of ascii drawing (see the examples below)
+and uses *absolutely no special markup* inside the drawing. Special markup
+inside drawings make those hard to read in the asciidoc document and thus have
+to be avoided.
+
+Dependencies
+------------
+- NetworkX python graph package
+- pycairo
+
+Installation
+------------
+There is no dedicated installation process at the moment, you can use the
+source as it is.
+
+`./Shaape.py` will print the usage help.
+
+You can use `make install-filter` to install the asciidoc filter.
+
+Usage
+-----
+
+Asciidoc integration
+~~~~~~~~~~~~~~~~~~~~
+
+Shaape uses an asciidoc block listing definition to integrate into asciidoc:
+....
+["shaape"]
+---------------------------------------------------------------------
+    +--------+    +-------------+
+    |        |     \           /
+    | Hello  |--->  \ Goodbye /
+    |   ;)   |      /         \
+    |        |     /           \
+    +--------+    +-------------+
+---------------------------------------------------------------------
+....
+
+Drawing
+~~~~~~~
+You can use common known line art to draw polygons, open graphs and
+arrows
+
+Shaape makes use of `- | \ / + < > ^ v`.
+
+Polygons are closed paths and automatically get filled. See following simple
+examples for some polygons:
 
 ["shaape"]
 ---------------------------------------------------------------------
-    +--------+ 
-    |        |
-    |  Text  |
-    |Document|
-    |        |
-    +--------+
+    +--+  ++     /\    +----+
+    |  |  ++    /  \    \    \
+    +--+       /    \    \    \
+               \    /     +    +
+                \  /      |    |
+                 \/       |    +--+
+                       +--+      /
+                       |   +-+  /
+                       +---+ +-+
+---------------------------------------------------------------------
+
+
+Open graphs are all connected lines, that don't create closed paths. See
+following examples for some open graphs:
+
+["shaape"]
+---------------------------------------------------------------------
+--+----+------           |
+  |    |               +-+-+
+  |    +------        /     \
+  |                  +       +
+  +----+------      / \     / \
+       +------     +   +   +   +
+       +------    / \ / \ / \ / \
+---------------------------------------------------------------------
+
+Arrows can be combined with closed paths:
+["shaape"]
+---------------------------------------------------------------------
+ ->              >-+----+------>          |
+ <-       ^        |    |               +-+-+
+          |        |    +------>       /     \
+ ^ |    <-+->      |                  +     <-+->
+ | v      |        +----+------>     / \     / \
+          v             +------>    +   +   +   +
+                        +------>    |   |   |   |
+                                    v   v   v   v   
+---------------------------------------------------------------------
+
+Text
+~~~~
+All words longer than one letter are processed and rendered as normal text.
+If you need some special characters inside your words, than quote the whole
+word. E.g. to print `|-|ello` you need to use `'|-|ello'`.
+Again some examples:
+
+["shaape"]
+---------------------------------------------------------------------
+   +--------+    +-------------+
+   |        |     \           /
+   | Hello  |----->\ Goodbye /
+   |   ;)   |      /         \
+   |        |     /           \
+   +--------+    +-------------+
+                                 'a'<----+
+                                  v       \
+in>-+----+------> out1            |        \
+    |    |                'c'<--+-+-+->'b'<-+
+    |    +------> out2         /     \      |
+    |                         +       +     |
+    +----+------>'out!'      / \     / \    |
+         +------> v_out     +   +   +   +   |
+         +------> '->'     / \ / \ / \ / \  |
+                         'd' 'e' 'f' 'g'  +-+
 ---------------------------------------------------------------------
