@@ -1,11 +1,46 @@
 import operator
 import networkx as nx
 
-class ShaapeDrawable(object):
+from ShaapeStyle import ShaapeStyle
+
+class ShaapeScalable(object):
     def __init__(self):
+        pass
+
+    def scale(self, scale):
+        pass
+
+class ShaapeNamed(object):
+    def __init__(self):
+        self.__names = []
+        return
+    
+    def names(self):
+        return self.__names
+
+    def add_name(self, name):
+        self.__names.append(name)
         return
 
-class ShaapeBackground(ShaapeDrawable):
+class ShaapeDrawable(object):
+    def __init__(self):
+        self.__style = ShaapeStyle([], [])
+        return
+
+    def set_style(self, style):
+        self.__style.merge(style)
+        return
+
+    def style(self):
+        return self.__style
+
+    def min(self):
+        return (0,0)
+
+    def max(self):
+        return (0,0)
+
+class ShaapeBackground(ShaapeDrawable, ShaapeScalable):
     def __init__(self, size):
         self.__size = size
         return
@@ -41,18 +76,38 @@ class ShaapeTranslatable(object):
         return
 
 
-class ShaapePolygon(ShaapeDrawable):
+class ShaapePolygon(ShaapeDrawable, ShaapeNamed, ShaapeScalable):
     def __init__(self, node_list):
+        ShaapeDrawable.__init__(self)
+        ShaapeNamed.__init__(self)
         self.__node_list = node_list
         return
 
-    def get_nodes(self):
+    def contains(self, point):
+        # point inside polygon
+        n = len(self.__node_list)
+        inside = False
+        x,y = point
+        p1x,p1y = self.__node_list[0]
+        for i in range(n+1):
+            p2x,p2y = self.__node_list[i % n]
+            if y > min(p1y,p2y):
+                if y <= max(p1y,p2y):
+                    if x <= max(p1x,p2x):
+                        if p1y != p2y:
+                            xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+                        if p1x == p2x or x <= xinters:
+                            inside = not inside
+            p1x,p1y = p2x,p2y
+        return inside
+
+    def nodes(self):
         return self.__node_list
 
-    def get_max(self):
+    def max(self):
         return (max([n[0] for n in self.__node_list]), max([n[1] for n in self.__node_list]))
 
-    def get_min(self):
+    def min(self):
         return (min([n[0] for n in self.__node_list]), min([n[1] for n in self.__node_list]))
 
     def scale(self, scale):
@@ -60,7 +115,7 @@ class ShaapePolygon(ShaapeDrawable):
             node = self.__node_list[n]
             self.__node_list[n] = (node[0] * scale[0], node[1] * scale[1])
 
-class ShaapeText(ShaapeDrawable, ShaapeTranslatable):
+class ShaapeText(ShaapeDrawable, ShaapeTranslatable, ShaapeScalable):
     def __init__(self, text, position):
         ShaapeDrawable.__init__(self)
         ShaapeTranslatable.__init__(self, position)
@@ -79,7 +134,7 @@ class ShaapeText(ShaapeDrawable, ShaapeTranslatable):
         self.__font_size = self.__font_size * scale[0]
         return
 
-class ShaapeOpenGraph(ShaapeDrawable):
+class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
     def __init__(self, graph):
         self.__graph = graph
         for node in self.__graph.nodes():
@@ -87,10 +142,10 @@ class ShaapeOpenGraph(ShaapeDrawable):
                 self.__graph.remove_node(node)
         return
 
-    def get_graph(self):
+    def graph(self):
         return self.__graph
 
-    def get_max(self):
+    def max(self):
         return (max([n[0] for n in self.__graph.nodes()]), max([n[1] for n in self.__graph.nodes()]))
 
     def scale(self, scale):
@@ -103,8 +158,9 @@ class ShaapeOpenGraph(ShaapeDrawable):
 
 class ShaapeArrow(ShaapePolygon, ShaapeTranslatable):
     def __init__(self, position):
-        ShaapePolygon.__init__(self, [(0, 0.1), (0.4, 0), (0, -0.1)])
+        ShaapePolygon.__init__(self, [(0.0, 0.15), (0.8, 0), (0.0, -0.15)])
         ShaapeTranslatable.__init__(self, position)
+        self.style().set_color([0, 0, 0, 1])
 
     def scale(self, scale):
         ShaapeTranslatable.scale(self, scale)

@@ -1,4 +1,5 @@
 import cairo
+import os
 import math
 
 from ShaapeDrawingBackend import ShaapeDrawingBackend
@@ -12,68 +13,90 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         
         return
 
-    def create_canvas(self):
+    def create_canvas(self, filename):
         self.image_size = (self._canvas_size[0], self._canvas_size[1])
-        self.surface = cairo.ImageSurface (cairo.FORMAT_ARGB32, self.image_size[0] + self.margin[0] + self.margin[1], self._canvas_size[1] + self.margin[2] + self.margin[3])
+        if os.path.splitext(filename)[1] <> '.svg':
+            filename = None
+        self.surface = cairo.SVGSurface (filename, self.image_size[0] + self.margin[0] + self.margin[1], self._canvas_size[1] + self.margin[2] + self.margin[3])
         self.ctx = cairo.Context (self.surface)
 
-        self.ctx.set_source_rgb(1, 1, 1)
-        self.ctx.rectangle(0.0, 0.0, self.image_size[0] + self.margin[0] + self.margin[1], self.image_size[1] + self.margin[2] + self.margin[3])
-        self.ctx.fill()
+        # self.ctx.set_source_rgb(1, 1, 1)
+        # self.ctx.rectangle(0.0, 0.0, self.image_size[0] + self.margin[0] + self.margin[1], self.image_size[1] + self.margin[2] + self.margin[3])
+        # self.ctx.fill()
 
         self.ctx.translate(self.margin[0], self.margin[2])
         # self.ctx.scale(20,20)
         return
 
+    def apply_fill(self, drawable):
+        minimum = drawable.min()
+        maximum = drawable.max()
+        color =  drawable.style().fill()['color']
+        if drawable.style().fill()['gradient'] == 'on':
+            linear_gradient = cairo.LinearGradient(minimum[0], minimum[1], maximum[0], maximum[1])
+            if len(color) == 4:
+                linear_gradient.add_color_stop_rgba(0, 1,1,1,color[3])
+                color = map(lambda x: 0.6 * x, color[0:3]) + [color[3]]
+                linear_gradient.add_color_stop_rgba(1, *color)
+            elif len(color) == 3:
+                linear_gradient.add_color_stop_rgb(0, 1,1,1)
+                color = map(lambda x: 0.6 * x, color[0:3])
+                linear_gradient.add_color_stop_rgb(1, *color)
+        else:
+            if len(color) == 4:
+                self.ctx.set_source_rgba(*color)
+            elif len(color) == 3:
+                self.ctx.set_source_rgb(*color)
+        self.ctx.set_source(linear_gradient)
+
     def draw_polygon(self, polygon):
-
-        # draw shadow
-        node = polygon.get_nodes()[0]
-        self.ctx.set_source_rgba(0.0, 0.0, 0.0, 0.1)
-        for i in range(0, 6):
-            self.ctx.save()
-            self.ctx.translate(1 * i, 1 * i)
-            self.apply_transform(polygon)
-            self.ctx.move_to(node[0], node[1])
-            for node in polygon.get_nodes():
-                self.ctx.line_to(node[0], node[1])
-            self.ctx.close_path()
-            self.ctx.fill()
-            self.ctx.restore()
-
         # draw fill
         self.ctx.save()
-        minimum = polygon.get_min()
-        maximum = polygon.get_max()
-        linear_gradient = cairo.LinearGradient(minimum[0], minimum[1], maximum[0], maximum[1])
-        linear_gradient.add_color_stop_rgba(0.00,  0.9, 0.9, 0.9, 1)
-        linear_gradient.add_color_stop_rgba(1.00,  0.6, 0.6, 0.6, 1)
+        self.apply_fill(polygon)
+            
         self.apply_transform(polygon)
 
-        self.ctx.set_source(linear_gradient)
-        node = polygon.get_nodes()[0]
+        node = polygon.nodes()[0]
         self.ctx.move_to(node[0], node[1])
-        for node in polygon.get_nodes():
+        for node in polygon.nodes():
             self.ctx.line_to(node[0], node[1])
         self.ctx.close_path()
         self.ctx.fill()
         self.ctx.restore()
+        return
+
+    def draw_polygon_shadow(self, polygon):
+        # draw shadow
+        if polygon.style().shadow() == 'on':
+            node = polygon.nodes()[0]
+            self.ctx.set_source_rgba(0.0, 0.0, 0.0, 0.1)
+            for i in range(0, 6):
+                self.ctx.save()
+                self.ctx.translate(1 * i, 1 * i)
+                self.apply_transform(polygon)
+                self.ctx.move_to(node[0], node[1])
+                for node in polygon.nodes():
+                    self.ctx.line_to(node[0], node[1])
+                self.ctx.close_path()
+                self.ctx.fill()
+                self.ctx.restore()
+
         return
 
     def draw_frame(self, polygon):
         self.ctx.save()
         self.apply_transform(polygon)
         self.ctx.set_source_rgb(0.0, 0.0, 0.0)
-        self.ctx.set_line_width(0.1)
-        node = polygon.get_nodes()[0]
+        self.ctx.set_line_width(1)
+        self.ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+        self.ctx.set_line_join (cairo.LINE_JOIN_ROUND)
+        node = polygon.nodes()[0]
         self.ctx.move_to(node[0], node[1])
-        for node in polygon.get_nodes():
+        for node in polygon.nodes():
             self.ctx.line_to(node[0], node[1])
         self.ctx.close_path()
-        self.ctx.restore()
-        self.ctx.set_source_rgb(0.0, 0.0, 0.0)
-        self.ctx.set_line_width(2)
         self.ctx.stroke()
+        self.ctx.restore()
         return
 
     def draw_open_graph(self, open_graph):
@@ -83,7 +106,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
             self.ctx.save()
             self.ctx.translate(1 * i, 1 * i)
             self.apply_transform(open_graph)
-            graph = open_graph.get_graph()
+            graph = open_graph.graph()
             for edge in graph.edges():
                 self.ctx.move_to(edge[0][0], edge[0][1])
                 self.ctx.line_to(edge[1][0], edge[1][1])
@@ -93,7 +116,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.ctx.set_source_rgb(0, 0, 0)
         self.ctx.save()
         self.apply_transform(open_graph)
-        graph = open_graph.get_graph()
+        graph = open_graph.graph()
         for edge in graph.edges():
             self.ctx.move_to(edge[0][0], edge[0][1])
             self.ctx.line_to(edge[1][0], edge[1][1])
@@ -130,7 +153,10 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
 
     def export_to_file(self, filename):
         # self.ctx.paint()
-        self.surface.write_to_png(filename)
+        if os.path.splitext(filename)[1] == '.png':
+            self.surface.write_to_png(filename)
+        elif os.path.splitext(filename)[1] == '.svg':
+            pass
         return
 
     def start_object(self):

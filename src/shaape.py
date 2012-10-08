@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from ShaapeNameParser import ShaapeNameParser
+from ShaapeStyleParser import ShaapeStyleParser
 from ShaapeYamlParser import ShaapeYamlParser
 from ShaapeOverlayParser import ShaapeOverlayParser
 from ShaapeTextParser import ShaapeTextParser
@@ -47,7 +49,7 @@ parser.add_argument('-o', '--outfile', type=str)
 args = parser.parse_args()
 
 if None == args.outfile:
-    args.outfile = args.infile + ".png"
+    args.outfile = args.infile + ".svg"
 
 if args.infile == '-':
     source = sys.stdin.readlines()
@@ -62,5 +64,6 @@ shaape.register_parser(ShaapeTextParser())
 shaape.register_parser(ShaapeOverlayParser())
 shaape.register_parser(ShaapeArrowParser())
 shaape.register_parser(ShaapeNameParser())
+shaape.register_parser(ShaapeStyleParser())
 shaape.register_backend(ShaapeCairoBackend())
 shaape.run()

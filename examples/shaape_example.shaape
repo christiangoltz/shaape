@@ -1,9 +1,10 @@
+
    +--------+    +-------------+   +------+          +----+----+
    |        |     \           /    |'.xml'|\         |abc |def |
-   | Hello  |----->\ Goodbye /     |      +-+        |    |    |
+   | Hello  +----->\ Goodbye /     |      +-+        |    |    |
    |   ;)   |      /         \     |'Docu-' |        +----+    +
    |        |     /           \    |  'ment'|        |'eh####' |
-   +---+----+    +------+------+   +---+----+        +----+----+
+   +---+----+    +------+------+-->+---+----+        +----+----+
        |                |              |             +----+----+
        +------has nothing to do with---+                  ++++++
                                  'a'<----+                ++++++
@@ -11,17 +12,13 @@
 in>-+----+------> out1            |        \    +->->->->->->-+
     |    |                'c'<--+-+-+->'b'<-+   |             |
     |    +------> out2         /     \      |   ^             v
-    |                         +       +     |   |             |
+    |                         +       +     |   |     abc     |
     +----+------>'out!'      / \     / \    |   ^             v
          +------> v_out     +   +   +   +   |   |             |
          +------> '->'     / \ / \ / \ / \  |   +-<-<-<-<-<-<-+
                          'd' 'e' 'f' 'g'  +-+   
 
 options:
-Hello,def: {apply-to: [Hello], fill-color: red, line-color: blue, line-style: dashed, line-width: 1}
-Goodbye,abc:
- - fill-color: '#AAFFAA'
- - line-color: green
- - line-style: dotted
- - line-width: 3}
-
+Hello,def: {fill: red, line: [blue, dashed, 1]}
+Goodbye,'.xml': {fill: green, line: [blue, dashed, 1]}
+abc: {fill: blue}

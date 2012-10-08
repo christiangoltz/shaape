@@ -80,6 +80,14 @@ class ShaapeOverlayParser(ShaapeParser):
         self.__sub_overlays.append(ShaapeOverlay([['<', '-']], [ShaapeEdge(0.5, 0.5, 1, 0.5)]))
         self.__sub_overlays.append(ShaapeOverlay([['|'], ['v']], [ShaapeEdge(0.5, 1, 0.5, 1.5)]))
         self.__sub_overlays.append(ShaapeOverlay([['^'], ['|']], [ShaapeEdge(0.5, 0.5, 0.5, 1)]))
+        self.__sub_overlays.append(ShaapeOverlay([['|'], ['^']], [ShaapeEdge(0.5, 1, 0.5, 1.5)]))
+        # self.__sub_overlays.append(ShaapeOverlay([['+'], ['^']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
+        self.__sub_overlays.append(ShaapeOverlay([['v'], ['|']], [ShaapeEdge(0.5, 0.5, 0.5, 1)]))
+        # self.__sub_overlays.append(ShaapeOverlay([['v'], ['+']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
+        self.__sub_overlays.append(ShaapeOverlay([['-', '<']], [ShaapeEdge(1, 0.5, 1.5, 0.5)]))
+        # self.__sub_overlays.append(ShaapeOverlay([['+', '<']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5)]))
+        self.__sub_overlays.append(ShaapeOverlay([['>', '-']], [ShaapeEdge(0.5, 0.5, 1, 0.5)]))
+        # self.__sub_overlays.append(ShaapeOverlay([['>', '+']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5)]))
         return
 
 
@@ -96,7 +104,7 @@ class ShaapeOverlayParser(ShaapeParser):
         mapping = dict(zip(graph , graph)) 
         graph=nx.relabel_nodes(graph, mapping)                 
 
-        closed_polygons = nx.cycle_basis(graph) 
+        closed_polygons = nx.cycle_basis(graph)
         path_graph = nx.Graph()
         path_graph.add_nodes_from(graph.nodes())
         for polygon in closed_polygons:
