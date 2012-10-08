@@ -17,5 +17,8 @@ install-filter:
 	-asciidoc --filter remove shaape   
 	asciidoc --filter install $(BUILD_DIR)/shaape.zip   
 
+upload-pipy: 
+	python setup.py sdist upload    
+
 clean:
 	$(RM) $(BUILD_DIR)    

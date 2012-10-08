@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from ShaapeOptionParser import ShaapeOptionParser
+from ShaapeYamlParser import ShaapeYamlParser
 from ShaapeOverlayParser import ShaapeOverlayParser
 from ShaapeTextParser import ShaapeTextParser
 from ShaapeArrowParser import ShaapeArrowParser
@@ -56,10 +56,11 @@ else:
     source = list(file_data)
 
 shaape = Shaape(source, args.outfile)
+shaape.register_parser(ShaapeYamlParser())
 shaape.register_parser(ShaapeBackgroundParser())
-shaape.register_parser(ShaapeOptionParser())
 shaape.register_parser(ShaapeTextParser())
 shaape.register_parser(ShaapeOverlayParser())
 shaape.register_parser(ShaapeArrowParser())
+shaape.register_parser(ShaapeNameParser())
 shaape.register_backend(ShaapeCairoBackend())
 shaape.run()

@@ -16,3 +16,12 @@ in>-+----+------> out1            |        \    +->->->->->->-+
          +------> v_out     +   +   +   +   |   |             |
          +------> '->'     / \ / \ / \ / \  |   +-<-<-<-<-<-<-+
                          'd' 'e' 'f' 'g'  +-+   
+
+options:
+Hello,def: {apply-to: [Hello], fill-color: red, line-color: blue, line-style: dashed, line-width: 1}
+Goodbye,abc:
+ - fill-color: '#AAFFAA'
+ - line-color: green
+ - line-style: dotted
+ - line-width: 3}
+

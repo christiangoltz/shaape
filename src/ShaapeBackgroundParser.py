@@ -8,8 +8,13 @@ class ShaapeBackgroundParser(ShaapeParser):
 
     def run(self, raw_data, drawable_objects):
         max_len = len(max(raw_data, key=len))
-        raw_data = [line + (max_len - len(line)) * ' ' for line in raw_data]
+        self._parsed_data = []
+        for line in raw_data:
+            if line[-1] == '\n':
+                line = line[:-1]
+            self._parsed_data.append(line + (max_len - len(line)) * ' ' + '\n')
+         
         canvas_size = [len(raw_data[0]), len(raw_data)]
+        self._drawable_objects = drawable_objects
         self._drawable_objects.append(ShaapeBackground(canvas_size))
-        self._parsed_data = raw_data
         return
