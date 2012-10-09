@@ -181,17 +181,65 @@ in>-+----+------> out1            |        \
 
 Styles
 ~~~~~~
+
+Although I basically want to disencourage you using fancy colors and styles,
+there may be some use cases when you need it.
+
+A style defines how an object is draw. Styles can be defined in a special
+area below the diagram. This area starts with the identifier 'options:'.
+On the next line the style description starts. The syntax for the style
+description is http://www.yaml.org/spec/1.2/spec.html[YAML].
+
+The style description should contain mappings from box names to a mapping of
+attributes:
+
+`boxname: { fill: [ red, flat], line : [ blue, dashed], shadow: off }`
+
+The key of the outer mapping can consist of different names:
+
+`box1,box2,box3: { fill: [ red, flat], line: [ blue, dashed, 3], shadow: off }`
+Note: This is not conform to YAML)
+
+.List of style attributes
+- fill can contain:
+    * red, blue, green for the respective color
+    * list of 3 or 4 elements ranging from 0.0 to 1.0,
+      e.g. `[0.2, 0.3, 0.4, 0.5]`, for the respective rgba color
+    * flat, gradient
+- line can contain:
+    * dashed, dotted, solid
+    * the same color mechanism as fills
+    * an integer or float describing the line width
+
 ["shaape"]
 ---------------------------------------------------------------------
-   +--------+   +----+---+      +--------+
-   |        |  /| mma|    \     | upper  |
-   | Hello  +-+ +----+     \    |        |
-   |  ';)'  |  \            +-->|  +-----+
-   |        |   +----+          |  |right|
-   +---+----+   | mma|          +--+-----+
-                +----+
+
+   +--------+    +------+------+   +------+          +----+----+
+   |        |     \           /    |'.xml'|\         |abc |def |
+   | Hello  +----->\ Goodbye /     |      +-+        |    +    |
+   |   ;)   |      /         \     |'Docu-' |<--+--->+-+--+--+ |
+   |        |     /           \    |  'ment'|   |    |'eh###'| |
+   +---+----+    +------+------+-->+---+----+        +----+----+
+       |                |              |   +----+--+ +----+----+
+       +----- has nothing to do with --+   +flatbox|      ++++++
+                       +------+  'a'<----+  \      |      ++++++
+                       | style|   v       \  +-----+
+in>-+----+------> out1 +------+   |        \    +->->->->->->-+
+    |    |                'c'<--+-+-+->'b'<-+   |             |
+    |    +------> out2         /     \      |   ^             v
+    |                         +       +     |   |  arrowbox   |
+    +----+------>'out!'      / \     / \    |   ^             v
+         +------> v_out     +   +   +   +   |   |             |
+         +------> '->'     / \ / \ / \ / \  |   +-<-<-<-<-<-<-+
+                         'd' 'e' 'f' 'g'  +-+   
 options:
-Hello: {fill: red, line: [blue, dashed, 1]}
-right: {fill: green, line: [blue, dashed, 1]}
+_default_: {fill: [[0.7, 0.9, 0.9], gradient], line: [[1, 0.2, 0.2, 0.5], dashed, 3]}
+abc: {fill: [blue]}
+arrowbox: 
+    fill: 
+        - [0.9, 0.7, 0.7, 0.4]
+        - gradient
+    shadow: off
+flatbox,style: {fill: [[0.9, 0.9, 0.7, 0.3], flat], shadow: off}
 ---------------------------------------------------------------------
 

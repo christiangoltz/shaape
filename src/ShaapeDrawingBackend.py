@@ -22,19 +22,28 @@ class ShaapeDrawingBackend(object):
                 self._canvas_size = drawable_object.size()
         
         self.create_canvas(filename)
+        self.__draw_objects(drawable_objects)
+        self.export_to_file(filename)
+
+    def __draw_objects(self, drawable_objects):
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, ShaapePolygon):
                 self.draw_polygon_shadow(drawable_object)
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, ShaapeOpenGraph):
+                self.draw_open_graph_shadow(drawable_object)
+        for drawable_object in drawable_objects:
+            if isinstance(drawable_object, ShaapePolygon) and not isinstance(drawable_object, ShaapeArrow):
+                self.draw_polygon(drawable_object)
+                self.draw_frame(drawable_object)
+        for drawable_object in drawable_objects:
+            if isinstance(drawable_object, ShaapeOpenGraph):
                 self.draw_open_graph(drawable_object)
         for drawable_object in drawable_objects:
-            if isinstance(drawable_object, ShaapePolygon):
+            if isinstance(drawable_object, ShaapeArrow):
                 self.draw_polygon(drawable_object)
                 self.draw_frame(drawable_object)
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, ShaapeText):
                 self.draw_text(drawable_object)
-
-        self.export_to_file(filename)
         return

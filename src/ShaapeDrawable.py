@@ -136,6 +136,7 @@ class ShaapeText(ShaapeDrawable, ShaapeTranslatable, ShaapeScalable):
 
 class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
     def __init__(self, graph):
+        ShaapeDrawable.__init__(self)
         self.__graph = graph
         for node in self.__graph.nodes():
             if self.__graph.degree(node) == 0:
@@ -158,9 +159,11 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
 
 class ShaapeArrow(ShaapePolygon, ShaapeTranslatable):
     def __init__(self, position):
-        ShaapePolygon.__init__(self, [(0.0, 0.15), (0.8, 0), (0.0, -0.15)])
+        ShaapePolygon.__init__(self, [(-0.5, 0.2), (0.4, 0), (-0.5, -0.2)])
         ShaapeTranslatable.__init__(self, position)
-        self.style().set_color([0, 0, 0, 1])
+        self.style().set_fill_color([0, 0, 0, 1])
+        self.style().set_fill_type('flat')
+        self.style().set_line_width(0)
 
     def scale(self, scale):
         ShaapeTranslatable.scale(self, scale)
@@ -172,13 +175,9 @@ class ShaapeRightArrow(ShaapeArrow, ShaapeRotatable):
         ShaapeArrow.__init__(self, position)
         ShaapeRotatable.__init__(self, 0)
 
-    # def scale(self, scale):
-        # ShaapeTranslatable.scale(self, scale)
-        # return
-
 class ShaapeDownArrow(ShaapeArrow, ShaapeRotatable):
     def __init__(self, position):
-        ShaapeArrow.__init__(self, position)
+        ShaapeArrow.__init__(self, (position[0], position[1] - 0.4))
         ShaapeRotatable.__init__(self, 90)
 
 class ShaapeLeftArrow(ShaapeArrow, ShaapeRotatable):
@@ -188,6 +187,6 @@ class ShaapeLeftArrow(ShaapeArrow, ShaapeRotatable):
 
 class ShaapeUpArrow(ShaapeArrow, ShaapeRotatable):
     def __init__(self, position):
-        ShaapeArrow.__init__(self, position)
+        ShaapeArrow.__init__(self, (position[0], position[1]))
         ShaapeRotatable.__init__(self, 270)
 

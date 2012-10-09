@@ -14,6 +14,8 @@ class ShaapeStyleParser(ShaapeParser):
 
 
         for style in styles:
+            if '_default_' in style.names():
+                ShaapeStyle.set_default(style)
             style_names = style.names()
             for obj in named_drawables:
                 if len(set(style_names) & set(obj.names())) > 0:

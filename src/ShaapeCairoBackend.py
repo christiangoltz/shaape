@@ -20,19 +20,29 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.surface = cairo.SVGSurface (filename, self.image_size[0] + self.margin[0] + self.margin[1], self._canvas_size[1] + self.margin[2] + self.margin[3])
         self.ctx = cairo.Context (self.surface)
 
-        # self.ctx.set_source_rgb(1, 1, 1)
+        #self.ctx.set_source_rgb(1, 1, 1)
         # self.ctx.rectangle(0.0, 0.0, self.image_size[0] + self.margin[0] + self.margin[1], self.image_size[1] + self.margin[2] + self.margin[3])
         # self.ctx.fill()
 
         self.ctx.translate(self.margin[0], self.margin[2])
         # self.ctx.scale(20,20)
         return
+    def apply_line(self, drawable):
+        self.ctx.set_line_cap(cairo.LINE_CAP_BUTT)
+        self.ctx.set_line_join (cairo.LINE_JOIN_ROUND)
+        width =  drawable.style().line()['width']
+        if len(drawable.style().line()['color']) == 3:
+            self.ctx.set_source_rgb(*(drawable.style().line()['color']))
+        else:
+            self.ctx.set_source_rgba(*(drawable.style().line()['color']))
+        self.ctx.set_line_width(width)
+        return
 
     def apply_fill(self, drawable):
         minimum = drawable.min()
         maximum = drawable.max()
         color =  drawable.style().fill()['color']
-        if drawable.style().fill()['gradient'] == 'on':
+        if drawable.style().fill()['type'] == 'gradient':
             linear_gradient = cairo.LinearGradient(minimum[0], minimum[1], maximum[0], maximum[1])
             if len(color) == 4:
                 linear_gradient.add_color_stop_rgba(0, 1,1,1,color[3])
@@ -42,13 +52,13 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
                 linear_gradient.add_color_stop_rgb(0, 1,1,1)
                 color = map(lambda x: 0.6 * x, color[0:3])
                 linear_gradient.add_color_stop_rgb(1, *color)
+            self.ctx.set_source(linear_gradient)
         else:
             if len(color) == 4:
                 self.ctx.set_source_rgba(*color)
             elif len(color) == 3:
                 self.ctx.set_source_rgb(*color)
-        self.ctx.set_source(linear_gradient)
-
+    
     def draw_polygon(self, polygon):
         # draw fill
         self.ctx.save()
@@ -67,6 +77,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
 
     def draw_polygon_shadow(self, polygon):
         # draw shadow
+        self.ctx.save()
         if polygon.style().shadow() == 'on':
             node = polygon.nodes()[0]
             self.ctx.set_source_rgba(0.0, 0.0, 0.0, 0.1)
@@ -81,15 +92,13 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
                 self.ctx.fill()
                 self.ctx.restore()
 
+        self.ctx.restore()
         return
 
     def draw_frame(self, polygon):
         self.ctx.save()
         self.apply_transform(polygon)
-        self.ctx.set_source_rgb(0.0, 0.0, 0.0)
-        self.ctx.set_line_width(1)
-        self.ctx.set_line_cap(cairo.LINE_CAP_ROUND)
-        self.ctx.set_line_join (cairo.LINE_JOIN_ROUND)
+        self.apply_line(polygon)
         node = polygon.nodes()[0]
         self.ctx.move_to(node[0], node[1])
         for node in polygon.nodes():
@@ -99,8 +108,8 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.ctx.restore()
         return
 
-    def draw_open_graph(self, open_graph):
-        self.ctx.set_line_width(2)
+    def draw_open_graph_shadow(self, open_graph):
+        self.apply_line(open_graph)
         self.ctx.set_source_rgba(0, 0, 0, 0.1)
         for i in range(0,6):
             self.ctx.save()
@@ -112,8 +121,12 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
                 self.ctx.line_to(edge[1][0], edge[1][1])
             self.ctx.stroke()
             self.ctx.restore()
+        return
 
-        self.ctx.set_source_rgb(0, 0, 0)
+
+    def draw_open_graph(self, open_graph):
+
+        self.apply_line(open_graph)
         self.ctx.save()
         self.apply_transform(open_graph)
         graph = open_graph.graph()
@@ -138,9 +151,8 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         # fdescent = fdescent * text_obj.font_size()
         for cx, letter in enumerate(text):
             xbearing, ybearing, width, height, xadvance, yadvance = (self.ctx.text_extents(letter))
-            self.ctx.move_to(text_obj.position()[0] + cx * text_obj.font_size(), text_obj.position()[1] + text_obj.font_size() - fdescent + fheight / 2)
+            self.ctx.move_to(text_obj.position()[0] + cx * (text_obj.font_size()), text_obj.position()[1] + text_obj.font_size() - fdescent + fheight / 2)
             self.ctx.show_text(letter)
-        self.ctx.move_to(text_obj.position()[0], text_obj.position()[1])
         self.ctx.restore()
         # self.ctx.stroke()
         return

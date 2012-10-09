@@ -1,5 +1,6 @@
 import networkx as nx
 import operator
+import math
 from ShaapeDrawable import *
 from ShaapeParser import *
 
@@ -76,20 +77,29 @@ class ShaapeOverlayParser(ShaapeParser):
         self.__sub_overlays.append(ShaapeOverlay([['|'],['+']], [ShaapeEdge(0.5, 1, 0.5, 1.5)]))
         self.__sub_overlays.append(ShaapeOverlay([['+','+']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5)]))
         self.__sub_overlays.append(ShaapeOverlay([['+'],['+']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
-        self.__sub_overlays.append(ShaapeOverlay([['-', '>']], [ShaapeEdge(1, 0.5, 1.5, 0.5)]))
-        self.__sub_overlays.append(ShaapeOverlay([['<', '-']], [ShaapeEdge(0.5, 0.5, 1, 0.5)]))
-        self.__sub_overlays.append(ShaapeOverlay([['|'], ['v']], [ShaapeEdge(0.5, 1, 0.5, 1.5)]))
-        self.__sub_overlays.append(ShaapeOverlay([['^'], ['|']], [ShaapeEdge(0.5, 0.5, 0.5, 1)]))
-        self.__sub_overlays.append(ShaapeOverlay([['|'], ['^']], [ShaapeEdge(0.5, 1, 0.5, 1.5)]))
+
+        # connect arrows and straight lines
+        # self.__sub_overlays.append(ShaapeOverlay([['-', '>']], [ShaapeEdge(1, 0.5, 1.5, 0.5)]))
+        # self.__sub_overlays.append(ShaapeOverlay([['<', '-']], [ShaapeEdge(0.5, 0.5, 1, 0.5)]))
+        # self.__sub_overlays.append(ShaapeOverlay([['|'], ['v']], [ShaapeEdge(0.5, 1, 0.5, 1.5)]))
+        # self.__sub_overlays.append(ShaapeOverlay([['^'], ['|']], [ShaapeEdge(0.5, 0.5, 0.5, 1)]))
+        self.__sub_overlays.append(ShaapeOverlay([['|'], ['^']], [ShaapeEdge(0.5, 1, 0.5, 2)]))
+        self.__sub_overlays.append(ShaapeOverlay([['v'], ['|']], [ShaapeEdge(0.5, 0, 0.5, 1)]))
+        self.__sub_overlays.append(ShaapeOverlay([['-', '<']], [ShaapeEdge(1, 0.5, 2, 0.5)]))
+        self.__sub_overlays.append(ShaapeOverlay([['>', '-']], [ShaapeEdge(0, 0.5, 1, 0.5)]))
+
+        # connect arrows and +
         # self.__sub_overlays.append(ShaapeOverlay([['+'], ['^']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
-        self.__sub_overlays.append(ShaapeOverlay([['v'], ['|']], [ShaapeEdge(0.5, 0.5, 0.5, 1)]))
         # self.__sub_overlays.append(ShaapeOverlay([['v'], ['+']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
-        self.__sub_overlays.append(ShaapeOverlay([['-', '<']], [ShaapeEdge(1, 0.5, 1.5, 0.5)]))
         # self.__sub_overlays.append(ShaapeOverlay([['+', '<']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5)]))
-        self.__sub_overlays.append(ShaapeOverlay([['>', '-']], [ShaapeEdge(0.5, 0.5, 1, 0.5)]))
         # self.__sub_overlays.append(ShaapeOverlay([['>', '+']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5)]))
         return
 
+    def cycle_len(self, cycle):
+        length = 0
+        for i in range(0, len(cycle) - 1):
+            length = length + math.sqrt((cycle[i + 1][0] - cycle[i][0])**2 + (cycle[i + 1][1] - cycle[i][1])**2)
+        return length
 
     def run(self, raw_data, drawable_objects):
         graphs = []
@@ -101,10 +111,58 @@ class ShaapeOverlayParser(ShaapeParser):
         for h in graphs:
             graph = nx.compose(graph, h)
 
-        mapping = dict(zip(graph , graph)) 
-        graph=nx.relabel_nodes(graph, mapping)                 
+        # mapping = dict(zip(graph , graph)) 
+        # graph=nx.relabel_nodes(graph, mapping)                 
 
-        closed_polygons = nx.cycle_basis(graph)
+        # create directed graph
+        digraph = nx.DiGraph(graph)
+        edges = graph.edges()
+        # and for every edge add the reversed one
+        for edge in edges:
+            digraph.add_edge(edge[1], edge[0])
+
+        # get all cycles in the graph and sort them for length
+        cycles = nx.simple_cycles(digraph)
+        cycles = [cycle for cycle in cycles if len(cycle) > 3]
+        cycles_with_length = [(self.cycle_len(cycle), cycle) for cycle in cycles]
+        sorted_cycles = sorted(cycles_with_length, key=lambda cycle_with_length: cycle_with_length[0])
+        sorted_cycles = [cycle for (length, cycle) in sorted_cycles]
+
+        edges_in_cycle_base = []
+        minimum_cycles = []
+        
+        # go through the sorted cycles and take every cycle which has at least
+        # one edge that is not in the minimal cycle base
+        for cycle in sorted_cycles:
+            edges_in_cycle = []
+            for i in range(0, len(cycle) - 1):
+                edges_in_cycle.append((cycle[i],cycle[i+1]))
+
+            cycle_independent = False
+            for edge in edges_in_cycle:
+                if edge not in edges_in_cycle_base:
+                    cycle_independent = True
+                    break;
+            
+            if cycle_independent == True:
+                polygon = ShaapePolygon(cycle)
+                contains_cycle = False
+                for minimum_cycle in minimum_cycles:
+                    for node in minimum_cycle:
+                        if polygon.contains(node) and node not in polygon.nodes():
+                            contains_cycle = True
+                            break
+                    if contains_cycle == True:
+                        break
+
+                if contains_cycle == False:               
+                    minimum_cycles.append(cycle)
+                    edges_in_cycle_base = edges_in_cycle_base + edges_in_cycle
+                    edges_in_cycle = [(node1, node0) for (node0, node1) in edges_in_cycle]
+                    edges_in_cycle_base = edges_in_cycle_base + edges_in_cycle
+
+        # our polygons are the same as the minimum cycles
+        closed_polygons = minimum_cycles
         path_graph = nx.Graph()
         path_graph.add_nodes_from(graph.nodes())
         for polygon in closed_polygons:

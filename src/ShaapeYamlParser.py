@@ -14,6 +14,7 @@ class ShaapeYamlParser(ShaapeParser):
                 options_start = i
                 break
         if options_start > -1:
+            raw_data.append('\n')
             options = yaml.load(''.join(raw_data[options_start+1:-1]))
             for (key,value) in options.items():
                 names = yaml.load("[" + key + "]")
