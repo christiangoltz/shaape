@@ -8,7 +8,6 @@ class ShaapeYamlParser(ShaapeParser):
         return
     def run(self, raw_data, drawable_objects):
         options_start = -1
-        # print(raw_data)
         for i in range(0, len(raw_data)):
             if raw_data[i].find('options:') == 0:
                 options_start = i
@@ -18,7 +17,8 @@ class ShaapeYamlParser(ShaapeParser):
             options = yaml.load(''.join(raw_data[options_start+1:-1]))
             for (key,value) in options.items():
                 names = yaml.load("[" + key + "]")
-                drawable_objects.append(ShaapeStyle(names, value))
+                for (target_type, option) in value.items():
+                    drawable_objects.append(ShaapeStyle(names, target_type, option))
             self._parsed_data = raw_data[0:options_start]
         else:
             self._parsed_data = raw_data

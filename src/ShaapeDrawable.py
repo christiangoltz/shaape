@@ -24,7 +24,7 @@ class ShaapeNamed(object):
 
 class ShaapeDrawable(object):
     def __init__(self):
-        self.__style = ShaapeStyle([], [])
+        self.__style = ShaapeStyle([], '', [])
         return
 
     def set_style(self, style):
@@ -81,6 +81,11 @@ class ShaapePolygon(ShaapeDrawable, ShaapeNamed, ShaapeScalable):
         ShaapeDrawable.__init__(self)
         ShaapeNamed.__init__(self)
         self.__node_list = node_list
+        cycle_graph = nx.Graph()
+        cycle_graph.add_cycle(node_list)
+        self.__frame = ShaapeOpenGraph(cycle_graph)
+        self.style().set_target_type('fill')
+        self.__frame.style().set_target_type('frame')
         return
 
     def contains(self, point):
@@ -114,6 +119,10 @@ class ShaapePolygon(ShaapeDrawable, ShaapeNamed, ShaapeScalable):
         for n in range(0, len(self.__node_list)):
             node = self.__node_list[n]
             self.__node_list[n] = (node[0] * scale[0], node[1] * scale[1])
+        self.__frame.scale(scale)
+
+    def frame(self):
+        return self.__frame
 
 class ShaapeText(ShaapeDrawable, ShaapeTranslatable, ShaapeScalable):
     def __init__(self, text, position):
@@ -137,6 +146,7 @@ class ShaapeText(ShaapeDrawable, ShaapeTranslatable, ShaapeScalable):
 class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
     def __init__(self, graph):
         ShaapeDrawable.__init__(self)
+        self.style().set_target_type('line')
         self.__graph = graph
         for node in self.__graph.nodes():
             if self.__graph.degree(node) == 0:
@@ -161,9 +171,9 @@ class ShaapeArrow(ShaapePolygon, ShaapeTranslatable):
     def __init__(self, position):
         ShaapePolygon.__init__(self, [(-0.5, 0.2), (0.4, 0), (-0.5, -0.2)])
         ShaapeTranslatable.__init__(self, position)
-        self.style().set_fill_color([0, 0, 0, 1])
-        self.style().set_fill_type('flat')
-        self.style().set_line_width(0)
+        self.style().set_color([0, 0, 0, 1])
+        self.style().set_type('flat')
+        self.frame().style().set_width(0)
 
     def scale(self, scale):
         ShaapeTranslatable.scale(self, scale)
@@ -187,6 +197,6 @@ class ShaapeLeftArrow(ShaapeArrow, ShaapeRotatable):
 
 class ShaapeUpArrow(ShaapeArrow, ShaapeRotatable):
     def __init__(self, position):
-        ShaapeArrow.__init__(self, (position[0], position[1]))
+        ShaapeArrow.__init__(self, (position[0], position[1] + 0.3))
         ShaapeRotatable.__init__(self, 270)
 

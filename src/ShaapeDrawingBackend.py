@@ -35,14 +35,14 @@ class ShaapeDrawingBackend(object):
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, ShaapePolygon) and not isinstance(drawable_object, ShaapeArrow):
                 self.draw_polygon(drawable_object)
-                self.draw_frame(drawable_object)
+                self.draw_open_graph(drawable_object.frame())
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, ShaapeOpenGraph):
                 self.draw_open_graph(drawable_object)
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, ShaapeArrow):
                 self.draw_polygon(drawable_object)
-                self.draw_frame(drawable_object)
+                self.draw_open_graph(drawable_object.frame())
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, ShaapeText):
                 self.draw_text(drawable_object)

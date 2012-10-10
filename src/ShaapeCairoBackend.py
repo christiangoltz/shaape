@@ -20,7 +20,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.surface = cairo.SVGSurface (filename, self.image_size[0] + self.margin[0] + self.margin[1], self._canvas_size[1] + self.margin[2] + self.margin[3])
         self.ctx = cairo.Context (self.surface)
 
-        #self.ctx.set_source_rgb(1, 1, 1)
+        # self.ctx.set_source_rgb(1, 1, 1)
         # self.ctx.rectangle(0.0, 0.0, self.image_size[0] + self.margin[0] + self.margin[1], self.image_size[1] + self.margin[2] + self.margin[3])
         # self.ctx.fill()
 
@@ -30,19 +30,19 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
     def apply_line(self, drawable):
         self.ctx.set_line_cap(cairo.LINE_CAP_BUTT)
         self.ctx.set_line_join (cairo.LINE_JOIN_ROUND)
-        width =  drawable.style().line()['width']
-        if len(drawable.style().line()['color']) == 3:
-            self.ctx.set_source_rgb(*(drawable.style().line()['color']))
+        width =  drawable.style().width()
+        if len(drawable.style().color()) == 3:
+            self.ctx.set_source_rgb(*(drawable.style().color()))
         else:
-            self.ctx.set_source_rgba(*(drawable.style().line()['color']))
+            self.ctx.set_source_rgba(*(drawable.style().color()))
         self.ctx.set_line_width(width)
         return
 
     def apply_fill(self, drawable):
         minimum = drawable.min()
         maximum = drawable.max()
-        color =  drawable.style().fill()['color']
-        if drawable.style().fill()['type'] == 'gradient':
+        color =  drawable.style().color()
+        if drawable.style().fill_type() == 'gradient':
             linear_gradient = cairo.LinearGradient(minimum[0], minimum[1], maximum[0], maximum[1])
             if len(color) == 4:
                 linear_gradient.add_color_stop_rgba(0, 1,1,1,color[3])
@@ -95,32 +95,20 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.ctx.restore()
         return
 
-    def draw_frame(self, polygon):
-        self.ctx.save()
-        self.apply_transform(polygon)
-        self.apply_line(polygon)
-        node = polygon.nodes()[0]
-        self.ctx.move_to(node[0], node[1])
-        for node in polygon.nodes():
-            self.ctx.line_to(node[0], node[1])
-        self.ctx.close_path()
-        self.ctx.stroke()
-        self.ctx.restore()
-        return
-
     def draw_open_graph_shadow(self, open_graph):
-        self.apply_line(open_graph)
-        self.ctx.set_source_rgba(0, 0, 0, 0.1)
-        for i in range(0,6):
-            self.ctx.save()
-            self.ctx.translate(1 * i, 1 * i)
-            self.apply_transform(open_graph)
-            graph = open_graph.graph()
-            for edge in graph.edges():
-                self.ctx.move_to(edge[0][0], edge[0][1])
-                self.ctx.line_to(edge[1][0], edge[1][1])
-            self.ctx.stroke()
-            self.ctx.restore()
+        if open_graph.style().shadow() == 'on':
+            self.apply_line(open_graph)
+            self.ctx.set_source_rgba(0, 0, 0, 0.1)
+            for i in range(0,6):
+                self.ctx.save()
+                self.ctx.translate(1 * i, 1 * i)
+                self.apply_transform(open_graph)
+                graph = open_graph.graph()
+                for edge in graph.edges():
+                    self.ctx.move_to(edge[0][0], edge[0][1])
+                    self.ctx.line_to(edge[1][0], edge[1][1])
+                self.ctx.stroke()
+                self.ctx.restore()
         return
 
 
