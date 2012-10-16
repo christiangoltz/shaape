@@ -191,7 +191,8 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
 
     def __generate_paths(self):
         print('----')
-        path_gen = nx.dfs_labeled_edges(self.__graph)
+        min_node = sort(self.__graph.nodes(), key=itemgetter(1,2))[0] 
+        path_gen = nx.dfs_labeled_edges(self.__graph, min_node)
         path = []
         paths = []
         self.__paths = []
