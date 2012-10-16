@@ -1,3 +1,5 @@
+import copy
+import math
 import operator
 import networkx as nx
 
@@ -151,6 +153,7 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
         for node in self.__graph.nodes():
             if self.__graph.degree(node) == 0:
                 self.__graph.remove_node(node)
+        self.__generate_paths()
         return
 
     def graph(self):
@@ -165,7 +168,81 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
         for node in old_nodes:
             new_nodes[node] = (node[0] * scale[0], node[1] * scale[1])
         self.__graph = nx.relabel_nodes(self.__graph, new_nodes)
+        self.__generate_paths()
         return
+
+    def vector_same_direction(self, v1, v2):
+        if v2[0] == 0 and v1[0] == 0:
+            return True
+        elif v2[0] == 0:
+            return False
+        if v2[1] == 0 and v1[1] == 0:
+            return True
+        elif v2[1] == 0:
+            return False
+
+        diff_x = v1[0] / v2[0]
+        diff_y = v1[1] / v2[1]
+
+        if diff_x == diff_y or ((-1 * diff_x) == (-1 * diff_y)):
+            return True
+        else:
+            return False
+
+    def __generate_paths(self):
+        print('----')
+        path_gen = nx.dfs_labeled_edges(self.__graph)
+        path = []
+        paths = []
+        self.__paths = []
+        last_dir = ''
+        for start, end, direction_dir in path_gen:
+            direction = direction_dir['dir']
+            print(start, end, direction)
+            if direction == 'forward':
+                if len(path) == 0 or path[-1] <> start:
+                    path.append(start)
+                last_dir = direction
+            elif direction == 'reverse':
+                if last_dir <> 'reverse':
+                    if len(path) > 1:
+                        copy_path = copy.copy(path)
+                        copy_path.append(end)
+                        if len(path) > 2 and (self.__graph.has_edge(copy_path[0], copy_path[-1]) or self.__graph.has_edge(copy_path[-1], copy_path[0])):
+                            copy_path.append(copy_path[0])
+                        paths.append(copy_path)
+                if len(path) > 0:
+                    path.pop()
+                last_dir = direction
+        
+        for path in paths:
+            new_path = []
+            for i in range(0, len(path)):
+                if len(new_path) < 2:
+                    if len(new_path) == 0 or path[i] <> new_path[-1]:
+                        new_path.append(path[i])
+                else:
+                    if path[i] <> new_path[-1]:
+                        previous_edge = (path[i - 2][0] - path[i - 1][0], path[i - 2][1] - path[i - 1][1])
+                        current_edge = (path[i - 1][0] - path[i][0], path[i - 1][1] - path[i][1])
+                        if self.vector_same_direction(previous_edge, current_edge) == True:
+                            new_path[-1] = path[i]
+                        else:
+                            new_path.append(path[i])
+            if len(new_path) > 2:
+                if new_path[-1] == new_path[0]:    
+                    last_edge = (new_path[-2][0] - new_path[-1][0], new_path[-2][1] - new_path[-1][1])
+                    first_edge = (new_path[0][0] - new_path[1][0], new_path[0][1] - new_path[1][1])
+                    if self.vector_same_direction(first_edge, last_edge) == True:
+                        del new_path[0]
+                        new_path[-1] = new_path[0]
+            print(new_path)
+            self.__paths.append(new_path)
+        
+        return        
+
+    def paths(self):
+        return self.__paths
 
 class ShaapeArrow(ShaapePolygon, ShaapeTranslatable):
     def __init__(self, position):

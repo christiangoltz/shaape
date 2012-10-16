@@ -26,6 +26,12 @@ class ShaapeStyle(object):
 
         if 'solid' in option_list:
             self.set_type('solid')
+        elif 'dashed' in option_list:
+            self.set_type('dashed')
+        elif 'dash-dotted' in option_list:
+            self.set_type('dash-dotted')
+        elif 'dotted' in option_list:
+            self.set_type('dotted')
         # shadow
         if 'no-shadow' in option_list:
             self.set_shadow('off')

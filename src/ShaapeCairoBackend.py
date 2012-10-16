@@ -20,21 +20,40 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.surface = cairo.SVGSurface (filename, self.image_size[0] + self.margin[0] + self.margin[1], self._canvas_size[1] + self.margin[2] + self.margin[3])
         self.ctx = cairo.Context (self.surface)
 
-        # self.ctx.set_source_rgb(1, 1, 1)
-        # self.ctx.rectangle(0.0, 0.0, self.image_size[0] + self.margin[0] + self.margin[1], self.image_size[1] + self.margin[2] + self.margin[3])
-        # self.ctx.fill()
+        self.ctx.set_source_rgb(1, 1, 1)
+        self.ctx.rectangle(0.0, 0.0, self.image_size[0] + self.margin[0] + self.margin[1], self.image_size[1] + self.margin[2] + self.margin[3])
+        self.ctx.fill()
 
         self.ctx.translate(self.margin[0], self.margin[2])
         # self.ctx.scale(20,20)
         return
+    
+    def apply_dash(self, drawable):
+        if drawable.style().fill_type() == 'dashed':
+            width = drawable.style().width()
+            dash_list = [ width * 5, width * 2]
+            self.ctx.set_dash(dash_list, width * 2)
+        elif drawable.style().fill_type() == 'dotted':
+            width = drawable.style().width()
+            dash_list = [ width, width * 2]
+            self.ctx.set_dash(dash_list)
+        elif drawable.style().fill_type() == 'dash-dotted':
+            width = drawable.style().width()
+            dash_list = [ width * 5, width * 2, width, width * 2]
+            self.ctx.set_dash(dash_list)
+        else:
+            self.ctx.set_dash([])
+
     def apply_line(self, drawable):
-        self.ctx.set_line_cap(cairo.LINE_CAP_BUTT)
+        self.ctx.set_line_cap(cairo.LINE_CAP_ROUND)
         self.ctx.set_line_join (cairo.LINE_JOIN_ROUND)
         width =  drawable.style().width()
         if len(drawable.style().color()) == 3:
             self.ctx.set_source_rgb(*(drawable.style().color()))
         else:
             self.ctx.set_source_rgba(*(drawable.style().color()))
+
+        self.apply_dash(drawable)
         self.ctx.set_line_width(width)
         return
 
@@ -103,10 +122,12 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
                 self.ctx.save()
                 self.ctx.translate(1 * i, 1 * i)
                 self.apply_transform(open_graph)
-                graph = open_graph.graph()
-                for edge in graph.edges():
-                    self.ctx.move_to(edge[0][0], edge[0][1])
-                    self.ctx.line_to(edge[1][0], edge[1][1])
+                paths = open_graph.paths()
+                if len(paths) > 0:
+                    for path in paths:
+                        self.ctx.move_to(path[0][0], path[0][1])
+                        for node in path:
+                            self.ctx.line_to(node[0], node[1])
                 self.ctx.stroke()
                 self.ctx.restore()
         return
@@ -117,10 +138,12 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.apply_line(open_graph)
         self.ctx.save()
         self.apply_transform(open_graph)
-        graph = open_graph.graph()
-        for edge in graph.edges():
-            self.ctx.move_to(edge[0][0], edge[0][1])
-            self.ctx.line_to(edge[1][0], edge[1][1])
+        paths = open_graph.paths()
+        if len(paths) > 0:
+            for path in paths:
+                self.ctx.move_to(path[0][0], path[0][1])
+                for node in path:
+                    self.ctx.line_to(node[0], node[1])
         self.ctx.restore()
         self.ctx.stroke()
         return
