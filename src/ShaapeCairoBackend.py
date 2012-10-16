@@ -31,21 +31,21 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
     def apply_dash(self, drawable):
         if drawable.style().fill_type() == 'dashed':
             width = drawable.style().width()
-            dash_list = [ width * 5, width * 2]
+            dash_list = [ width * 4, width]
             self.ctx.set_dash(dash_list, width * 2)
         elif drawable.style().fill_type() == 'dotted':
             width = drawable.style().width()
-            dash_list = [ width, width * 2]
+            dash_list = [ width, width]
             self.ctx.set_dash(dash_list)
         elif drawable.style().fill_type() == 'dash-dotted':
             width = drawable.style().width()
-            dash_list = [ width * 5, width * 2, width, width * 2]
+            dash_list = [ width * 4, width, width, width]
             self.ctx.set_dash(dash_list)
         else:
             self.ctx.set_dash([])
 
     def apply_line(self, drawable):
-        self.ctx.set_line_cap(cairo.LINE_CAP_ROUND)
+        self.ctx.set_line_cap(cairo.LINE_CAP_BUTT)
         self.ctx.set_line_join (cairo.LINE_JOIN_ROUND)
         width =  drawable.style().width()
         if len(drawable.style().color()) == 3:

@@ -1,4 +1,5 @@
 import copy
+from operator import itemgetter
 import math
 import operator
 import networkx as nx
@@ -149,7 +150,7 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
     def __init__(self, graph):
         ShaapeDrawable.__init__(self)
         self.style().set_target_type('line')
-        self.__graph = graph
+        self.__graph = nx.Graph(graph)
         for node in self.__graph.nodes():
             if self.__graph.degree(node) == 0:
                 self.__graph.remove_node(node)
@@ -190,8 +191,7 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
             return False
 
     def __generate_paths(self):
-        print('----')
-        min_node = sort(self.__graph.nodes(), key=itemgetter(1,2))[0] 
+        min_node = sorted(self.__graph.nodes(), key=itemgetter(0, 1))[0] 
         path_gen = nx.dfs_labeled_edges(self.__graph, min_node)
         path = []
         paths = []
@@ -199,7 +199,6 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
         last_dir = ''
         for start, end, direction_dir in path_gen:
             direction = direction_dir['dir']
-            print(start, end, direction)
             if direction == 'forward':
                 if len(path) == 0 or path[-1] <> start:
                     path.append(start)
@@ -237,7 +236,6 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
                     if self.vector_same_direction(first_edge, last_edge) == True:
                         del new_path[0]
                         new_path[-1] = new_path[0]
-            print(new_path)
             self.__paths.append(new_path)
         
         return        
