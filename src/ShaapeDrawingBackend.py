@@ -26,9 +26,9 @@ class ShaapeDrawingBackend(object):
         self.export_to_file(filename)
 
     def __draw_objects(self, drawable_objects):
-        for drawable_object in drawable_objects:
-            if isinstance(drawable_object, ShaapePolygon):
-                self.draw_polygon_shadow(drawable_object)
+        # for drawable_object in drawable_objects:
+          #  if isinstance(drawable_object, ShaapePolygon):
+                # self.draw_polygon_shadow(drawable_object)
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, ShaapeOpenGraph):
                 self.draw_open_graph_shadow(drawable_object)

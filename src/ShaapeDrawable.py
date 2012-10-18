@@ -121,7 +121,7 @@ class ShaapePolygon(ShaapeDrawable, ShaapeNamed, ShaapeScalable):
     def scale(self, scale):
         for n in range(0, len(self.__node_list)):
             node = self.__node_list[n]
-            self.__node_list[n] = (node[0] * scale[0], node[1] * scale[1])
+            self.__node_list[n] = node * scale
         self.__frame.scale(scale)
 
     def frame(self):
@@ -167,7 +167,7 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
         old_nodes = self.__graph.nodes()
         new_nodes = {}
         for node in old_nodes:
-            new_nodes[node] = (node[0] * scale[0], node[1] * scale[1])
+            new_nodes[node] = node * scale
         self.__graph = nx.relabel_nodes(self.__graph, new_nodes)
         self.__generate_paths()
         return
@@ -191,7 +191,10 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
             return False
 
     def __generate_paths(self):
-        min_node = sorted(self.__graph.nodes(), key=itemgetter(0, 1))[0] 
+        nodes = [node for node in self.__graph.nodes() if self.__graph.degree(node) == 1]
+        if nodes == []:
+            nodes = self.__graph.nodes()
+        min_node = sorted(nodes, key=itemgetter(0, 1))[0] 
         path_gen = nx.dfs_labeled_edges(self.__graph, min_node)
         path = []
         paths = []
@@ -205,7 +208,7 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
                 last_dir = direction
             elif direction == 'reverse':
                 if last_dir <> 'reverse':
-                    if len(path) > 1:
+                    if len(path) > 0:
                         copy_path = copy.copy(path)
                         copy_path.append(end)
                         if len(path) > 2 and (self.__graph.has_edge(copy_path[0], copy_path[-1]) or self.__graph.has_edge(copy_path[-1], copy_path[0])):
@@ -223,16 +226,16 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
                         new_path.append(path[i])
                 else:
                     if path[i] <> new_path[-1]:
-                        previous_edge = (path[i - 2][0] - path[i - 1][0], path[i - 2][1] - path[i - 1][1])
-                        current_edge = (path[i - 1][0] - path[i][0], path[i - 1][1] - path[i][1])
+                        previous_edge = path[i - 2] - path[i - 1]
+                        current_edge = path[i - 1] - path[i]
                         if self.vector_same_direction(previous_edge, current_edge) == True:
                             new_path[-1] = path[i]
                         else:
                             new_path.append(path[i])
             if len(new_path) > 2:
                 if new_path[-1] == new_path[0]:    
-                    last_edge = (new_path[-2][0] - new_path[-1][0], new_path[-2][1] - new_path[-1][1])
-                    first_edge = (new_path[0][0] - new_path[1][0], new_path[0][1] - new_path[1][1])
+                    last_edge = new_path[-2] - new_path[-1]
+                    first_edge = new_path[0] - new_path[1]
                     if self.vector_same_direction(first_edge, last_edge) == True:
                         del new_path[0]
                         new_path[-1] = new_path[0]

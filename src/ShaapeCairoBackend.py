@@ -84,12 +84,12 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.apply_fill(polygon)
             
         self.apply_transform(polygon)
-
-        node = polygon.nodes()[0]
-        self.ctx.move_to(node[0], node[1])
-        for node in polygon.nodes():
-            self.ctx.line_to(node[0], node[1])
-        self.ctx.close_path()
+        nodes = [polygon.nodes()[-1]] + polygon.nodes() + [polygon.nodes()[0]]
+        print('polygon')
+        self.apply_path(nodes)
+        # self.ctx.stroke()
+                
+        #self.ctx.close_path()
         self.ctx.fill()
         self.ctx.restore()
         return
@@ -132,20 +132,37 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
                 self.ctx.restore()
         return
 
+    def apply_path(self, nodes):
+        line_end = nodes[1] + ((nodes[0] - nodes[1]) * 0.5)
+        self.ctx.move_to(*line_end)
+        print(nodes)
+        for i in range(1, len(nodes) - 1):
+            if nodes[i].style() == 'miter':
+                self.ctx.line_to(*nodes[i])
+                line_end = nodes[i]
+            elif nodes[i].style() == 'curve':
+                line_end = nodes[i] + ((nodes[i + 1] - nodes[i]) * 0.5)
+                cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.9)
+                cp2 = nodes[i + 1] + ((nodes[i] - nodes[i + 1]) * 0.9)
+                self.ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], line_end[0], line_end[1])
+                    
+        return
 
     def draw_open_graph(self, open_graph):
-
         self.apply_line(open_graph)
         self.ctx.save()
         self.apply_transform(open_graph)
         paths = open_graph.paths()
+        print('graph')
         if len(paths) > 0:
             for path in paths:
-                self.ctx.move_to(path[0][0], path[0][1])
-                for node in path:
-                    self.ctx.line_to(node[0], node[1])
+                if path[0] == path[-1]:
+                    nodes = [path[-1]] + path + [path[0]]
+                else:
+                    nodes = [path[0]] + path + [path[-1]]
+                self.apply_path(nodes)
+                self.ctx.stroke()
         self.ctx.restore()
-        self.ctx.stroke()
         return
 
     def draw_text(self, text_obj):

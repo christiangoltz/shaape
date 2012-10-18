@@ -47,7 +47,6 @@ class ShaapeStyleParser(ShaapeParser):
                         if style.target_type() == 'fill' and isinstance(obj, ShaapePolygon):
                             obj.set_style(style)
                         elif style.target_type() == 'frame' and isinstance(obj, ShaapePolygon):
-                            print(obj)
                             obj.frame().set_style(style)
                         elif style.target_type() == 'line' and isinstance(obj, ShaapeOpenGraph):
                             obj.set_style(style)

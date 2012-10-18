@@ -3,11 +3,13 @@ import operator
 import math
 from ShaapeDrawable import *
 from ShaapeParser import *
+from ShaapeNode import *
 
 class ShaapeEdge:
-    def __init__(self, x0, y0, x1, y1):
-        self.__start = (x0, y0)
-        self.__end = (x1, y1)
+    def __init__(self, x0, y0, x1, y1, style1 = 'miter', style2 = 'miter', action = 'none'):
+        self.__start = ShaapeNode(x0, y0, style1)
+        self.__end = ShaapeNode(x1, y1, style2)
+        self.__action = action
         return
 
     def start(self):
@@ -15,6 +17,9 @@ class ShaapeEdge:
 
     def end(self):
         return self.__end
+
+    def action(self):
+        return self.__action
 
 class ShaapeOverlay:
     def __init__(self, array, edges):
@@ -24,6 +29,7 @@ class ShaapeOverlay:
 
     def substitutes(self, data):
         graph = nx.Graph()
+        merge_edges = []
         for data_y in range(0, len(data)):
             for data_x in range(0, len(data[data_y])):
                 orig_x = data_x
@@ -50,13 +56,14 @@ class ShaapeOverlay:
 
                 if True == matched:
                     for edge in self.__substitutes:
-                        start = edge.start()
-                        end = edge.end()
-                        start = (edge.start()[0] + data_x, edge.start()[1] + data_y)
-                        end = (edge.end()[0] + data_x, edge.end()[1] + data_y)
-                        graph.add_edge(start, end)
+                        start = edge.start() + (data_x, data_y)
+                        end = edge.end() + (data_x, data_y)
+                        if edge.action() == 'merge':
+                            merge_edges.append(ShaapeEdge(start[0], start[1], end[0], end[1]))
+                        else:
+                            graph.add_edge(start, end)
 
-        return graph
+        return graph, merge_edges
 
 class ShaapeOverlayParser(ShaapeParser):
     def __init__(self):
@@ -75,6 +82,10 @@ class ShaapeOverlayParser(ShaapeParser):
         self.__sub_overlays.append(ShaapeOverlay([['+', None],[None, '\\']], [ShaapeEdge(0.5, 0.5, 1, 1)]))
         self.__sub_overlays.append(ShaapeOverlay([[None, '+'],['/', None]], [ShaapeEdge(1.5, 0.5, 1, 1)]))
         self.__sub_overlays.append(ShaapeOverlay([['|'],['+']], [ShaapeEdge(0.5, 1, 0.5, 1.5)]))
+        self.__sub_overlays.append(ShaapeOverlay([['|'],['*']], [ShaapeEdge(0.5, 1, 0.5, 1.5, 'miter', 'curve')]))
+        self.__sub_overlays.append(ShaapeOverlay([['*'],['|']], [ShaapeEdge(0.5, 0.5, 0.5, 1, 'curve', 'miter')]))
+        self.__sub_overlays.append(ShaapeOverlay([['*','-']], [ShaapeEdge(0.5, 0.5, 1, 0.5, 'curve', 'miter')]))
+        self.__sub_overlays.append(ShaapeOverlay([['-','*']], [ShaapeEdge(1, 0.5, 1.5, 0.5, 'miter', 'curve')]))
         self.__sub_overlays.append(ShaapeOverlay([['+','+']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5)]))
         self.__sub_overlays.append(ShaapeOverlay([['+'],['+']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
 
@@ -87,6 +98,11 @@ class ShaapeOverlayParser(ShaapeParser):
         self.__sub_overlays.append(ShaapeOverlay([['v'], ['|']], [ShaapeEdge(0.5, 0, 0.5, 1)]))
         self.__sub_overlays.append(ShaapeOverlay([['-', '<']], [ShaapeEdge(1, 0.5, 2, 0.5)]))
         self.__sub_overlays.append(ShaapeOverlay([['>', '-']], [ShaapeEdge(0, 0.5, 1, 0.5)]))
+
+        self.__sub_overlays.append(ShaapeOverlay([['*','*']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5, 'curve', 'curve')]))
+        self.__sub_overlays.append(ShaapeOverlay([['*'],['*']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5, 'curve','curve')]))
+        self.__sub_overlays.append(ShaapeOverlay([[None, '*'],['*', None]], [ShaapeEdge(1.5, 0.5, 0.5, 1.5, 'curve','curve')]))
+        self.__sub_overlays.append(ShaapeOverlay([['*', None],[None, '*']], [ShaapeEdge(0.5, 0.5, 1.5, 1.5, 'curve','curve')]))
 
         # connect arrows and +
         # self.__sub_overlays.append(ShaapeOverlay([['+'], ['^']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
@@ -103,9 +119,11 @@ class ShaapeOverlayParser(ShaapeParser):
 
     def run(self, raw_data, drawable_objects):
         graphs = []
-
+        merge_edges = []
         for overlay in self.__sub_overlays:
-            graphs.append(overlay.substitutes(raw_data))
+            g, m = overlay.substitutes(raw_data)
+            merge_edges = merge_edges + m
+            graphs.append(g)
 
         graph = graphs.pop(0)
         for h in graphs:
@@ -114,11 +132,42 @@ class ShaapeOverlayParser(ShaapeParser):
         # mapping = dict(zip(graph , graph)) 
         # graph=nx.relabel_nodes(graph, mapping)                 
 
+        g = nx.Graph(graph)        
+        for e in merge_edges:
+            middle = e.start() + ((e.end() - e.start()) * 0.5)
+            for a in graph.edges():
+                for b in graph.edges():
+                    remove_edges = False
+                    if a[0] == e.start() and b[0] == e.end():
+                        remove_edges = True
+                        g.add_edge(a[1], middle)
+                        g.add_edge(b[1], middle)
+                    elif a[1] == e.start() and b[0] == e.end():
+                        remove_edges = True
+                        g.add_edge(a[0], middle)
+                        g.add_edge(b[1], middle)
+                    elif a[1] == e.start() and b[1] == e.end():
+                        remove_edges = True
+                        g.add_edge(a[0], middle)
+                        g.add_edge(b[0], middle)
+                    elif a[0] == e.start() and b[1] == e.end():
+                        remove_edges = True
+                        g.add_edge(a[1], middle)
+                        g.add_edge(b[0], middle)
+                    if remove_edges:
+                        if g.has_edge(a[0], a[1]):
+                            g.remove_edge(a[0], a[1])
+                        if g.has_edge(b[0], b[1]):
+                            g.remove_edge(b[0],b[1])
+
+        graph = g
+
         # create directed graph
-        digraph = nx.DiGraph(graph)
+        digraph = nx.DiGraph()
         edges = graph.edges()
         # and for every edge add the reversed one
         for edge in edges:
+            digraph.add_edge(edge[0], edge[1])
             digraph.add_edge(edge[1], edge[0])
 
         # get all cycles in the graph and sort them for length
@@ -149,7 +198,7 @@ class ShaapeOverlayParser(ShaapeParser):
                 contains_cycle = False
                 for minimum_cycle in minimum_cycles:
                     for node in minimum_cycle:
-                        if polygon.contains(node) and node not in polygon.nodes():
+                        if polygon.contains(node.position()) and node not in polygon.nodes():
                             contains_cycle = True
                             break
                     if contains_cycle == True:
@@ -164,6 +213,7 @@ class ShaapeOverlayParser(ShaapeParser):
         # our polygons are the same as the minimum cycles
         closed_polygons = minimum_cycles
         path_graph = nx.Graph()
+        
         path_graph.add_nodes_from(graph.nodes())
         for polygon in closed_polygons:
             drawable_objects.append(ShaapePolygon(polygon))
@@ -175,11 +225,12 @@ class ShaapeOverlayParser(ShaapeParser):
                 graph.remove_node(n)
 
         open_graphs = nx.connected_component_subgraphs(graph)
-
         for g in open_graphs:
             drawable_objects.append(ShaapeOpenGraph(g))
-            g.add_nodes_from(graph)
-            graph = nx.difference(graph, g)
+#            g.add_nodes_from(graph)
+  #          print('_____')
+ #           print(graph.nodes())
+#            graph = nx.difference(graph, g)
         self._drawable_objects = drawable_objects
         self._parsed_data = raw_data
         return
