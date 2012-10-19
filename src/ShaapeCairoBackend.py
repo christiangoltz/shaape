@@ -133,10 +133,11 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         return
 
     def apply_path(self, nodes):
+        
         line_end = nodes[1] + ((nodes[0] - nodes[1]) * 0.5)
         self.ctx.move_to(*line_end)
         print(nodes)
-        for i in range(1, len(nodes) - 1):
+        for i in range(1, len(nodes) - 2):
             if nodes[i].style() == 'miter':
                 self.ctx.line_to(*nodes[i])
                 line_end = nodes[i]
@@ -153,11 +154,10 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.ctx.save()
         self.apply_transform(open_graph)
         paths = open_graph.paths()
-        print('graph')
         if len(paths) > 0:
             for path in paths:
                 if path[0] == path[-1]:
-                    nodes = [path[-1]] + path + [path[0]]
+                    nodes = [path[-2]] + path + [path[0]]
                 else:
                     nodes = [path[0]] + path + [path[-1]]
                 self.apply_path(nodes)
