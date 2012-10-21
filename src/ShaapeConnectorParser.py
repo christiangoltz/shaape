@@ -128,7 +128,6 @@ class ShaapeConnectorParser(ShaapeParser):
                 graph.remove_node(n)
 
         open_graphs = nx.connected_component_subgraphs(graph)
-        print(graph.edges())
 
         for g in open_graphs:
             drawable_objects.append(ShaapeOpenGraph(g))

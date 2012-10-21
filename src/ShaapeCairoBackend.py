@@ -84,12 +84,11 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.apply_fill(polygon)
             
         self.apply_transform(polygon)
-        nodes = [polygon.nodes()[-1]] + polygon.nodes() + [polygon.nodes()[0]]
-        print('polygon')
+        nodes = [polygon.nodes()[-2]] + polygon.nodes() + [polygon.nodes()[1]]
         self.apply_path(nodes)
-        # self.ctx.stroke()
+        #self.ctx.stroke()
                 
-        #self.ctx.close_path()
+        self.ctx.close_path()
         self.ctx.fill()
         self.ctx.restore()
         return
@@ -133,10 +132,12 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         return
 
     def apply_path(self, nodes):
-        
-        line_end = nodes[1] + ((nodes[0] - nodes[1]) * 0.5)
-        self.ctx.move_to(*line_end)
         print(nodes)
+        if nodes[0].style() == 'curve':
+            line_end = nodes[1] + ((nodes[0] - nodes[1]) * 0.5)
+        else: 
+            line_end = nodes[0]
+        self.ctx.move_to(*line_end)
         for i in range(1, len(nodes) - 2):
             if nodes[i].style() == 'miter':
                 self.ctx.line_to(*nodes[i])
