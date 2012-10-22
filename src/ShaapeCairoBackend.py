@@ -84,11 +84,13 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.apply_fill(polygon)
             
         self.apply_transform(polygon)
-        nodes = [polygon.nodes()[-2]] + polygon.nodes() + [polygon.nodes()[1]]
+        
+        nodes = polygon.nodes()
+        if len(nodes) > 1 and nodes[0] != nodes[1]:
+            nodes = nodes + [nodes[0]]
+        nodes = [nodes[-2]] + nodes + [nodes[1]]
         self.apply_path(nodes)
-        #self.ctx.stroke()
                 
-        self.ctx.close_path()
         self.ctx.fill()
         self.ctx.restore()
         return
@@ -96,6 +98,10 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
     def draw_polygon_shadow(self, polygon):
         # draw shadow
         self.ctx.save()
+        nodes = polygon.nodes()
+        if len(nodes) > 1 and nodes[0] != nodes[1]:
+            nodes = nodes + [nodes[0]]
+        nodes = [nodes[-2]] + nodes + [nodes[1]]
         if polygon.style().shadow() == 'on':
             node = polygon.nodes()[0]
             self.ctx.set_source_rgba(0.0, 0.0, 0.0, 0.1)
@@ -103,10 +109,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
                 self.ctx.save()
                 self.ctx.translate(1 * i, 1 * i)
                 self.apply_transform(polygon)
-                self.ctx.move_to(node[0], node[1])
-                for node in polygon.nodes():
-                    self.ctx.line_to(node[0], node[1])
-                self.ctx.close_path()
+                self.apply_path(nodes)
                 self.ctx.fill()
                 self.ctx.restore()
 
@@ -132,13 +135,12 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         return
 
     def apply_path(self, nodes):
-        print(nodes)
         if nodes[0].style() == 'curve':
             line_end = nodes[1] + ((nodes[0] - nodes[1]) * 0.5)
         else: 
             line_end = nodes[0]
         self.ctx.move_to(*line_end)
-        for i in range(1, len(nodes) - 2):
+        for i in range(1, len(nodes) - 1):
             if nodes[i].style() == 'miter':
                 self.ctx.line_to(*nodes[i])
                 line_end = nodes[i]
@@ -158,7 +160,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         if len(paths) > 0:
             for path in paths:
                 if path[0] == path[-1]:
-                    nodes = [path[-2]] + path + [path[0]]
+                    nodes = [path[-2]] + path 
                 else:
                     nodes = [path[0]] + path + [path[-1]]
                 self.apply_path(nodes)
@@ -171,8 +173,6 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.ctx.select_font_face("monospace", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
         xbearing, ybearing, width, height, xadvance, yadvance = self.ctx.text_extents(text)
         self.ctx.save()
-        # print(
-        # self.apply_transform(text_obj)
         self.ctx.set_source_rgb(0.0, 0.0, 0.0)
         self.ctx.set_font_size(text_obj.font_size() / 0.8)
         fascent, fdescent, fheight, fxadvance, fyadvance = self.ctx.font_extents()
@@ -191,6 +191,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
             self.ctx.translate(obj.position()[0], obj.position()[1])
         if isinstance(obj, ShaapeRotatable):
             self.ctx.rotate(math.radians(obj.get_angle()))
+        return
 
     def export_to_file(self, filename):
         # self.ctx.paint()

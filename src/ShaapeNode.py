@@ -33,7 +33,7 @@ class ShaapeNode(object):
     		return ShaapeNode(self.position()[0] * other[0], self.position()[1] * other[1], self.style())
 
     def __key__(self):
-        return self.position()
+        return self.__position
 
     def __hash__(self):
         return hash(self.__key__())

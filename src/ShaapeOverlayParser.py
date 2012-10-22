@@ -114,7 +114,7 @@ class ShaapeOverlayParser(ShaapeParser):
     def cycle_len(self, cycle):
         length = 0
         for i in range(0, len(cycle) - 1):
-            length = length + math.sqrt((cycle[i + 1][0] - cycle[i][0])**2 + (cycle[i + 1][1] - cycle[i][1])**2)
+            length = length + (cycle[i + 1] - cycle[i]).length()
         return length
 
     def run(self, raw_data, drawable_objects):
@@ -162,75 +162,74 @@ class ShaapeOverlayParser(ShaapeParser):
 
         graph = g
 
-        # create directed graph
-        digraph = nx.DiGraph()
-        edges = graph.edges()
-        # and for every edge add the reversed one
-        for edge in edges:
-            digraph.add_edge(edge[0], edge[1])
-            digraph.add_edge(edge[1], edge[0])
+        components = nx.connected_component_subgraphs(graph)
+        closed_polygons = []
+        for component in components:
+            # create directed graph
+            digraph = nx.DiGraph()
+            edges = component.edges()
+            # and for every edge add the reversed one
+            for edge in edges:
+                digraph.add_edge(edge[0], edge[1])
+                digraph.add_edge(edge[1], edge[0])
 
-        # get all cycles in the graph and sort them for length
-        cycles = nx.simple_cycles(digraph)
-        cycles = [cycle for cycle in cycles if len(cycle) > 3]
-        cycles_with_length = [(self.cycle_len(cycle), cycle) for cycle in cycles]
-        sorted_cycles = sorted(cycles_with_length, key=lambda cycle_with_length: cycle_with_length[0])
-        sorted_cycles = [cycle for (length, cycle) in sorted_cycles]
+            # get all cycles in the graph and sort them for length
+            cycles = nx.simple_cycles(digraph)
+            cycles = [cycle for cycle in cycles if len(cycle) > 3]
+            cycles_with_length = [(self.cycle_len(cycle), cycle) for cycle in cycles]
+            sorted_cycles = sorted(cycles_with_length, key=lambda cycle_with_length: cycle_with_length[0])
+            sorted_cycles = [cycle for (length, cycle) in sorted_cycles]
 
-        edges_in_cycle_base = []
-        minimum_cycles = []
+            edges_in_cycle_base = []
+            minimum_cycles = []
         
-        # go through the sorted cycles and take every cycle which has at least
-        # one edge that is not in the minimal cycle base
-        for cycle in sorted_cycles:
-            edges_in_cycle = []
-            for i in range(0, len(cycle) - 1):
-                edges_in_cycle.append((cycle[i],cycle[i+1]))
+            # go through the sorted cycles and take every cycle which has at least
+            # one edge that is not in the minimal cycle base
+            for cycle in sorted_cycles:
+                edges_in_cycle = []
+                for i in range(0, len(cycle) - 1):
+                    edges_in_cycle.append((cycle[i],cycle[i+1]))
 
-            cycle_independent = False
-            for edge in edges_in_cycle:
-                if edge not in edges_in_cycle_base:
-                    cycle_independent = True
-                    break;
+                cycle_independent = False
+                for edge in edges_in_cycle:
+                    if edge not in edges_in_cycle_base:
+                        cycle_independent = True
+                        break;
             
-            if cycle_independent == True:
-                polygon = ShaapePolygon(cycle)
-                contains_cycle = False
-                for minimum_cycle in minimum_cycles:
-                    for node in minimum_cycle:
-                        if polygon.contains(node.position()) and node not in polygon.nodes():
-                            contains_cycle = True
+                if cycle_independent == True:
+                    polygon = ShaapePolygon(cycle)
+                    contains_cycle = False
+                    for minimum_cycle in minimum_cycles:
+                        for node in minimum_cycle:
+                            if polygon.contains(node.position()) and node not in cycle:
+                                contains_cycle = True
+                                break
+                        if contains_cycle == True:
                             break
-                    if contains_cycle == True:
-                        break
+                    if contains_cycle == False:               
+                        minimum_cycles.append(cycle)
+                        edges_in_cycle_base = edges_in_cycle_base + edges_in_cycle
+                        edges_in_cycle = [(node1, node0) for (node0, node1) in edges_in_cycle]
+                        edges_in_cycle_base = edges_in_cycle_base + edges_in_cycle
 
-                if contains_cycle == False:               
-                    minimum_cycles.append(cycle)
-                    edges_in_cycle_base = edges_in_cycle_base + edges_in_cycle
-                    edges_in_cycle = [(node1, node0) for (node0, node1) in edges_in_cycle]
-                    edges_in_cycle_base = edges_in_cycle_base + edges_in_cycle
+            # the polygons are the same as the minimum cycles
+            closed_polygons += minimum_cycles
+            path_graph = nx.Graph()
+            path_graph.add_nodes_from(component.nodes())
 
-        # our polygons are the same as the minimum cycles
-        closed_polygons = minimum_cycles
-        path_graph = nx.Graph()
-        
-        path_graph.add_nodes_from(graph.nodes())
-        for polygon in closed_polygons:
-            drawable_objects.append(ShaapePolygon(polygon))
-            path_graph.add_cycle(polygon)
+            for polygon in minimum_cycles:
+                drawable_objects.append(ShaapePolygon(polygon))
+                path_graph.add_cycle(polygon)
 
-        graph = nx.difference(graph, path_graph)
-        for n in graph.nodes():
-            if graph.degree(n) == 0:
-                graph.remove_node(n)
+            remaining_graph = nx.difference(component, path_graph)
+            for n in remaining_graph.nodes():
+                if remaining_graph.degree(n) == 0:
+                    remaining_graph.remove_node(n)
+            if len(remaining_graph.edges()) > 0:
+                remaining_components = nx.connected_component_subgraphs(remaining_graph)
+                for c in remaining_components:
+                    drawable_objects.append(ShaapeOpenGraph(c))
 
-        open_graphs = nx.connected_component_subgraphs(graph)
-        for g in open_graphs:
-            drawable_objects.append(ShaapeOpenGraph(g))
-#            g.add_nodes_from(graph)
-  #          print('_____')
- #           print(graph.nodes())
-#            graph = nx.difference(graph, g)
         self._drawable_objects = drawable_objects
         self._parsed_data = raw_data
         return

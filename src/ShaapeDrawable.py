@@ -23,7 +23,6 @@ def reduce_path(nodes):
         if has_same_direction(first_edge, last_edge):
             del new_nodes[-1]
             new_nodes[0] = new_nodes[-1]
-
     return new_nodes
 
 def has_same_direction(v1, v2):
@@ -49,7 +48,7 @@ class ShaapeScalable(object):
         pass
 
     def scale(self, scale):
-        pass
+        return NotImplemented
 
 class ShaapeNamed(object):
     def __init__(self):
@@ -209,7 +208,9 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
         for node in old_nodes:
             new_nodes[node] = node * scale
         self.__graph = nx.relabel_nodes(self.__graph, new_nodes)
-        self.__generate_paths()
+        for path in self.__paths:
+            for i in range(0, len(path)):
+                path[i] = path[i] * scale
         return
 
 
