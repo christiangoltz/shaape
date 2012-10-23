@@ -86,9 +86,9 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         self.apply_transform(polygon)
         
         nodes = polygon.nodes()
-        if len(nodes) > 1 and nodes[0] != nodes[1]:
+        if len(nodes) > 1 and nodes[0] != nodes[-1]:
             nodes = nodes + [nodes[0]]
-        nodes = [nodes[-2]] + nodes + [nodes[1]]
+        nodes = [nodes[-2]] + nodes
         self.apply_path(nodes)
                 
         self.ctx.fill()
@@ -99,9 +99,9 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         # draw shadow
         self.ctx.save()
         nodes = polygon.nodes()
-        if len(nodes) > 1 and nodes[0] != nodes[1]:
+        if len(nodes) > 1 and nodes[0] != nodes[-1]:
             nodes = nodes + [nodes[0]]
-        nodes = [nodes[-2]] + nodes + [nodes[1]]
+        nodes = [nodes[-2]] + nodes
         if polygon.style().shadow() == 'on':
             node = polygon.nodes()[0]
             self.ctx.set_source_rgba(0.0, 0.0, 0.0, 0.1)
@@ -145,6 +145,9 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
                 self.ctx.line_to(*nodes[i])
                 line_end = nodes[i]
             elif nodes[i].style() == 'curve':
+                if i > 0 and nodes[i - 1].style() == 'miter':
+                    temp_end = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.5)
+                    self.ctx.line_to(*temp_end)
                 line_end = nodes[i] + ((nodes[i + 1] - nodes[i]) * 0.5)
                 cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.9)
                 cp2 = nodes[i + 1] + ((nodes[i] - nodes[i + 1]) * 0.9)
@@ -174,7 +177,7 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         xbearing, ybearing, width, height, xadvance, yadvance = self.ctx.text_extents(text)
         self.ctx.save()
         self.ctx.set_source_rgb(0.0, 0.0, 0.0)
-        self.ctx.set_font_size(text_obj.font_size() / 0.8)
+        self.ctx.set_font_size(text_obj.font_size() / 0.7)
         fascent, fdescent, fheight, fxadvance, fyadvance = self.ctx.font_extents()
         # fheight = fheight * text_obj.font_size()
         # fdescent = fdescent * text_obj.font_size()

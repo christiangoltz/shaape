@@ -13,7 +13,7 @@ def reduce_path(nodes):
     for i in range(2, len(nodes)):
         previous_edge = nodes[i - 1] - nodes[i - 2]
         current_edge = nodes[i] - nodes[i - 1]
-        if has_same_direction(previous_edge, current_edge):
+        if new_nodes[-1].fusable() == True and has_same_direction(previous_edge, current_edge):
             new_nodes[-1] = nodes[i]
         else:
             new_nodes.append(nodes[i])
@@ -216,6 +216,8 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
 
     def __generate_paths(self):
         nodes = [node for node in self.__graph.nodes() if self.__graph.degree(node) == 1]
+        if nodes == []:
+            nodes = [node for node in self.__graph.nodes() if node.fusable() == False]
         if nodes == []:
             nodes = self.__graph.nodes()
         min_node = sorted(nodes, key=itemgetter(0, 1))[0] 

@@ -1,13 +1,21 @@
 import math
 
 class ShaapeNode(object):
-    def __init__(self, x, y, style = 'miter'):
+    def __init__(self, x, y, style = 'miter', fusable = True):
         self.__position = (x, y)
         self.__style = style
+        self.__fusable = fusable
         return
 
     def position(self):
         return self.__position
+
+    def fusable(self):
+        return self.__fusable
+
+    def set_fusable(self, fusable):
+        self.__fusable = fusable
+        return
 
     def style(self):
         return self.__style
@@ -17,20 +25,20 @@ class ShaapeNode(object):
     		return self.__position[index]
 
     def __add__(self, other):
-		return ShaapeNode(self.position()[0] + other[0], self.position()[1] + other[1], self.style())
+		return ShaapeNode(self.position()[0] + other[0], self.position()[1] + other[1], self.style(), self.fusable())
 
     def __sub__(self, other):
-		return ShaapeNode(self.position()[0] - other[0], self.position()[1] - other[1], self.style())
+		return ShaapeNode(self.position()[0] - other[0], self.position()[1] - other[1], self.style(), self.fusable())
 
     def __div__(self, other):
         if isinstance(other, float):
-            return ShaapeNode(self.position()[0] / other, self.position()[1] / other, self.style())
+            return ShaapeNode(self.position()[0] / other, self.position()[1] / other, self.style(), self.fusable())
 
     def __mul__(self, other):
         if isinstance(other, float):
-    		return ShaapeNode(self.position()[0] * other, self.position()[1] * other, self.style())
+    		return ShaapeNode(self.position()[0] * other, self.position()[1] * other, self.style(), self.fusable())
         else:
-    		return ShaapeNode(self.position()[0] * other[0], self.position()[1] * other[1], self.style())
+    		return ShaapeNode(self.position()[0] * other[0], self.position()[1] * other[1], self.style(), self.fusable())
 
     def __key__(self):
         return self.__position
@@ -43,7 +51,7 @@ class ShaapeNode(object):
         return cmp((self.position()[0], self.position()[1]), (other.position()[0], other.position()[1]))
 
     def __repr__(self):
-        return "(" + str(self.position()) + "," + self.style() + ")"
+        return "(" + str(self.position()) + "," + self.style() + "," + str(self.fusable()) + ")"
 
     def __iter__(self):
         return (n for n in self.position())
