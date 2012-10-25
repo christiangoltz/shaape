@@ -4,7 +4,7 @@ ZIP = zip
 RM = rm -rf
 CD = cd
 
-SOURCES = $(wildcard src/*.py)
+SOURCES = $(wildcard shaape/*.py)
 ASCIIDOC_FILTER = asciidoc-filter/shaape-filter.conf
 BUILD_DIR = build
 .PHONY: install clean
