@@ -90,5 +90,7 @@ class ShaapeStyle(object):
         return
 
     def set_width(self, width):
+        if width < 2:
+            width = 2
         self.__options['width'] = width
         return

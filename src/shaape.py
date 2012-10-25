@@ -49,7 +49,7 @@ parser.add_argument('-o', '--outfile', type=str)
 args = parser.parse_args()
 
 if None == args.outfile:
-    args.outfile = args.infile + ".svg"
+    args.outfile = args.infile + ".png"
 
 if args.infile == '-':
     source = sys.stdin.readlines()
