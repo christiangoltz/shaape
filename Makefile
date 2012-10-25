@@ -4,6 +4,10 @@ ZIP = zip
 RM = rm -rf
 CD = cd
 
+TEST_BIN = nosetests
+TEST_OPTS = 
+TEST_DIR = shaape/tests
+
 SOURCES = $(wildcard shaape/*.py)
 ASCIIDOC_FILTER = asciidoc-filter/shaape-filter.conf
 BUILD_DIR = build
@@ -16,7 +20,8 @@ install-filter:
 	$(CD) $(BUILD_DIR) && $(ZIP) shaape.zip ./* -r    
 	-asciidoc --filter remove shaape   
 	asciidoc --filter install $(BUILD_DIR)/shaape.zip   
-
+tests:
+	$(TEST_BIN) $(TEST_OPTS) $(TEST_DIR)
 upload-pipy: 
 	python setup.py sdist upload    
 

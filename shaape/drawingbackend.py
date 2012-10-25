@@ -1,10 +1,17 @@
 from ShaapeDrawable import *
 
-class ShaapeDrawingBackend(object):
+class DrawingBackend(object):
+    DEFAULT_PIXELS_PER_UNIT = (10, 20)
+    DEFAULT_CANVAS_SIZE = [0, 0]
     def __init__(self):
-        self._canvas_size = [0, 0]
-        self.__pixels_per_unit = (10, 20)
-        return
+        self._canvas_size = DEFAULT_CANVAS_SIZE
+        self.__pixels_per_unit = DEFAULT_PIXELS_PER_UNIT
+    
+    def canvas_size(self):
+        return self._canvas_size
+
+    def pixels_per_unit(self):
+        return self._canvas_size
 
     def run(self, drawable_objects, filename):
         self.canvas_size = [0, 0]
