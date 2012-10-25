@@ -4,8 +4,8 @@ import math
 import numpy as np
 from scipy import ndimage
 
-from ShaapeDrawingBackend import ShaapeDrawingBackend
-from ShaapeDrawable import *
+from drawingbackend import ShaapeDrawingBackend
+from drawable import *
 
 class ShaapeCairoBackend(ShaapeDrawingBackend):
     

@@ -1,6 +1,6 @@
 import yaml
-from ShaapeParser import ShaapeParser
-from ShaapeStyle import ShaapeStyle
+from parser import ShaapeParser
+from style import ShaapeStyle
 
 class ShaapeYamlParser(ShaapeParser):
     def __init__(self):

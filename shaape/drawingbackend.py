@@ -1,4 +1,4 @@
-from ShaapeDrawable import *
+from drawable import *
 
 class ShaapeDrawingBackend(object):
     def __init__(self):

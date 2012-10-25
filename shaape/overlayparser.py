@@ -1,9 +1,9 @@
 import networkx as nx
 import operator
 import math
-from ShaapeDrawable import *
-from ShaapeParser import *
-from ShaapeNode import *
+from drawable import *
+from parser import *
+from node import *
 
 class ShaapeEdge:
     def __init__(self, node1, node2, action = 'none'):

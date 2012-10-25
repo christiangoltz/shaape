@@ -1,6 +1,5 @@
-from ShaapeParser import ShaapeParser
-from ShaapeDrawable import ShaapePolygon
-from ShaapeDrawable import ShaapeText
+from parser import ShaapeParser
+from drawable import *
 
 class ShaapeNameParser(ShaapeParser):
     def __init__(self):

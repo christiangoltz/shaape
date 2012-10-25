@@ -3,9 +3,9 @@ from operator import itemgetter
 import math
 import operator
 import networkx as nx
-from ShaapeNode import *
+from node import *
 
-from ShaapeStyle import ShaapeStyle
+from style import ShaapeStyle
 
 def reduce_path(nodes):
     new_nodes = []
