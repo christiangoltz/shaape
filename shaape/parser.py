@@ -1,4 +1,4 @@
-class ShaapeParser(object):
+class Parser(object):
     def __init__(self):
         self._parsed_data = []
         self._drawable_objects = []

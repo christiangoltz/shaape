@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
-from nameparser import ShaapeNameParser
-from styleparser import ShaapeStyleParser
-from yamlparser import ShaapeYamlParser
-from overlayparser import ShaapeOverlayParser
-from textparser import ShaapeTextParser
-from arrowparser import ShaapeArrowParser
-from backgroundparser import ShaapeBackgroundParser
-from cairobackend import ShaapeCairoBackend
+from nameparser import NameParser
+from styleparser import StyleParser
+from yamlparser import YamlParser
+from overlayparser import OverlayParser
+from textparser import TextParser
+from arrowparser import ArrowParser
+from backgroundparser import BackgroundParser
+from cairobackend import CairoBackend
 
 import argparse
 import sys
@@ -43,7 +43,7 @@ class Shaape:
         for backend in self.__backends:
             backend.run(drawable_objects, self.__outfile)
 
-parser = argparse.ArgumentParser(description='Shaape - Asciiart to image processing')
+parser = argparse.ArgumentParser(description=' - Asciiart to image processing')
 parser.add_argument('infile', type=str)
 parser.add_argument('-o', '--outfile', type=str)
 args = parser.parse_args()
@@ -58,12 +58,12 @@ else:
     source = list(file_data)
 
 shaape = Shaape(source, args.outfile)
-shaape.register_parser(ShaapeYamlParser())
-shaape.register_parser(ShaapeBackgroundParser())
-shaape.register_parser(ShaapeTextParser())
-shaape.register_parser(ShaapeOverlayParser())
-shaape.register_parser(ShaapeArrowParser())
-shaape.register_parser(ShaapeNameParser())
-shaape.register_parser(ShaapeStyleParser())
-shaape.register_backend(ShaapeCairoBackend())
+shaape.register_parser(YamlParser())
+shaape.register_parser(BackgroundParser())
+shaape.register_parser(TextParser())
+shaape.register_parser(OverlayParser())
+shaape.register_parser(ArrowParser())
+shaape.register_parser(NameParser())
+shaape.register_parser(StyleParser())
+shaape.register_backend(CairoBackend())
 shaape.run()

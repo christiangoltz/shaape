@@ -4,13 +4,13 @@ import math
 import numpy as np
 from scipy import ndimage
 
-from drawingbackend import ShaapeDrawingBackend
+from drawingbackend import DrawingBackend
 from drawable import *
 
-class ShaapeCairoBackend(ShaapeDrawingBackend):
+class CairoBackend(DrawingBackend):
     
     def __init__(self):
-        super(ShaapeCairoBackend, self).__init__()
+        super(CairoBackend, self).__init__()
         self.margin = [10, 10, 10, 10]
         self.__surfaces = []
         self.__blur_kernel = []
@@ -228,9 +228,9 @@ class ShaapeCairoBackend(ShaapeDrawingBackend):
         return
 
     def apply_transform(self, obj):
-        if isinstance(obj, ShaapeTranslatable):
+        if isinstance(obj, Translatable):
             self.ctx.translate(obj.position()[0], obj.position()[1])
-        if isinstance(obj, ShaapeRotatable):
+        if isinstance(obj, Rotatable):
             self.ctx.rotate(math.radians(obj.get_angle()))
         return
 

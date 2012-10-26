@@ -5,7 +5,7 @@ from drawable import *
 from parser import *
 from node import *
 
-class ShaapeEdge:
+class Edge:
     def __init__(self, node1, node2, action = 'none'):
         self.__start = node1
         self.__end = node2
@@ -21,7 +21,7 @@ class ShaapeEdge:
     def action(self):
         return self.__action
 
-class ShaapeOverlay:
+class Overlay:
     def __init__(self, array, edges):
         self.__overlay = array
         self.__substitutes = edges
@@ -59,56 +59,56 @@ class ShaapeOverlay:
                         start = edge.start() + (data_x, data_y)
                         end = edge.end() + (data_x, data_y)
                         if edge.action() == 'merge':
-                            merge_edges.append(ShaapeEdge(start[0], start[1], end[0], end[1]))
+                            merge_edges.append(Edge(start[0], start[1], end[0], end[1]))
                         else:
                             graph.add_edge(start, end)
 
         return graph, merge_edges
 
-class ShaapeOverlayParser(ShaapeParser):
+class OverlayParser(Parser):
     def __init__(self):
-        super(ShaapeOverlayParser, self).__init__()
+        super(OverlayParser, self).__init__()
         self.__sub_overlays = []
-        self.__sub_overlays.append(ShaapeOverlay([['-']], [ShaapeEdge(ShaapeNode(0, 0.5), ShaapeNode(1, 0.5))]))
-        self.__sub_overlays.append(ShaapeOverlay([['|']], [ShaapeEdge(ShaapeNode(0.5, 0), ShaapeNode(0.5, 1))]))
-        self.__sub_overlays.append(ShaapeOverlay([['/']], [ShaapeEdge(ShaapeNode(0, 1), ShaapeNode(1, 0))]))
-        self.__sub_overlays.append(ShaapeOverlay([['\\']], [ShaapeEdge(ShaapeNode(1, 1), ShaapeNode(0, 0))]))
-        self.__sub_overlays.append(ShaapeOverlay([['-','|']], [ShaapeEdge(ShaapeNode(1, 0.5), ShaapeNode(1.5, 0.5))]))
-        self.__sub_overlays.append(ShaapeOverlay([['+','-']], [ShaapeEdge(ShaapeNode(0.5, 0.5, fusable = False), ShaapeNode(1, 0.5))]))
-        self.__sub_overlays.append(ShaapeOverlay([['-','+']], [ShaapeEdge(ShaapeNode(1, 0.5), ShaapeNode(1.5, 0.5, fusable = False))]))
-        self.__sub_overlays.append(ShaapeOverlay([['+'],['|']], [ShaapeEdge(ShaapeNode(0.5, 0.5, fusable = False), ShaapeNode(0.5, 1))]))
-        self.__sub_overlays.append(ShaapeOverlay([[None, '/'],['+', None]], [ShaapeEdge(ShaapeNode(1, 1), ShaapeNode(0.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(ShaapeOverlay([['\\', None],[None, '+']], [ShaapeEdge(ShaapeNode(1, 1), ShaapeNode(1.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(ShaapeOverlay([['+', None],[None, '\\']], [ShaapeEdge(ShaapeNode(0.5, 0.5, fusable = False), ShaapeNode(1, 1))]))
-        self.__sub_overlays.append(ShaapeOverlay([[None, '+'],['/', None]], [ShaapeEdge(ShaapeNode(1.5, 0.5, fusable = False), ShaapeNode(1, 1))]))
-        self.__sub_overlays.append(ShaapeOverlay([['|'],['+']], [ShaapeEdge(ShaapeNode(0.5, 1), ShaapeNode(0.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(ShaapeOverlay([['|'],['*']], [ShaapeEdge(ShaapeNode(0.5, 1), ShaapeNode(0.5, 1.5, 'curve'))]))
-        self.__sub_overlays.append(ShaapeOverlay([['*'],['|']], [ShaapeEdge(ShaapeNode(0.5, 0.5, 'curve'), ShaapeNode(0.5, 1))]))
-        self.__sub_overlays.append(ShaapeOverlay([['*','-']], [ShaapeEdge(ShaapeNode(0.5, 0.5, 'curve'), ShaapeNode(1, 0.5))]))
-        self.__sub_overlays.append(ShaapeOverlay([['-','*']], [ShaapeEdge(ShaapeNode(1, 0.5), ShaapeNode(1.5, 0.5, 'curve'))]))
-        self.__sub_overlays.append(ShaapeOverlay([['+','+']], [ShaapeEdge(ShaapeNode(0.5, 0.5, fusable = False), ShaapeNode(1.5, 0.5, fusable = False))]))
-        self.__sub_overlays.append(ShaapeOverlay([['+'],['+']], [ShaapeEdge(ShaapeNode(0.5, 0.5, fusable = False), ShaapeNode(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([['|']], [Edge(Node(0.5, 0), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['/']], [Edge(Node(0, 1), Node(1, 0))]))
+        self.__sub_overlays.append(Overlay([['\\']], [Edge(Node(1, 1), Node(0, 0))]))
+        self.__sub_overlays.append(Overlay([['-','|']], [Edge(Node(1, 0.5), Node(1.5, 0.5))]))
+        self.__sub_overlays.append(Overlay([['+','-']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([['-','+']], [Edge(Node(1, 0.5), Node(1.5, 0.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['+'],['|']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([[None, '/'],['+', None]], [Edge(Node(1, 1), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\\', None],[None, '+']], [Edge(Node(1, 1), Node(1.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['+', None],[None, '\\']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 1))]))
+        self.__sub_overlays.append(Overlay([[None, '+'],['/', None]], [Edge(Node(1.5, 0.5, fusable = False), Node(1, 1))]))
+        self.__sub_overlays.append(Overlay([['|'],['+']], [Edge(Node(0.5, 1), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['|'],['*']], [Edge(Node(0.5, 1), Node(0.5, 1.5, 'curve'))]))
+        self.__sub_overlays.append(Overlay([['*'],['|']], [Edge(Node(0.5, 0.5, 'curve'), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['*','-']], [Edge(Node(0.5, 0.5, 'curve'), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([['-','*']], [Edge(Node(1, 0.5), Node(1.5, 0.5, 'curve'))]))
+        self.__sub_overlays.append(Overlay([['+','+']], [Edge(Node(0.5, 0.5, fusable = False), Node(1.5, 0.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['+'],['+']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1.5, fusable = False))]))
 
         # connect arrows and straight lines
-        # self.__sub_overlays.append(ShaapeOverlay([['-', '>']], [ShaapeEdge(1, 0.5, 1.5, 0.5)]))
-        # self.__sub_overlays.append(ShaapeOverlay([['<', '-']], [ShaapeEdge(0.5, 0.5, 1, 0.5)]))
-        # self.__sub_overlays.append(ShaapeOverlay([['|'], ['v']], [ShaapeEdge(0.5, 1, 0.5, 1.5)]))
-        # self.__sub_overlays.append(ShaapeOverlay([['^'], ['|']], [ShaapeEdge(0.5, 0.5, 0.5, 1)]))
-        self.__sub_overlays.append(ShaapeOverlay([['|'], ['^']], [ShaapeEdge(ShaapeNode(0.5, 1), ShaapeNode(0.5, 2))]))
-        self.__sub_overlays.append(ShaapeOverlay([['v'], ['|']], [ShaapeEdge(ShaapeNode(0.5, 0), ShaapeNode(0.5, 1))]))
-        self.__sub_overlays.append(ShaapeOverlay([['-', '<']], [ShaapeEdge(ShaapeNode(1, 0.5), ShaapeNode(2, 0.5))]))
-        self.__sub_overlays.append(ShaapeOverlay([['>', '-']], [ShaapeEdge(ShaapeNode(0, 0.5), ShaapeNode(1, 0.5))]))
+        # self.__sub_overlays.append(Overlay([['-', '>']], [Edge(1, 0.5, 1.5, 0.5)]))
+        # self.__sub_overlays.append(Overlay([['<', '-']], [Edge(0.5, 0.5, 1, 0.5)]))
+        # self.__sub_overlays.append(Overlay([['|'], ['v']], [Edge(0.5, 1, 0.5, 1.5)]))
+        # self.__sub_overlays.append(Overlay([['^'], ['|']], [Edge(0.5, 0.5, 0.5, 1)]))
+        self.__sub_overlays.append(Overlay([['|'], ['^']], [Edge(Node(0.5, 1), Node(0.5, 2))]))
+        self.__sub_overlays.append(Overlay([['v'], ['|']], [Edge(Node(0.5, 0), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['-', '<']], [Edge(Node(1, 0.5), Node(2, 0.5))]))
+        self.__sub_overlays.append(Overlay([['>', '-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
 
-        self.__sub_overlays.append(ShaapeOverlay([['*','*']], [ShaapeEdge(ShaapeNode(0.5, 0.5, 'curve'), ShaapeNode(1.5, 0.5, 'curve'))]))
-        self.__sub_overlays.append(ShaapeOverlay([['*'],['*']], [ShaapeEdge(ShaapeNode(0.5, 0.5, 'curve'), ShaapeNode(0.5, 1.5,'curve'))]))
-        self.__sub_overlays.append(ShaapeOverlay([[None, '*'],['*', None]], [ShaapeEdge(ShaapeNode(1.5, 0.5, 'curve'), ShaapeNode(0.5, 1.5,'curve'))]))
-        self.__sub_overlays.append(ShaapeOverlay([['*', None],[None, '*']], [ShaapeEdge(ShaapeNode(0.5, 0.5, 'curve'), ShaapeNode(1.5, 1.5,'curve'))]))
+        self.__sub_overlays.append(Overlay([['*','*']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 0.5, 'curve'))]))
+        self.__sub_overlays.append(Overlay([['*'],['*']], [Edge(Node(0.5, 0.5, 'curve'), Node(0.5, 1.5,'curve'))]))
+        self.__sub_overlays.append(Overlay([[None, '*'],['*', None]], [Edge(Node(1.5, 0.5, 'curve'), Node(0.5, 1.5,'curve'))]))
+        self.__sub_overlays.append(Overlay([['*', None],[None, '*']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 1.5,'curve'))]))
 
         # connect arrows and +
-        # self.__sub_overlays.append(ShaapeOverlay([['+'], ['^']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
-        # self.__sub_overlays.append(ShaapeOverlay([['v'], ['+']], [ShaapeEdge(0.5, 0.5, 0.5, 1.5)]))
-        # self.__sub_overlays.append(ShaapeOverlay([['+', '<']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5)]))
-        # self.__sub_overlays.append(ShaapeOverlay([['>', '+']], [ShaapeEdge(0.5, 0.5, 1.5, 0.5)]))
+        # self.__sub_overlays.append(Overlay([['+'], ['^']], [Edge(0.5, 0.5, 0.5, 1.5)]))
+        # self.__sub_overlays.append(Overlay([['v'], ['+']], [Edge(0.5, 0.5, 0.5, 1.5)]))
+        # self.__sub_overlays.append(Overlay([['+', '<']], [Edge(0.5, 0.5, 1.5, 0.5)]))
+        # self.__sub_overlays.append(Overlay([['>', '+']], [Edge(0.5, 0.5, 1.5, 0.5)]))
         return
 
     def cycle_len(self, cycle):
@@ -201,7 +201,7 @@ class ShaapeOverlayParser(ShaapeParser):
                         break;
             
                 if cycle_independent == True:
-                    polygon = ShaapePolygon(cycle)
+                    polygon = Polygon(cycle)
                     contains_cycle = False
                     for minimum_cycle in minimum_cycles:
                         for node in minimum_cycle:
@@ -222,7 +222,7 @@ class ShaapeOverlayParser(ShaapeParser):
             path_graph.add_nodes_from(component.nodes())
 
             for polygon in minimum_cycles:
-                drawable_objects.append(ShaapePolygon(polygon))
+                drawable_objects.append(Polygon(polygon))
                 path_graph.add_cycle(polygon)
 
             remaining_graph = nx.difference(component, path_graph)
@@ -232,7 +232,7 @@ class ShaapeOverlayParser(ShaapeParser):
             if len(remaining_graph.edges()) > 0:
                 remaining_components = nx.connected_component_subgraphs(remaining_graph)
                 for c in remaining_components:
-                    drawable_objects.append(ShaapeOpenGraph(c))
+                    drawable_objects.append(OpenGraph(c))
 
         self._drawable_objects = drawable_objects
         self._parsed_data = raw_data

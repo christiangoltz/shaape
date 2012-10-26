@@ -1,16 +1,16 @@
-from parser import ShaapeParser
+from parser import Parser
 from drawable import *
 
-class ShaapeNameParser(ShaapeParser):
+class NameParser(Parser):
     def __init__(self):
-        super(ShaapeNameParser, self).__init__()
+        super(NameParser, self).__init__()
         return
 
     def run(self, raw_data, drawable_objects):
         self._parsed_data = raw_data
         self._drawable_objects = drawable_objects
-        polygons = filter(lambda x: isinstance(x, ShaapePolygon), drawable_objects)
-        texts = filter(lambda x: isinstance(x, ShaapeText), drawable_objects)
+        polygons = filter(lambda x: isinstance(x, Polygon), drawable_objects)
+        texts = filter(lambda x: isinstance(x, Text), drawable_objects)
         
         for polygon in polygons:
             for text in texts:

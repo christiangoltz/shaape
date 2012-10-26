@@ -1,6 +1,6 @@
 import copy
 
-class ShaapeStyle(object):
+class Style(object):
     COLORS = { 'red' : [1, 0, 0], 'green' : [0, 1, 0], 'blue' : [0, 0, 1] }
     DEFAULT_STYLE = { 'color' : [0, 0, 0, 1], 'type' : 'gradient', 'shadow' : 'on', 'width' : 1 }
     def __init__(self, apply_to_names, target_type, option_list):
@@ -11,9 +11,9 @@ class ShaapeStyle(object):
         if type(option_list) <> list:
             option_list = [option_list]
         # find colors
-        colors = filter(lambda x: x in ShaapeStyle.COLORS.keys(), option_list) 
+        colors = filter(lambda x: x in Style.COLORS.keys(), option_list) 
         if len(colors) > 0:
-            self.set_color(ShaapeStyle.COLORS[colors[0]])
+            self.set_color(Style.COLORS[colors[0]])
         else:
             color_lists = [option for option in option_list if type(option) == list and len(option) in range(3,5) ]
             if len(color_lists) > 0:
@@ -48,7 +48,7 @@ class ShaapeStyle(object):
         return self.__options
 
     def set_default(style):
-        ShaapeStyle.DEFAULT_STYLE = dict(ShaapeStyle.DEFAULT_STYLE.items() + style.options().items())
+        Style.DEFAULT_STYLE = dict(Style.DEFAULT_STYLE.items() + style.options().items())
         return
 
     def merge(self, style):
@@ -62,20 +62,20 @@ class ShaapeStyle(object):
         return self.__names
 
     def shadow(self):
-        return  dict(ShaapeStyle.DEFAULT_STYLE.items() + self.__options.items())['shadow']
+        return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['shadow']
 
     def set_target_type(self, target_type):
         self.__target_type = target_type
         return
 
     def color(self):
-        return dict(ShaapeStyle.DEFAULT_STYLE.items() + self.__options.items())['color']
+        return dict(Style.DEFAULT_STYLE.items() + self.__options.items())['color']
 
     def fill_type(self):
-        return dict(ShaapeStyle.DEFAULT_STYLE.items() + self.__options.items())['type']
+        return dict(Style.DEFAULT_STYLE.items() + self.__options.items())['type']
 
     def width(self):
-        return  dict(ShaapeStyle.DEFAULT_STYLE.items() + self.__options.items())['width']
+        return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['width']
 
     def set_color(self, color):
         self.__options['color'] = color
