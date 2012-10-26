@@ -5,7 +5,7 @@ RM = rm -rf
 CD = cd
 
 TEST_BIN = nosetests
-TEST_OPTS = 
+TEST_OPTS = --with-coverage --cover-package=shaape --cover-branches
 TEST_DIR = shaape/tests
 
 SOURCES = $(wildcard shaape/*.py)
