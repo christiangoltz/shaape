@@ -1,14 +1,14 @@
-from parser import ShaapeParser
+from parser import Parser
 from drawable import *
 
-class ShaapeArrowParser(ShaapeParser):
+class ArrowParser(Parser):
     def __init__(self):
-        super(ShaapeArrowParser, self).__init__()
+        super(ArrowParser, self).__init__()
         self._arrows = {}
-        self._arrows['>'] = ShaapeRightArrow
-        self._arrows['<'] = ShaapeLeftArrow
-        self._arrows['^'] = ShaapeUpArrow
-        self._arrows['v'] = ShaapeDownArrow
+        self._arrows['>'] = RightArrow
+        self._arrows['<'] = LeftArrow
+        self._arrows['^'] = UpArrow
+        self._arrows['v'] = DownArrow
         return
 
     def run(self, raw_data, drawable_objects):

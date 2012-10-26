@@ -5,7 +5,7 @@ import operator
 import networkx as nx
 from node import *
 
-from style import ShaapeStyle
+from style import Style
 
 def reduce_path(nodes):
     new_nodes = []
@@ -43,14 +43,14 @@ def has_same_direction(v1, v2):
     else:
         return False
 
-class ShaapeScalable(object):
+class Scalable(object):
     def __init__(self):
         pass
 
     def scale(self, scale):
         return NotImplemented
 
-class ShaapeNamed(object):
+class Named(object):
     def __init__(self):
         self.__names = []
         return
@@ -62,9 +62,9 @@ class ShaapeNamed(object):
         self.__names.append(name)
         return
 
-class ShaapeDrawable(object):
+class Drawable(object):
     def __init__(self):
-        self.__style = ShaapeStyle([], '', [])
+        self.__style = Style([], '', [])
         return
 
     def set_style(self, style):
@@ -80,7 +80,7 @@ class ShaapeDrawable(object):
     def max(self):
         return (0,0)
 
-class ShaapeBackground(ShaapeDrawable, ShaapeScalable):
+class Background(Drawable, Scalable):
     def __init__(self, size):
         self.__size = size
         return
@@ -91,7 +91,7 @@ class ShaapeBackground(ShaapeDrawable, ShaapeScalable):
     def scale(self, scale):
         self.__size = (self.__size[0] * scale[0], self.__size[1] * scale[1])
 
-class ShaapeRotatable(object):
+class Rotatable(object):
     def __init__(self, angle = 0):
         self.angle = angle
 
@@ -101,7 +101,7 @@ class ShaapeRotatable(object):
     def get_angle(self):
         return self.angle
 
-class ShaapeTranslatable(object):
+class Translatable(object):
     def __init__(self, position = (0, 0)):
         self.__position = position
 
@@ -116,14 +116,14 @@ class ShaapeTranslatable(object):
         return
 
 
-class ShaapePolygon(ShaapeDrawable, ShaapeNamed, ShaapeScalable):
+class Polygon(Drawable, Named, Scalable):
     def __init__(self, node_list):
-        ShaapeDrawable.__init__(self)
-        ShaapeNamed.__init__(self)
+        Drawable.__init__(self)
+        Named.__init__(self)
         self.__node_list = node_list
         cycle_graph = nx.Graph()
         cycle_graph.add_cycle(node_list)
-        self.__frame = ShaapeOpenGraph(cycle_graph)
+        self.__frame = OpenGraph(cycle_graph)
         self.style().set_target_type('fill')
         self.__frame.style().set_target_type('frame')
         self.__node_list = reduce_path(self.__node_list)
@@ -166,10 +166,10 @@ class ShaapePolygon(ShaapeDrawable, ShaapeNamed, ShaapeScalable):
     def frame(self):
         return self.__frame
 
-class ShaapeText(ShaapeDrawable, ShaapeTranslatable, ShaapeScalable):
+class Text(Drawable, Translatable, Scalable):
     def __init__(self, text, position):
-        ShaapeDrawable.__init__(self)
-        ShaapeTranslatable.__init__(self, position)
+        Drawable.__init__(self)
+        Translatable.__init__(self, position)
         self.__text = text
         self.__font_size = 1
         return
@@ -181,13 +181,13 @@ class ShaapeText(ShaapeDrawable, ShaapeTranslatable, ShaapeScalable):
         return self.__font_size
 
     def scale(self, scale):
-        ShaapeTranslatable.scale(self, scale)
+        Translatable.scale(self, scale)
         self.__font_size = self.__font_size * scale[0]
         return
 
-class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
+class OpenGraph(Drawable, Scalable):
     def __init__(self, graph):
-        ShaapeDrawable.__init__(self)
+        Drawable.__init__(self)
         self.style().set_target_type('line')
         self.__graph = nx.Graph(graph)
         for node in self.__graph.nodes():
@@ -252,36 +252,36 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
     def paths(self):
         return self.__paths
 
-class ShaapeArrow(ShaapePolygon, ShaapeTranslatable):
+class Arrow(Polygon, Translatable):
     def __init__(self, position):
-        ShaapePolygon.__init__(self, [ShaapeNode(-0.5, 0.2), ShaapeNode(0.4, 0), ShaapeNode(-0.5, -0.2)])
-        ShaapeTranslatable.__init__(self, position)
+        Polygon.__init__(self, [Node(-0.5, 0.2), Node(0.4, 0), Node(-0.5, -0.2)])
+        Translatable.__init__(self, position)
         self.style().set_color([0, 0, 0, 1])
         self.style().set_type('flat')
         self.frame().style().set_width(0)
 
     def scale(self, scale):
-        ShaapeTranslatable.scale(self, scale)
-        ShaapePolygon.scale(self, scale)
+        Translatable.scale(self, scale)
+        Polygon.scale(self, scale)
         return
 
-class ShaapeRightArrow(ShaapeArrow, ShaapeRotatable):
+class RightArrow(Arrow, Rotatable):
     def __init__(self, position):
-        ShaapeArrow.__init__(self, position)
-        ShaapeRotatable.__init__(self, 0)
+        Arrow.__init__(self, position)
+        Rotatable.__init__(self, 0)
 
-class ShaapeDownArrow(ShaapeArrow, ShaapeRotatable):
+class DownArrow(Arrow, Rotatable):
     def __init__(self, position):
-        ShaapeArrow.__init__(self, (position[0], position[1] - 0.4))
-        ShaapeRotatable.__init__(self, 90)
+        Arrow.__init__(self, (position[0], position[1] - 0.4))
+        Rotatable.__init__(self, 90)
 
-class ShaapeLeftArrow(ShaapeArrow, ShaapeRotatable):
+class LeftArrow(Arrow, Rotatable):
     def __init__(self, position):
-        ShaapeArrow.__init__(self, position)
-        ShaapeRotatable.__init__(self, 180)
+        Arrow.__init__(self, position)
+        Rotatable.__init__(self, 180)
 
-class ShaapeUpArrow(ShaapeArrow, ShaapeRotatable):
+class UpArrow(Arrow, Rotatable):
     def __init__(self, position):
-        ShaapeArrow.__init__(self, (position[0], position[1] + 0.3))
-        ShaapeRotatable.__init__(self, 270)
+        Arrow.__init__(self, (position[0], position[1] + 0.3))
+        Rotatable.__init__(self, 270)
 

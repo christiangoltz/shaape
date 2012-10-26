@@ -1,10 +1,10 @@
-from parser import ShaapeParser
-from drawable import ShaapeText
+from parser import Parser
+from drawable import Text
 import re
 
-class ShaapeTextParser(ShaapeParser):
+class TextParser(Parser):
     def __init__(self):
-        super(ShaapeTextParser, self).__init__()
+        super(TextParser, self).__init__()
         self._non_text_objects = '-|+\\/'
         return
 
@@ -17,12 +17,12 @@ class ShaapeTextParser(ShaapeParser):
             for match in matches:
                 span = match.span()
                 line = line[:span[0]] + ''.join([' ' for n in range(span[0], span[1])]) + line[span[1] :]
-                drawable_objects.append(ShaapeText(match.group(1), (span[0] + 1, line_number))) 
+                drawable_objects.append(Text(match.group(1), (span[0] + 1, line_number))) 
             matches = unquoted_string_pattern.finditer(line)
             for match in matches:
                 span = match.span()
                 line = line[:span[0]] + ''.join([' ' for n in range(span[0], span[1])]) + line[span[1] :]
-                drawable_objects.append(ShaapeText(match.group(1), (span[0], line_number))) 
+                drawable_objects.append(Text(match.group(1), (span[0], line_number))) 
             raw_data[line_number] = line
             line_number = line_number + 1
                 

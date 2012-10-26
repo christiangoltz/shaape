@@ -1,6 +1,6 @@
 import math
 
-class ShaapeNode(object):
+class Node(object):
     def __init__(self, x, y, style = 'miter', fusable = True):
         self.__position = (x, y)
         self.__style = style
@@ -25,20 +25,20 @@ class ShaapeNode(object):
     		return self.__position[index]
 
     def __add__(self, other):
-		return ShaapeNode(self.position()[0] + other[0], self.position()[1] + other[1], self.style(), self.fusable())
+		return Node(self.position()[0] + other[0], self.position()[1] + other[1], self.style(), self.fusable())
 
     def __sub__(self, other):
-		return ShaapeNode(self.position()[0] - other[0], self.position()[1] - other[1], self.style(), self.fusable())
+		return Node(self.position()[0] - other[0], self.position()[1] - other[1], self.style(), self.fusable())
 
     def __div__(self, other):
         if isinstance(other, float):
-            return ShaapeNode(self.position()[0] / other, self.position()[1] / other, self.style(), self.fusable())
+            return Node(self.position()[0] / other, self.position()[1] / other, self.style(), self.fusable())
 
     def __mul__(self, other):
         if isinstance(other, float):
-    		return ShaapeNode(self.position()[0] * other, self.position()[1] * other, self.style(), self.fusable())
+    		return Node(self.position()[0] * other, self.position()[1] * other, self.style(), self.fusable())
         else:
-    		return ShaapeNode(self.position()[0] * other[0], self.position()[1] * other[1], self.style(), self.fusable())
+    		return Node(self.position()[0] * other[0], self.position()[1] * other[1], self.style(), self.fusable())
 
     def __key__(self):
         return self.__position
@@ -47,7 +47,7 @@ class ShaapeNode(object):
         return hash(self.__key__())
 
     def __cmp__(self, other):
-        assert isinstance(other, ShaapeNode)
+        assert isinstance(other, Node)
         return cmp((self.position()[0], self.position()[1]), (other.position()[0], other.position()[1]))
 
     def __repr__(self):

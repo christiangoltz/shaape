@@ -1,9 +1,9 @@
-from parser import ShaapeParser
-from drawable import ShaapeBackground
+from parser import Parser
+from drawable import Background
 
-class ShaapeBackgroundParser(ShaapeParser):
+class BackgroundParser(Parser):
     def __init__(self):
-        super(ShaapeBackgroundParser, self).__init__()
+        super(BackgroundParser, self).__init__()
         return
 
     def run(self, raw_data, drawable_objects):
@@ -16,5 +16,5 @@ class ShaapeBackgroundParser(ShaapeParser):
          
         canvas_size = [len(self._parsed_data[0]), len(self._parsed_data)]
         self._drawable_objects = drawable_objects
-        self._drawable_objects.append(ShaapeBackground(canvas_size))
+        self._drawable_objects.append(Background(canvas_size))
         return

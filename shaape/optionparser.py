@@ -1,6 +1,6 @@
-from parser import ShaapeParser
+from parser import Parser
 
-class ShaapeOptionParser(ShaapeParser):
+class OptionParser(Parser):
     def __init__(self):
-        super(ShaapeOptionParser, self).__init__()
+        super(OptionParser, self).__init__()
         return
