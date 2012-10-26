@@ -1,5 +1,5 @@
-from ShaapeParser import ShaapeParser
-from ShaapeDrawable import ShaapeText
+from parser import ShaapeParser
+from drawable import ShaapeText
 import re
 
 class ShaapeTextParser(ShaapeParser):

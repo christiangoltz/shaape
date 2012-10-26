@@ -3,15 +3,52 @@ from operator import itemgetter
 import math
 import operator
 import networkx as nx
+from node import *
 
-from ShaapeStyle import ShaapeStyle
+from style import ShaapeStyle
+
+def reduce_path(nodes):
+    new_nodes = []
+    new_nodes = nodes[0:2]
+    for i in range(2, len(nodes)):
+        previous_edge = nodes[i - 1] - nodes[i - 2]
+        current_edge = nodes[i] - nodes[i - 1]
+        if new_nodes[-1].fusable() == True and has_same_direction(previous_edge, current_edge):
+            new_nodes[-1] = nodes[i]
+        else:
+            new_nodes.append(nodes[i])
+    if len(new_nodes) > 2 and new_nodes[0] == new_nodes[-1]:
+        first_edge = new_nodes[1] - new_nodes[0]
+        last_edge = new_nodes[-1] - new_nodes[-2]
+        if has_same_direction(first_edge, last_edge):
+            del new_nodes[-1]
+            new_nodes[0] = new_nodes[-1]
+    return new_nodes
+
+def has_same_direction(v1, v2):
+    if v2[0] == 0 and v1[0] == 0:
+        return True
+    elif v2[0] == 0:
+        return False
+    if v2[1] == 0 and v1[1] == 0:
+        return True
+    elif v2[1] == 0:
+        return False
+
+    diff_x = v1[0] / v2[0]
+    diff_y = v1[1] / v2[1]
+
+    if diff_x == diff_y or ((-1 * diff_x) == (-1 * diff_y)):
+        return True
+    else:
+        return False
 
 class ShaapeScalable(object):
     def __init__(self):
         pass
 
     def scale(self, scale):
-        pass
+        return NotImplemented
 
 class ShaapeNamed(object):
     def __init__(self):
@@ -89,7 +126,9 @@ class ShaapePolygon(ShaapeDrawable, ShaapeNamed, ShaapeScalable):
         self.__frame = ShaapeOpenGraph(cycle_graph)
         self.style().set_target_type('fill')
         self.__frame.style().set_target_type('frame')
+        self.__node_list = reduce_path(self.__node_list)
         return
+
 
     def contains(self, point):
         # point inside polygon
@@ -121,7 +160,7 @@ class ShaapePolygon(ShaapeDrawable, ShaapeNamed, ShaapeScalable):
     def scale(self, scale):
         for n in range(0, len(self.__node_list)):
             node = self.__node_list[n]
-            self.__node_list[n] = (node[0] * scale[0], node[1] * scale[1])
+            self.__node_list[n] = node * scale
         self.__frame.scale(scale)
 
     def frame(self):
@@ -167,31 +206,21 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
         old_nodes = self.__graph.nodes()
         new_nodes = {}
         for node in old_nodes:
-            new_nodes[node] = (node[0] * scale[0], node[1] * scale[1])
+            new_nodes[node] = node * scale
         self.__graph = nx.relabel_nodes(self.__graph, new_nodes)
-        self.__generate_paths()
+        for path in self.__paths:
+            for i in range(0, len(path)):
+                path[i] = path[i] * scale
         return
 
-    def vector_same_direction(self, v1, v2):
-        if v2[0] == 0 and v1[0] == 0:
-            return True
-        elif v2[0] == 0:
-            return False
-        if v2[1] == 0 and v1[1] == 0:
-            return True
-        elif v2[1] == 0:
-            return False
-
-        diff_x = v1[0] / v2[0]
-        diff_y = v1[1] / v2[1]
-
-        if diff_x == diff_y or ((-1 * diff_x) == (-1 * diff_y)):
-            return True
-        else:
-            return False
 
     def __generate_paths(self):
-        min_node = sorted(self.__graph.nodes(), key=itemgetter(0, 1))[0] 
+        nodes = [node for node in self.__graph.nodes() if self.__graph.degree(node) == 1]
+        if nodes == []:
+            nodes = [node for node in self.__graph.nodes() if node.fusable() == False]
+        if nodes == []:
+            nodes = self.__graph.nodes()
+        min_node = sorted(nodes, key=itemgetter(0, 1))[0] 
         path_gen = nx.dfs_labeled_edges(self.__graph, min_node)
         path = []
         paths = []
@@ -205,7 +234,7 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
                 last_dir = direction
             elif direction == 'reverse':
                 if last_dir <> 'reverse':
-                    if len(path) > 1:
+                    if len(path) > 0:
                         copy_path = copy.copy(path)
                         copy_path.append(end)
                         if len(path) > 2 and (self.__graph.has_edge(copy_path[0], copy_path[-1]) or self.__graph.has_edge(copy_path[-1], copy_path[0])):
@@ -216,27 +245,7 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
                 last_dir = direction
         
         for path in paths:
-            new_path = []
-            for i in range(0, len(path)):
-                if len(new_path) < 2:
-                    if len(new_path) == 0 or path[i] <> new_path[-1]:
-                        new_path.append(path[i])
-                else:
-                    if path[i] <> new_path[-1]:
-                        previous_edge = (path[i - 2][0] - path[i - 1][0], path[i - 2][1] - path[i - 1][1])
-                        current_edge = (path[i - 1][0] - path[i][0], path[i - 1][1] - path[i][1])
-                        if self.vector_same_direction(previous_edge, current_edge) == True:
-                            new_path[-1] = path[i]
-                        else:
-                            new_path.append(path[i])
-            if len(new_path) > 2:
-                if new_path[-1] == new_path[0]:    
-                    last_edge = (new_path[-2][0] - new_path[-1][0], new_path[-2][1] - new_path[-1][1])
-                    first_edge = (new_path[0][0] - new_path[1][0], new_path[0][1] - new_path[1][1])
-                    if self.vector_same_direction(first_edge, last_edge) == True:
-                        del new_path[0]
-                        new_path[-1] = new_path[0]
-            self.__paths.append(new_path)
+            self.__paths.append(reduce_path(path))
         
         return        
 
@@ -245,7 +254,7 @@ class ShaapeOpenGraph(ShaapeDrawable, ShaapeScalable):
 
 class ShaapeArrow(ShaapePolygon, ShaapeTranslatable):
     def __init__(self, position):
-        ShaapePolygon.__init__(self, [(-0.5, 0.2), (0.4, 0), (-0.5, -0.2)])
+        ShaapePolygon.__init__(self, [ShaapeNode(-0.5, 0.2), ShaapeNode(0.4, 0), ShaapeNode(-0.5, -0.2)])
         ShaapeTranslatable.__init__(self, position)
         self.style().set_color([0, 0, 0, 1])
         self.style().set_type('flat')

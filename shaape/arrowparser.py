@@ -1,5 +1,5 @@
-from ShaapeParser import ShaapeParser
-from ShaapeDrawable import *
+from parser import ShaapeParser
+from drawable import *
 
 class ShaapeArrowParser(ShaapeParser):
     def __init__(self):

@@ -1,4 +1,4 @@
-from ShaapeParser import ShaapeParser
+from parser import ShaapeParser
 
 class ShaapeOptionParser(ShaapeParser):
     def __init__(self):

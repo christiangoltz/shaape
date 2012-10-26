@@ -1,6 +1,6 @@
-from ShaapeParser import ShaapeParser
-from ShaapeDrawable import *
-from ShaapeStyle import ShaapeStyle
+from parser import ShaapeParser
+from drawable import *
+from style import ShaapeStyle
 
 class ShaapeStyleParser(ShaapeParser):
     def __init__(self):
@@ -14,8 +14,8 @@ class ShaapeStyleParser(ShaapeParser):
         
         default_style = {
             'fill' : ShaapeStyle([], 'fill', [[0.9 ,0.9, 0.9], 'gradient']),
-            'frame' : ShaapeStyle([], 'frame', [[0, 0, 0], 'solid']),
-            'line' : ShaapeStyle([], 'line', [[0, 0, 0], 'solid']),
+            'frame' : ShaapeStyle([], 'frame', [[0, 0, 0], 'solid', 2]),
+            'line' : ShaapeStyle([], 'line', [[0, 0, 0, 1], 'solid', 2]),
             'arrow' : ShaapeStyle([], 'fill', [[0, 0, 0], 'flat']),}
 
         for style in styles:
@@ -47,7 +47,6 @@ class ShaapeStyleParser(ShaapeParser):
                         if style.target_type() == 'fill' and isinstance(obj, ShaapePolygon):
                             obj.set_style(style)
                         elif style.target_type() == 'frame' and isinstance(obj, ShaapePolygon):
-                            print(obj)
                             obj.frame().set_style(style)
                         elif style.target_type() == 'line' and isinstance(obj, ShaapeOpenGraph):
                             obj.set_style(style)
