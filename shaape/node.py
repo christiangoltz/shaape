@@ -21,8 +21,9 @@ class Node(object):
         return self.__style
     
     def __getitem__(self, index):
-        if index < 2:
+        if index == 0 or index == 1:
     		return self.__position[index]
+        raise IndexError
 
     def __add__(self, other):
 		return Node(self.position()[0] + other[0], self.position()[1] + other[1], self.style(), self.fusable())
@@ -31,11 +32,11 @@ class Node(object):
 		return Node(self.position()[0] - other[0], self.position()[1] - other[1], self.style(), self.fusable())
 
     def __div__(self, other):
-        if isinstance(other, float):
+        if isinstance(other, (float, int)):
             return Node(self.position()[0] / other, self.position()[1] / other, self.style(), self.fusable())
 
     def __mul__(self, other):
-        if isinstance(other, float):
+        if isinstance(other, (float, int)):
     		return Node(self.position()[0] * other, self.position()[1] * other, self.style(), self.fusable())
         else:
     		return Node(self.position()[0] * other[0], self.position()[1] * other[1], self.style(), self.fusable())
@@ -47,8 +48,10 @@ class Node(object):
         return hash(self.__key__())
 
     def __cmp__(self, other):
-        assert isinstance(other, Node)
-        return cmp((self.position()[0], self.position()[1]), (other.position()[0], other.position()[1]))
+        if not isinstance(other, Node):
+            return -1
+        else:
+            return cmp((self.position()[0], self.position()[1]), (other.position()[0], other.position()[1]))
 
     def __repr__(self):
         return "(" + str(self.position()) + "," + self.style() + "," + str(self.fusable()) + ")"
@@ -60,5 +63,8 @@ class Node(object):
         return math.sqrt(sum(self.__position[i]* self.__position[i] for i in range(len(self.__position))))
 
     def normalize(self):
-        self.__position = (self / self.length()).position()
+        length = self.length()
+        if length == 0:
+            raise ArithmeticError
+        self.__position = (self / length).position()
         return
