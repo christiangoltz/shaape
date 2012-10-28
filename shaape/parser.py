@@ -5,9 +5,7 @@ class Parser(object):
         return
 
     def run(self, raw_data, drawable_objects):
-        self._parsed_data = raw_data
-        self._drawable_objects = drawable_objects
-        return
+        raise NotImplementedError
 
     def parsed_data(self):
         return self._parsed_data
