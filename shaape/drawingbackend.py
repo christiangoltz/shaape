@@ -31,10 +31,12 @@ class DrawingBackend(object):
         self.ctx.translate(4, 4)
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, Polygon):
-                 self.draw_polygon_shadow(drawable_object)
+                if drawable_object.style().shadow() == 'on':
+                    self.draw_polygon_shadow(drawable_object)
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, OpenGraph):
-                self.draw_open_graph_shadow(drawable_object)
+                if drawable_object.style().shadow() == 'on':
+                    self.draw_open_graph_shadow(drawable_object)
         self.pop_surface()
         for i in range(0, 10):
             self.blur_surface()

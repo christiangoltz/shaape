@@ -155,7 +155,6 @@ class CairoBackend(DrawingBackend):
 
     def draw_open_graph_shadow(self, open_graph):
         self.apply_line(open_graph)
-        self.ctx.set_source_rgba(0, 0, 0, 0.5)
         self.ctx.save()
         self.apply_transform(open_graph)
         self.ctx.set_operator(cairo.OPERATOR_SOURCE)
@@ -167,6 +166,13 @@ class CairoBackend(DrawingBackend):
                 else:
                     nodes = [path[0]] + path + [path[-1]]
                 self.apply_path(nodes)
+                self.apply_line(open_graph)
+                self.ctx.set_line_width(self.ctx.get_line_width() + 1)
+                self.ctx.set_operator(cairo.OPERATOR_CLEAR)
+                self.ctx.stroke_preserve()
+                self.apply_line(open_graph)
+                self.ctx.set_source_rgba(0, 0, 0, 0.5)
+                self.ctx.set_operator(cairo.OPERATOR_SOURCE)
                 self.ctx.stroke()
         self.ctx.restore()
         return
@@ -193,10 +199,8 @@ class CairoBackend(DrawingBackend):
         return
 
     def draw_open_graph(self, open_graph):
-        self.apply_line(open_graph)
         self.ctx.save()
         self.apply_transform(open_graph)
-        self.ctx.set_operator(cairo.OPERATOR_SOURCE)
         paths = open_graph.paths()
         if len(paths) > 0:
             for path in paths:
@@ -205,6 +209,12 @@ class CairoBackend(DrawingBackend):
                 else:
                     nodes = [path[0]] + path + [path[-1]]
                 self.apply_path(nodes)
+                self.apply_line(open_graph)
+                self.ctx.set_line_width(self.ctx.get_line_width() + 1)
+                self.ctx.set_operator(cairo.OPERATOR_CLEAR)
+                self.ctx.stroke_preserve()
+                self.apply_line(open_graph)
+                self.ctx.set_operator(cairo.OPERATOR_SOURCE)
                 self.ctx.stroke()
         self.ctx.restore()
         return
