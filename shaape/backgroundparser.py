@@ -14,7 +14,7 @@ class BackgroundParser(Parser):
                 line = line[:-1]
             self._parsed_data.append(line + (max_len - len(line)) * ' ' + '\n')
          
-        canvas_size = [len(self._parsed_data[0]), len(self._parsed_data)]
+        canvas_size = (len(self._parsed_data[0]) - 1, len(self._parsed_data))
         self._drawable_objects = drawable_objects
         self._drawable_objects.append(Background(canvas_size))
         return
