@@ -78,6 +78,10 @@ class OverlayParser(Parser):
         self.__sub_overlays.append(Overlay([['-','+']], [Edge(Node(1, 0.5), Node(1.5, 0.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([['+'],['|']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1))]))
         self.__sub_overlays.append(Overlay([[None, '/'],['+', None]], [Edge(Node(1, 1), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([[None, '*'],['+', None]], [Edge(Node(1.5, 0.5, 'curve'), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['*', None],[None, '+']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([[None, '+'],['*', None]], [Edge(Node(1.5, 0.5), Node(0.5, 1.5, 'curve', fusable = False))]))
+        self.__sub_overlays.append(Overlay([['+', None],[None, '*']], [Edge(Node(0.5, 0.5), Node(1.5, 1.5, 'curve', fusable = False))]))
         self.__sub_overlays.append(Overlay([['\\', None],[None, '+']], [Edge(Node(1, 1), Node(1.5, 1.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([['+', None],[None, '\\']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 1))]))
         self.__sub_overlays.append(Overlay([[None, '+'],['/', None]], [Edge(Node(1.5, 0.5, fusable = False), Node(1, 1))]))
@@ -90,12 +94,11 @@ class OverlayParser(Parser):
         self.__sub_overlays.append(Overlay([['+'],['+']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1.5, fusable = False))]))
 
         # connect arrows and straight lines
-        # self.__sub_overlays.append(Overlay([['-', '>']], [Edge(1, 0.5, 1.5, 0.5)]))
-        # self.__sub_overlays.append(Overlay([['<', '-']], [Edge(0.5, 0.5, 1, 0.5)]))
-        # self.__sub_overlays.append(Overlay([['|'], ['v']], [Edge(0.5, 1, 0.5, 1.5)]))
-        # self.__sub_overlays.append(Overlay([['^'], ['|']], [Edge(0.5, 0.5, 0.5, 1)]))
-        self.__sub_overlays.append(Overlay([['|'], ['^']], [Edge(Node(0.5, 1), Node(0.5, 2))]))
-        self.__sub_overlays.append(Overlay([['v'], ['|']], [Edge(Node(0.5, 0), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['|'], ['v']], [Edge(Node(0.5, 1), Node(0.5, 1.55))]))
+        self.__sub_overlays.append(Overlay([['^'], ['|']], [Edge(Node(0.5, 0.45), Node(0.5, 1))]))
+
+        self.__sub_overlays.append(Overlay([['|'], ['^']], [Edge(Node(0.5, 1), Node(0.5, 1.45))]))
+        self.__sub_overlays.append(Overlay([['v'], ['|']], [Edge(Node(0.5, 0.55), Node(0.5, 1))]))
         self.__sub_overlays.append(Overlay([['-', '<']], [Edge(Node(1, 0.5), Node(2, 0.5))]))
         self.__sub_overlays.append(Overlay([['>', '-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
 

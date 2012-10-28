@@ -14,8 +14,8 @@ class StyleParser(Parser):
         
         default_style = {
             'fill' : Style([], 'fill', [[0.9 ,0.9, 0.9], 'gradient']),
-            'frame' : Style([], 'frame', [[0, 0, 0], 'solid', 2]),
-            'line' : Style([], 'line', [[0, 0, 0, 1], 'solid', 2]),
+            'frame' : Style([], 'frame', [[0, 0, 0], 'solid', 1]),
+            'line' : Style([], 'line', [[0, 0, 0, 1], 'solid', 1]),
             'arrow' : Style([], 'fill', [[0, 0, 0], 'flat']),}
 
         for style in styles:

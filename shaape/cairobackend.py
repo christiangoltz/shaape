@@ -32,7 +32,7 @@ class CairoBackend(DrawingBackend):
         return
 
     def blur_surface(self):
-        blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.image_size[0] + self.margin[0] + self.margin[1],  self._canvas_size[1] + self.margin[2] + self.margin[3])
+        blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size[0] + self.margin[0] + self.margin[1])), int(math.ceil(self._canvas_size[1] + self.margin[2] + self.margin[3])))
         top_surface = self.__surfaces[-1]
         width = top_surface.get_width()
         height = top_surface.get_height()
@@ -50,7 +50,7 @@ class CairoBackend(DrawingBackend):
         return
 
     def push_surface(self):
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, self.image_size[0] + self.margin[0] + self.margin[1],  self._canvas_size[1] + self.margin[2] + self.margin[3])
+        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size[0] + self.margin[0] + self.margin[1])), int(math.ceil(self._canvas_size[1] + self.margin[2] + self.margin[3])))
         self.__surfaces.append(surface)
         self.ctx = cairo.Context(surface)
         self.__drawn_graph = nx.Graph()
@@ -76,15 +76,15 @@ class CairoBackend(DrawingBackend):
     
     def apply_dash(self, drawable):
         if drawable.style().fill_type() == 'dashed':
-            width = drawable.style().width()
+            width = drawable.style().width() * self._scale
             dash_list = [ width * 4, width]
             self.ctx.set_dash(dash_list, width * 2)
         elif drawable.style().fill_type() == 'dotted':
-            width = drawable.style().width()
+            width = drawable.style().width() * self._scale
             dash_list = [ width, width]
             self.ctx.set_dash(dash_list)
         elif drawable.style().fill_type() == 'dash-dotted':
-            width = drawable.style().width()
+            width = drawable.style().width() * self._scale
             dash_list = [ width * 4, width, width, width]
             self.ctx.set_dash(dash_list)
         else:
@@ -93,7 +93,7 @@ class CairoBackend(DrawingBackend):
     def apply_line(self, drawable):
         self.ctx.set_line_cap(cairo.LINE_CAP_BUTT)
         self.ctx.set_line_join (cairo.LINE_JOIN_ROUND)
-        width =  drawable.style().width()
+        width =  drawable.style().width() * self._scale
         if len(drawable.style().color()) == 3:
             self.ctx.set_source_rgb(*(drawable.style().color()))
         else:
@@ -167,7 +167,8 @@ class CairoBackend(DrawingBackend):
                     nodes = [path[0]] + path + [path[-1]]
                 self.apply_path(nodes)
                 self.apply_line(open_graph)
-                self.ctx.set_line_width(self.ctx.get_line_width() + 1)
+                self.ctx.set_dash([])
+                self.ctx.set_line_width(self.ctx.get_line_width())
                 self.ctx.set_operator(cairo.OPERATOR_CLEAR)
                 self.ctx.stroke_preserve()
                 self.apply_line(open_graph)
@@ -210,7 +211,8 @@ class CairoBackend(DrawingBackend):
                     nodes = [path[0]] + path + [path[-1]]
                 self.apply_path(nodes)
                 self.apply_line(open_graph)
-                self.ctx.set_line_width(self.ctx.get_line_width() + 1)
+                self.ctx.set_dash([])
+                self.ctx.set_line_width(self.ctx.get_line_width())
                 self.ctx.set_operator(cairo.OPERATOR_CLEAR)
                 self.ctx.stroke_preserve()
                 self.apply_line(open_graph)

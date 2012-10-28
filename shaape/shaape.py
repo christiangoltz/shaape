@@ -46,6 +46,7 @@ class Shaape:
 parser = argparse.ArgumentParser(description=' - Asciiart to image processing')
 parser.add_argument('infile', type=str)
 parser.add_argument('-o', '--outfile', type=str)
+parser.add_argument('--show-input', action='store_true')
 args = parser.parse_args()
 
 if None == args.outfile:
@@ -56,6 +57,10 @@ if args.infile == '-':
 else:
     file_data = open(args.infile, 'r')
     source = list(file_data)
+
+if args.show_input == True:
+    for line in source:
+        sys.stdout.write(line)
 
 shaape = Shaape(source, args.outfile)
 shaape.register_parser(YamlParser())

@@ -254,7 +254,7 @@ class OpenGraph(Drawable, Scalable):
 
 class Arrow(Polygon, Translatable):
     def __init__(self, position):
-        Polygon.__init__(self, [Node(-0.5, 0.2), Node(0.4, 0), Node(-0.5, -0.2)])
+        Polygon.__init__(self, [Node(-0.5, 0.2), Node(0.5, 0), Node(-0.5, -0.2)])
         Translatable.__init__(self, position)
         self.style().set_color([0, 0, 0, 1])
         self.style().set_type('flat')
@@ -272,7 +272,7 @@ class RightArrow(Arrow, Rotatable):
 
 class DownArrow(Arrow, Rotatable):
     def __init__(self, position):
-        Arrow.__init__(self, (position[0], position[1] - 0.4))
+        Arrow.__init__(self, (position[0], position[1] + 0.3))
         Rotatable.__init__(self, 90)
 
 class LeftArrow(Arrow, Rotatable):
@@ -282,6 +282,6 @@ class LeftArrow(Arrow, Rotatable):
 
 class UpArrow(Arrow, Rotatable):
     def __init__(self, position):
-        Arrow.__init__(self, (position[0], position[1] + 0.3))
+        Arrow.__init__(self, (position[0], position[1] - 0.3))
         Rotatable.__init__(self, 270)
 

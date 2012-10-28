@@ -51,20 +51,20 @@ What is supported
 - gradient filled polygons
 - shadows for polygons, lines and arrows
 - monospaced text in the whole drawing
+- rounded corners with the '*' character
+- styles for background, polygons, lines and text including colors, fills and
+  line styles without markup inside the drawing
 - png rendering
 
 What will be supported
 ~~~~~~~~~~~~~~~~~~~~~~
-- rounded corners with the '*' character
-- styles for background, polygons, lines and text including colors, fills and
-  line styles without markup inside the drawing
 - text styles without markup inside the drawing
-- svg rendering
 
 What will *not* be supported
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- rotated text (cannot be displayed in ascii art)
-- circles (cannot be displayed consistently in ascii art)
+- rotated text: cannot be displayed in ascii art)
+- circles: cannot be displayed consistently in ascii art)
+- svg rendering
 
 Dependencies
 ------------
@@ -76,7 +76,7 @@ Installation
 There is no dedicated installation process at the moment, you can use the
 source as it is.
 
-`./Shaape.py` will print the usage help.
+`./shaape.py` will print the usage help.
 
 You can use `make install-filter` to install the asciidoc filter.
 
@@ -101,82 +101,63 @@ Shaape uses an asciidoc block listing definition to integrate into asciidoc:
 
 Drawing
 ~~~~~~~
-You can use common known line art to draw polygons, open graphs and
-arrows
 
-Shaape makes use of `- | \ / + < > ^ v`.
+==== Lines
+----
+- | \ /
+----
 
-Polygons are closed paths and automatically get filled. See following simple
-examples for some polygons:
-
-["shaape"]
----------------------------------------------------------------------
-    +--+  ++     /\    +----+
-    |  |  ++    /  \    \    \
-    +--+       /    \    \    \
-               \    /     +    +
-                \  /      |    |
-                 \/       |    +--+
-                       +--+      /
-                       |   +-+  /
-                       +---+ +-+
----------------------------------------------------------------------
-
-
-Open graphs are all connected lines, that don't create closed paths. See
-following examples for some open graphs:
+renders:
 
 ["shaape"]
 ---------------------------------------------------------------------
---+----+------           |
-  |    |               +-+-+
-  |    +------        /     \
-  |                  +       +
-  +----+------      / \     / \
-       +------     +   +   +   +
-       +------    / \ / \ / \ / \
+- | \ /
 ---------------------------------------------------------------------
 
-Arrows can be combined with closed paths:
-["shaape"]
----------------------------------------------------------------------
- ->              >-+----+------>          |
- <-       ^        |    |               +-+-+
-          |        |    +------>       /     \
- ^ |    <-+->      |                  +     <-+->
- | v      |        +----+------>     / \     / \
-          v             +------>    +   +   +   +
-                        +------>    |   |   |   |
-                                    v   v   v   v   
----------------------------------------------------------------------
+==== Arrows
+----
+< > ^ v      -> <- | ^
+                   v |
+----
 
-Text
-~~~~
-All words longer than one letter are processed and rendered as normal text.
-If you need some special characters inside your words, than quote the whole
-word. E.g. to print `|-|ello` you need to use `'|-|ello'`.
-Again some examples:
+renders:
 
 ["shaape"]
 ---------------------------------------------------------------------
-   +--------+    +-------------+   +------+
-   |        |     \           /    |'.xml'|\
-   | Hello  |----->\ Goodbye /     |      +-+
-   |   ;)   |      /         \     |'Docu-' |
-   |        |     /           \    |  'ment'|
-   +---+----+    +------+------+   +---+----+
-       |                |              | 
-       +------has nothing to do with---+                  
-                                 'a'<----+
-                                  v       \
-in>-+----+------> out1            |        \
-    |    |                'c'<--+-+-+->'b'<-+
-    |    +------> out2         /     \      |
-    |                         +       +     |
-    +----+------>'out!'      / \     / \    |
-         +------> v_out     +   +   +   +   |
-         +------> '->'     / \ / \ / \ / \  |
-                         'd' 'e' 'f' 'g'  +-+
+< > ^ v      -> <- | ^
+                   v |
+---------------------------------------------------------------------
+
+==== Connectors
+----
+ \|/          |        
+--+--   +--   +---  ---+---
+ /|\   /               |
+----
+
+renders:
+
+["shaape"]
+---------------------------------------------------------------------
+ \|/          |        
+--+--   +--   +---  ---+---
+ /|\   /               |
+---------------------------------------------------------------------
+
+==== Bezier curves
+----
+ **  **  **  ---+       ****
+*      **        \     *
+*                 +--**
+----
+
+renders:
+
+["shaape"]
+---------------------------------------------------------------------
+ **  **  **  ---+       ****
+*      **        \     *
+*                 +--**
 ---------------------------------------------------------------------
 
 Styles
@@ -193,12 +174,11 @@ description is http://www.yaml.org/spec/1.2/spec.html[YAML].
 The style description should contain mappings from box names to a mapping of
 attributes:
 
-`boxname: { fill: [ red, flat], line : [ blue, dashed], shadow: off }`
+`boxname: { fill: [ red, flat], line : [ blue, dashed], no-shadow }`
 
 The key of the outer mapping can consist of different names:
 
-`box1,box2,box3: { fill: [ red, flat], line: [ blue, dashed, 3], shadow: off }`
-Note: This is not conform to YAML)
+`box1,box2,box3: { fill: [ red, flat], line: [ blue, dashed, 3], no-shadow }`
 
 .List of style attributes
 - fill can contain:
@@ -231,29 +211,68 @@ abc: {fill: [green], frame: [[0.6, 0.4, 0.4, 0.7], 3]}
 flatbox,style: {fill: [[0.9, 0.9, 0.7, 0.3], flat, no-shadow], frame: [[0.2, 0.2, 0.0, 0.9], 2]}
 ---------------------------------------------------------------------
 
+==== Advanced Example
+
+----
+           v
+           |                *******           +->->->->-+
+           +               * round *-----*    |         |
+          / \              *       *     |    ^ arrow   v
+         /   \              *******      v    |    box  | +--+
+        +     +                       +----*  ^         v |  |
+       / \   / \               +----->|mix |  |         | *  |
+      /   + +   \             /       |    |  +-<-<-<-<-+ *  *
+     +    | |    +       +---+        *----+              *  *
+    /|\   v v   /|\      |                          +--***   *
+   +'c'+ 'a b' / | \     +-----+                    | flat   *
+  /     \     /  |  \    |     |\   +-----+         +----****
+ +       +   +   |   +   |     +-+  +--+--+  
+ |       |   |   |   |   |overlap|  +--+--+  in>---+-----+-----> out1
+'d'     'e' 'f' 'g' 'h'  +-------+                 |     |
+                                                   |     *----->'out 2'
+   /\              ******                          |
+  /  \    +-----+ + top  +                         |    +------>'3'
+ /    \  /     /  |******|                         |   /
+ \    / /     /   | cyl  |                         +--+-------->'v'
+  \  / +-----+    +      +                         |
+   \/              ******                          +-----------> v2
+options:
+_default_: {fill:[[0, 1, 1]], frame:[[0.3, 0.3, 0.3, 1], dashed, 2],
+            line:[red,dotted, 1], arrow:[[0.2, 0.7, 0.5, 0.7], flat]}
+flat, top: {fill:[[1, 0.7, 0, 0.3], no-shadow, flat], frame:[[0.3, 0.8, 0],
+                  dotted, 3]}
+----  
+
+renders:
+
 ["shaape"]
 ---------------------------------------------------------------------
-   +--------+    +------+------+   +------+          +----+----+
-   |        |     \           /    |'.xml'|\    ^    |abc |def |
-   | Hello  +----->\ Goodbye /     |      +-+   |    |    +    |
-   |   ;)   |      /         \     |'Docu-' |<--+--->+-+--+--+ |
-   |        |     /           \    |  'ment'|   |    |'eh###'| |
-   +---+----+    +------+------+-->+---+----+        +----+----+
-       |                |              |   +----+--+ +----+----+
-       +----- has nothing to do with --+   +flatbox|      
-                       +------+  'a'<----+  \      |      
-                       | style|   v       \  +-----+
-in>-+----+------> out1 +------+   |        \    +->->->->->->-+
-    |    |                'c'<--+-+-+->'b'<-+   |             |
-    |    +------> out2         /     \      |   ^             v
-    |                         +       +     |   |  arrowbox   |
-    +----+------>'out!'      / \     / \    |   ^             v
-         +------> v_out     +   +   +   +   |   |             |
-         +------> '->'     / \ / \ / \ / \  |   +-<-<-<-<-<-<-+
-                         'd' 'e' 'f' 'g'  +-+   
+           v
+           |                *******           +->->->->-+
+           +               * round *-----*    |         |
+          / \              *       *     |    ^ arrow   v
+         /   \              *******      v    |    box  | +--+
+        +     +                       +----*  ^         v |  |
+       / \   / \               +----->|mix |  |         | *  |
+      /   + +   \             /       |    |  +-<-<-<-<-+ *  *
+     +    | |    +       +---+        *----+              *  *
+    /|\   v v   /|\      |                          +--***   *
+   +'c'+ 'a b' / | \     +-----+                    | flat   *
+  /     \     /  |  \    |     |\   +-----+         +----****
+ +       +   +   |   +   |     +-+  +--+--+  
+ |       |   |   |   |   |overlap|  +--+--+  in>---+-----+-----> out1
+'d'     'e' 'f' 'g' 'h'  +-------+                 |     |
+                                                   |     *----->'out 2'
+   /\              ******                          |
+  /  \    +-----+ + top  +                         |    +------>'3'
+ /    \  /     /  |******|                         |   /
+ \    / /     /   | cyl  |                         +--+-------->'v'
+  \  / +-----+    +      +                         |
+   \/              ******                          +-----------> v2
 options:
-_default_: {fill: [[0.7, 0.9, 0.8], flat], frame: [[1, 0.2, 0.2, 0.8], dashed, 2], line: [[0.6, 0.5, 0.4], 2, no-shadow, dotted], arrow: [[0.3, 0.4, 0.5], no-shadow]}
-flatbox: {fill: [[0.7, 0.9, 0.8], flat], frame: [[1, 0.2, 0.2, 0.8], dotted, 2]}
-Goodbye: {fill: [[0.7, 0.9, 0.8], flat], frame: [[0.4, 0.7, 0.2, 0.8], dash-dotted, 2]}
-Hello: {fill: [[0.7, 0.9, 0.8], flat], frame: [[0.4, 0.4, 0.4, 0.8], 4, solid]}
+_default_: {fill:[[0, 1, 1]], frame:[[0.3, 0.3, 0.3, 1], dashed, 2],
+            line:[red,dotted, 1], arrow:[[0.2, 0.7, 0.5, 0.7], flat]}
+flat, top: {fill:[[1, 0.7, 0, 0.3], no-shadow, flat], frame:[[0.3, 0.8, 0],
+                  dotted, 3]}
 ---------------------------------------------------------------------
+

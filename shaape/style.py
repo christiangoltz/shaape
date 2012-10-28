@@ -75,7 +75,7 @@ class Style(object):
         return dict(Style.DEFAULT_STYLE.items() + self.__options.items())['type']
 
     def width(self):
-        return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['width']
+        return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['width'] + 1
 
     def set_color(self, color):
         self.__options['color'] = color
@@ -90,7 +90,5 @@ class Style(object):
         return
 
     def set_width(self, width):
-        if width < 2:
-            width = 2
         self.__options['width'] = width
         return

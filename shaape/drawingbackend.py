@@ -3,7 +3,8 @@ from drawable import *
 class DrawingBackend(object):
     def __init__(self):
         self._canvas_size = [0, 0]
-        self.__pixels_per_unit = [10, 20]
+        self._scale = 1.2
+        self.__pixels_per_unit = [10 * self._scale, 20 * self._scale]
         return
 
     def run(self, drawable_objects, filename):
@@ -28,7 +29,7 @@ class DrawingBackend(object):
     def __draw_objects(self, drawable_objects):
         self.push_surface()
         self.push_surface()
-        self.ctx.translate(4, 4)
+        self.ctx.translate(4 * self._scale, 4 * self._scale)
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, Polygon):
                 if drawable_object.style().shadow() == 'on':
@@ -45,6 +46,10 @@ class DrawingBackend(object):
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, Polygon) and not isinstance(drawable_object, Arrow):
                 self.draw_polygon(drawable_object)
+        self.pop_surface()
+        self.push_surface()
+        for drawable_object in drawable_objects:
+            if isinstance(drawable_object, Polygon) and not isinstance(drawable_object, Arrow):
                 self.draw_open_graph(drawable_object.frame())
         self.pop_surface()
         self.push_surface()
