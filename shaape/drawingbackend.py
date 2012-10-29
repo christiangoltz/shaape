@@ -39,8 +39,7 @@ class DrawingBackend(object):
                 if drawable_object.style().shadow() == 'on':
                     self.draw_open_graph_shadow(drawable_object)
         self.pop_surface()
-        for i in range(0, 10):
-            self.blur_surface()
+        self.blur_surface()
         self.pop_surface()
         self.push_surface()
         for drawable_object in drawable_objects:

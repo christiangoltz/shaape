@@ -13,22 +13,6 @@ class CairoBackend(DrawingBackend):
         super(CairoBackend, self).__init__()
         self.margin = [10, 10, 10, 10]
         self.__surfaces = []
-        self.__blur_kernel = []
-        self.__blur_sigma = 1
-        self.__blur_function = lambda x, y: 1 / (2 * math.pi * (self.__blur_sigma**2)) * math.e**(-1 * (x * x + y * y) / 2 * (self.__blur_sigma**2))
-        self.__blur_kernel_height = 3
-        self.__blur_kernel_width = 3
-        # generate gaussian kernel
-        for y in range(0, self.__blur_kernel_height):
-            self.__blur_kernel.append([])
-            for x in range (0, self.__blur_kernel_width):
-                y_length = y - math.floor(self.__blur_kernel_height / 2)
-                x_length = x - math.floor(self.__blur_kernel_width / 2)
-                self.__blur_kernel[-1].append(self.__blur_function(x_length, y_length))
-        self.__blur_kernel = np.array(self.__blur_kernel)
-        filter_sum = sum(sum(self.__blur_kernel))
-        self.__blur_kernel = self.__blur_kernel / filter_sum
-        self.__blur_kernel.shape = (self.__blur_kernel_width, self.__blur_kernel_height, 1)
         return
 
     def blur_surface(self):
@@ -36,17 +20,18 @@ class CairoBackend(DrawingBackend):
         top_surface = self.__surfaces[-1]
         width = top_surface.get_width()
         height = top_surface.get_height()
-        stride = top_surface.get_stride()
         src = np.frombuffer(top_surface.get_data(), np.uint8)
         src.shape = (height, width, 4)
         dst = np.frombuffer(blurred_surface.get_data(), np.uint8)
         dst.shape = (height, width, 4)
-        dst = ndimage.convolve(src, self.__blur_kernel, mode='reflect')
-        blurred_image = cairo.ImageSurface.create_for_data(dst, cairo.FORMAT_ARGB32, width, height, width * 4)
+        dst[:,:,0] = ndimage.gaussian_filter(src[:,:,0], sigma=6)
+        dst[:,:,1] = ndimage.gaussian_filter(src[:,:,1], sigma=6)
+        dst[:,:,2] = ndimage.gaussian_filter(src[:,:,2], sigma=6)
+        dst[:,:,3] = ndimage.gaussian_filter(src[:,:,3], sigma=6)
+        blurred_image = cairo.ImageSurface.create_for_data(dst, cairo.FORMAT_ARGB32, width, height)
         self.ctx.set_source_surface(blurred_image)
         self.ctx.set_operator(cairo.OPERATOR_SOURCE)
         self.ctx.paint()
-
         return
 
     def push_surface(self):
@@ -141,7 +126,7 @@ class CairoBackend(DrawingBackend):
     def draw_polygon_shadow(self, polygon):
         self.ctx.save()
         self.apply_fill(polygon)
-        self.ctx.set_source_rgba(0, 0, 0, 0.5)
+        self.ctx.set_source_rgba(0, 0, 0, 1)
         self.ctx.set_operator(cairo.OPERATOR_SOURCE)
         self.apply_transform(polygon)
         nodes = polygon.nodes()
@@ -172,7 +157,7 @@ class CairoBackend(DrawingBackend):
                 self.ctx.set_operator(cairo.OPERATOR_CLEAR)
                 self.ctx.stroke_preserve()
                 self.apply_line(open_graph)
-                self.ctx.set_source_rgba(0, 0, 0, 0.5)
+                self.ctx.set_source_rgba(0, 0, 0, 1)
                 self.ctx.set_operator(cairo.OPERATOR_SOURCE)
                 self.ctx.stroke()
         self.ctx.restore()
