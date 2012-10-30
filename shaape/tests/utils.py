@@ -4,9 +4,11 @@ import math
 import operator
 
 class TestUtils(object):
-    BLUR_INPUT = 'shaape/tests/input/blur.shaape'
+    BLUR_INPUT = 'shaape/tests/input/lena.png'
     BLUR_GENERATED_IMAGE = 'shaape/tests/generated_images/blur.png'
     BLUR_EXPECTED_IMAGE = 'shaape/tests/expected_images/blur.png'
+    EMPTY_CANVAS_GENERATED_IMAGE = 'shaape/tests/generated_images/empty_canvas.png'
+    EMPTY_CANVAS_EXPECTED_IMAGE = 'shaape/tests/expected_images/empty_canvas.png'
     ACCEPTABLE_RMS = 0
     
     @staticmethod

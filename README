@@ -59,6 +59,7 @@ What is supported
 What will be supported
 ~~~~~~~~~~~~~~~~~~~~~~
 - text styles without markup inside the drawing
+- md5sum generation/checking to prevent image generation on unchanged sources
 
 What will *not* be supported
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

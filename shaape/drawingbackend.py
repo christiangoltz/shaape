@@ -22,14 +22,13 @@ class DrawingBackend(object):
             if isinstance(drawable_object, Background):
                 self._canvas_size = drawable_object.size()
         
-        self.create_canvas(filename)
+        self.create_canvas()
         self.__draw_objects(drawable_objects)
         self.export_to_file(filename)
 
     def __draw_objects(self, drawable_objects):
         self.push_surface()
-        self.push_surface()
-        self.ctx.translate(4 * self._scale, 4 * self._scale)
+        self.translate(4 * self._scale, 4 * self._scale)
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, Polygon):
                 if drawable_object.style().shadow() == 'on':
@@ -38,7 +37,6 @@ class DrawingBackend(object):
             if isinstance(drawable_object, OpenGraph):
                 if drawable_object.style().shadow() == 'on':
                     self.draw_open_graph_shadow(drawable_object)
-        self.pop_surface()
         self.blur_surface()
         self.pop_surface()
         self.push_surface()
