@@ -2,7 +2,7 @@ import copy
 
 class Style(object):
     COLORS = { 'red' : [1, 0, 0], 'green' : [0, 1, 0], 'blue' : [0, 0, 1] }
-    DEFAULT_STYLE = { 'color' : [0, 0, 0, 1], 'type' : 'gradient', 'shadow' : 'on', 'width' : 1 }
+    DEFAULT_STYLE = { 'color' : [0, 0, 0, 1], 'type' : 'solid', 'shadow' : 'on', 'width' : 1 }
     def __init__(self, apply_to_names, target_type, option_list):
         self.__names = apply_to_names
         self.__target_type = target_type

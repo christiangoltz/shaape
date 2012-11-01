@@ -71,7 +71,7 @@ class CairoBackend(DrawingBackend):
         if drawable.style().fill_type() == 'dashed':
             width = drawable.style().width() * self._scale
             dash_list = [ width * 4, width]
-            self.__ctx.set_dash(dash_list, width * 2)
+            self.__ctx.set_dash(dash_list)
         elif drawable.style().fill_type() == 'dotted':
             width = drawable.style().width() * self._scale
             dash_list = [ width, width]

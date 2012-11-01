@@ -2,10 +2,16 @@ from drawable import *
 
 class DrawingBackend(object):
     def __init__(self):
-        self._canvas_size = [0, 0]
+        self._canvas_size = (0, 0)
         self._scale = 1.2
-        self.__pixels_per_unit = [10 * self._scale, 20 * self._scale]
+        self.__pixels_per_unit = (10 * self._scale, 20 * self._scale)
         return
+
+    def scale(self):
+        return self._scale
+
+    def set_canvas_size(self, width, height):
+        self._canvas_size = (width, height)
 
     def run(self, drawable_objects, filename):
         self.canvas_size = [0, 0]

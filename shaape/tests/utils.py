@@ -9,6 +9,8 @@ class TestUtils(object):
     BLUR_EXPECTED_IMAGE = 'shaape/tests/expected_images/blur.png'
     EMPTY_CANVAS_GENERATED_IMAGE = 'shaape/tests/generated_images/empty_canvas.png'
     EMPTY_CANVAS_EXPECTED_IMAGE = 'shaape/tests/expected_images/empty_canvas.png'
+    POLYGON_GENERATED_IMAGE = 'shaape/tests/generated_images/polygon.png'
+    POLYGON_EXPECTED_IMAGE = 'shaape/tests/expected_images/polygon.png'
     ACCEPTABLE_RMS = 0
     
     @staticmethod
