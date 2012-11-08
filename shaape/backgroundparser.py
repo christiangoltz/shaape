@@ -1,5 +1,5 @@
 from parser import Parser
-from drawable import Background
+from background import Background
 
 class BackgroundParser(Parser):
     def __init__(self):

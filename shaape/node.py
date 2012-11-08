@@ -3,7 +3,10 @@ import math
 class Node(object):
     def __init__(self, x, y, style = 'miter', fusable = True):
         self.__position = (x, y)
-        self.__style = style
+        if style in ['miter', 'curve']:
+            self.__style = style
+        else:
+            raise ValueError
         self.__fusable = fusable
         return
 
@@ -34,6 +37,8 @@ class Node(object):
     def __div__(self, other):
         if isinstance(other, (float, int)):
             return Node(self.position()[0] / other, self.position()[1] / other, self.style(), self.fusable())
+        else:
+            raise NotImplementedError
 
     def __mul__(self, other):
         if isinstance(other, (float, int)):

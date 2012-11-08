@@ -4,6 +4,7 @@ import unittest
 from nose.tools import *
 
 class TestNode(unittest.TestCase):
+    @raises(ValueError)
     def test_init(self):
         node = Node(3.2, 5.0)
         assert node.position() == (3.2, 5.0)
@@ -14,6 +15,8 @@ class TestNode(unittest.TestCase):
         assert node.position() == (3.2, 5.0)
         assert node.style() == 'curve'
         assert node.fusable() == False
+
+        node = Node(3.2, 5.0, 'dummy', False)
 
     def test_position(self):
         node = Node(1.5, -0.5)
@@ -75,17 +78,24 @@ class TestNode(unittest.TestCase):
         assert sum2.style() == node2.style()
         assert sum2.fusable() == node2.fusable()
     
+    @raises(NotImplementedError)
     def test_div(self):
         node = Node(5.5, -10.0, 'curve', True)
         quotient = node / 5
         assert quotient.position() == (1.1, -2.0)
         assert quotient.style() == node.style()
         assert quotient.fusable() == node.fusable()
+        quotient = node / 'a'
 
     def test_mul(self):
         node = Node(1.1, -2.0, 'curve', True)
         product = node * 5
         assert product.position() == (5.5, -10.0)
+        assert product.style() == node.style()
+        assert product.fusable() == node.fusable()
+
+        product = node * (2, 3)
+        assert product.position() == (2.2, -6.0)
         assert product.style() == node.style()
         assert product.fusable() == node.fusable()
 

@@ -78,7 +78,10 @@ class Style(object):
         return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['width'] + 1
 
     def set_color(self, color):
-        self.__options['color'] = color
+        if len(color) == 3 or len(color) == 4:
+            self.__options['color'] = color
+        else:
+            raise ValueError
         return
 
     def set_type(self, fill_type):
@@ -92,3 +95,12 @@ class Style(object):
     def set_width(self, width):
         self.__options['width'] = width
         return
+
+    def __cmp__(self, other):
+        if not isinstance(other, Style):
+            return -1
+        else:
+            return cmp((self.__names, self.__target_type, self.__options),(other.names(), other.target_type(), other.options()))
+
+    def __repr__(self):
+        return "(names: " + str(self.__names) + ", target_type:" + self.__target_type + ", options:" + str(self.__options) + ")"

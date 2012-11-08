@@ -1,5 +1,8 @@
 from shaape.arrowparser import ArrowParser
-from shaape.drawable import *
+from shaape.rightarrow import RightArrow
+from shaape.leftarrow import LeftArrow
+from shaape.uparrow import UpArrow
+from shaape.downarrow import DownArrow
 import nose
 import unittest
 from nose.tools import *

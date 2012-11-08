@@ -1,3 +1,7 @@
+from rightarrow import RightArrow
+from leftarrow import LeftArrow
+from uparrow import UpArrow
+from downarrow import DownArrow
 from parser import Parser
 from drawable import *
 

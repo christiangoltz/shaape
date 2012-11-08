@@ -1,5 +1,5 @@
 from parser import Parser
-from drawable import Text
+from text import Text
 import re
 
 class TextParser(Parser):

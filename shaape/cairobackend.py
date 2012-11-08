@@ -3,9 +3,10 @@ import os
 import math
 import numpy as np
 from scipy import ndimage
-
 from drawingbackend import DrawingBackend
-from drawable import *
+import networkx as nx
+from translatable import Translatable
+from rotatable import Rotatable
 
 class CairoBackend(DrawingBackend):
     
@@ -14,6 +15,7 @@ class CairoBackend(DrawingBackend):
         self.set_margin(10, 10, 10, 10)
         self.set_image_size(0, 0)
         self.__surfaces = []
+        self.__ctx = None
         return
 
     def blur_surface(self):
@@ -58,6 +60,9 @@ class CairoBackend(DrawingBackend):
 
     def set_margin(self, left, right, top, bottom):
         self.__margin = (left, right, top, bottom)
+
+    def margin(self):
+        return self.__margin
 
     def create_canvas(self):
         self.set_image_size(self._canvas_size[0], self._canvas_size[1])
@@ -106,7 +111,7 @@ class CairoBackend(DrawingBackend):
                 linear_gradient.add_color_stop_rgba(0, 1,1,1,color[3])
                 color = map(lambda x: 0.6 * x, color[0:3]) + [color[3]]
                 linear_gradient.add_color_stop_rgba(1, *color)
-            elif len(color) == 3:
+            else:
                 linear_gradient.add_color_stop_rgb(0, 1,1,1)
                 color = map(lambda x: 0.6 * x, color[0:3])
                 linear_gradient.add_color_stop_rgb(1, *color)
@@ -114,7 +119,7 @@ class CairoBackend(DrawingBackend):
         else:
             if len(color) == 4:
                 self.__ctx.set_source_rgba(*color)
-            elif len(color) == 3:
+            else:
                 self.__ctx.set_source_rgb(*color)
     
     def draw_polygon(self, polygon):
@@ -178,10 +183,7 @@ class CairoBackend(DrawingBackend):
             line_end = nodes[0]
         self.__ctx.move_to(*line_end)
         for i in range(1, len(nodes) - 1):
-            if nodes[i].style() == 'miter':
-                self.__ctx.line_to(*nodes[i])
-                line_end = nodes[i]
-            elif nodes[i].style() == 'curve':
+            if nodes[i].style() == 'curve':
                 if i > 0 and nodes[i - 1].style() == 'miter':
                     temp_end = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.5)
                     self.__ctx.line_to(*temp_end)
@@ -189,7 +191,9 @@ class CairoBackend(DrawingBackend):
                 cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.9)
                 cp2 = nodes[i + 1] + ((nodes[i] - nodes[i + 1]) * 0.9)
                 self.__ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], line_end[0], line_end[1])
-                    
+            else:
+                self.__ctx.line_to(*nodes[i])
+                line_end = nodes[i]
         return
 
     def draw_open_graph(self, open_graph):
@@ -222,14 +226,11 @@ class CairoBackend(DrawingBackend):
         self.__ctx.set_source_rgb(0.0, 0.0, 0.0)
         self.__ctx.set_font_size(text_obj.font_size() / 0.7)
         fascent, fdescent, fheight, fxadvance, fyadvance = self.__ctx.font_extents()
-        # fheight = fheight * text_obj.font_size()
-        # fdescent = fdescent * text_obj.font_size()
         for cx, letter in enumerate(text):
             xbearing, ybearing, width, height, xadvance, yadvance = (self.__ctx.text_extents(letter))
             self.__ctx.move_to(text_obj.position()[0] + cx * (text_obj.font_size()), text_obj.position()[1] + text_obj.font_size() - fdescent + fheight / 2)
             self.__ctx.show_text(letter)
         self.__ctx.restore()
-        # self.__ctx.stroke()
         return
 
     def apply_transform(self, obj):
@@ -240,17 +241,9 @@ class CairoBackend(DrawingBackend):
         return
 
     def export_to_file(self, filename):
-        # self.__ctx.paint()
         self.__surfaces[-1].write_to_png(filename)
         return
 
-    def start_object(self):
-        self.__ctx.save()
-        return
-
-    def end_object(self):
-        self.__ctx.restore()
-    
     def ctx(self):
         return self.__ctx
 
