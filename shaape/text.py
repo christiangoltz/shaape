@@ -20,3 +20,9 @@ class Text(Drawable, Translatable, Scalable):
         Translatable.scale(self, scale)
         self.__font_size = self.__font_size * scale[0]
         return
+    
+    def min(self):
+        return self.position()
+
+    def max(self):
+        return self.position()

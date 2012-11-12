@@ -25,6 +25,11 @@ class TestCairoBackend(unittest.TestCase):
     def test_init(self):
         assert self.__backend != None
 
+    def test_margin(self):
+        assert self.__backend.margin() == CairoBackend.DEFAULT_MARGIN
+        self.__backend.set_margin(50, 40, 30, 20)
+        assert self.__backend.margin() == (50, 40, 30, 20)
+
     def test_blur_surface(self):
         test_img_surface = cairo.ImageSurface.create_from_png(TestUtils.BLUR_INPUT)
         self.__backend.set_image_size(test_img_surface.get_width(), test_img_surface.get_height())
@@ -143,15 +148,23 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.apply_fill(drawable)
         assert type(self.__backend.ctx().get_source()) == cairo.LinearGradient
 
+        drawable.style().set_color((0.1, 0.2, 0.3, 0.4)) 
+        drawable.style().set_type('gradient') 
+        self.__backend.apply_fill(drawable)
+        assert type(self.__backend.ctx().get_source()) == cairo.LinearGradient
+
     def test_draw_polygon(self):
         point_list = [(10, 10), (40, 10), (30, 20), (40, 40), (20, 30), (10, 10)]
         node_list = [Node(*p) for p in point_list]
-        polygon = Polygon(node_list)
+        polygon1 = Polygon(node_list)
+        polygon2 = Polygon(node_list[:-1])
                 
-        self.__backend.set_canvas_size(50, 50)
+        self.__backend.set_canvas_size(50, 100)
         self.__backend.create_canvas()
         self.__backend.push_surface()
-        self.__backend.draw_polygon(polygon)
+        self.__backend.draw_polygon(polygon1)
+        self.__backend.translate(0, 50)
+        self.__backend.draw_polygon(polygon2)
         self.__backend.export_to_file(TestUtils.POLYGON_GENERATED_IMAGE)
         self.__backend.pop_surface()
         assert TestUtils.imagesEqual(TestUtils.POLYGON_GENERATED_IMAGE, TestUtils.POLYGON_EXPECTED_IMAGE)
@@ -159,12 +172,15 @@ class TestCairoBackend(unittest.TestCase):
     def test_draw_polygon_shadow(self):
         point_list = [(10, 10), (40, 10), (30, 20), (40, 40), (20, 30), (10, 10)]
         node_list = [Node(*p) for p in point_list]
-        polygon = Polygon(node_list)
+        polygon1 = Polygon(node_list)
+        polygon2 = Polygon(node_list[:-1])
                 
-        self.__backend.set_canvas_size(50, 50)
+        self.__backend.set_canvas_size(50, 100)
         self.__backend.create_canvas()
         self.__backend.push_surface()
-        self.__backend.draw_polygon_shadow(polygon)
+        self.__backend.draw_polygon_shadow(polygon1)
+        self.__backend.translate(0, 50)
+        self.__backend.draw_polygon_shadow(polygon2)
         self.__backend.export_to_file(TestUtils.POLYGON_SHADOW_GENERATED_IMAGE)
         self.__backend.pop_surface()
         assert TestUtils.imagesEqual(TestUtils.POLYGON_SHADOW_GENERATED_IMAGE, TestUtils.POLYGON_SHADOW_EXPECTED_IMAGE)
@@ -195,7 +211,7 @@ class TestCairoBackend(unittest.TestCase):
         assert TestUtils.imagesEqual(TestUtils.OPEN_GRAPH_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_EXPECTED_IMAGE)
 
     def test_draw_open_graph_shadow(self):
-        self.__backend.set_canvas_size(50, 50)
+        self.__backend.set_canvas_size(50, 150)
         self.__backend.create_canvas()
         graph = nx.Graph()
         open_graph = OpenGraph(graph)
@@ -207,12 +223,19 @@ class TestCairoBackend(unittest.TestCase):
         assert TestUtils.imagesEqual(TestUtils.OPEN_GRAPH_SHADOW_EMPTY_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EMPTY_EXPECTED_IMAGE)
 
         edge_list = [((10, 10), (40, 10)), ((40, 10), (60, 10)), ((40, 10), (50, 40)), ((50, 40), (20, 30)), ((50, 40), (50, 60))]
+        edge_list2 = [((10, 10), (40, 10)), ((40, 10), (50, 40)), ((50, 40), (20, 30)),((20, 30), (10, 10))]
         for edge in edge_list:
             graph.add_edge(Node(*edge[0]), Node(*edge[1]))
+        graph2 = nx.Graph()
+        for edge in edge_list2:
+            graph2.add_edge(Node(*edge[0], style = 'curve'), Node(*edge[1], style = 'curve'))
         open_graph = OpenGraph(graph)
+        open_graph2 = OpenGraph(graph2)
                 
         self.__backend.push_surface()
         self.__backend.draw_open_graph_shadow(open_graph)
+        self.__backend.translate(0, 60)
+        self.__backend.draw_open_graph_shadow(open_graph2)
         self.__backend.export_to_file(TestUtils.OPEN_GRAPH_SHADOW_GENERATED_IMAGE)
         self.__backend.pop_surface()
         assert TestUtils.imagesEqual(TestUtils.OPEN_GRAPH_SHADOW_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EXPECTED_IMAGE)

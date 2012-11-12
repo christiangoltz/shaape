@@ -12,3 +12,8 @@ class Background(Drawable, Scalable):
     def scale(self, scale):
         self.__size = (self.__size[0] * scale[0], self.__size[1] * scale[1])
 
+    def min(self):
+        return (0, 0)
+
+    def max(self):
+        return self.size()

@@ -1,7 +1,8 @@
 import networkx as nx
 import operator
 import math
-from drawable import *
+from opengraph import OpenGraph
+from polygon import Polygon
 from parser import *
 from node import *
 

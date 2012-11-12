@@ -1,4 +1,10 @@
-from drawable import *
+from drawable import Drawable
+from polygon import Polygon
+from opengraph import OpenGraph
+from scalable import Scalable
+from background import Background
+from arrow import Arrow
+from text import Text
 
 class DrawingBackend(object):
     def __init__(self):
@@ -15,9 +21,9 @@ class DrawingBackend(object):
 
     def run(self, drawable_objects, filename):
         self.canvas_size = [0, 0]
-
-        sortable_objects = filter(lambda x: isinstance(x, Drawable), drawable_objects)
-        unsortable_objects = filter(lambda x: not isinstance(x, Drawable), drawable_objects)
+        sortable = lambda x: isinstance(x, Drawable)
+        sortable_objects = filter(lambda x: sortable(x), drawable_objects)
+        unsortable_objects = filter(lambda x: not sortable(x), drawable_objects)
         drawable_objects = sorted(sortable_objects, key=lambda x: x.min()) + unsortable_objects
 
         for drawable_object in drawable_objects:

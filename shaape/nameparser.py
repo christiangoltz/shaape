@@ -1,5 +1,6 @@
 from parser import Parser
-from drawable import *
+from polygon import Polygon
+from text import Text
 
 class NameParser(Parser):
     def __init__(self):

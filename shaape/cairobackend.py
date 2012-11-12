@@ -9,10 +9,10 @@ from translatable import Translatable
 from rotatable import Rotatable
 
 class CairoBackend(DrawingBackend):
-    
+    DEFAULT_MARGIN = (10, 10, 10, 10)
     def __init__(self):
         super(CairoBackend, self).__init__()
-        self.set_margin(10, 10, 10, 10)
+        self.set_margin(*(CairoBackend.DEFAULT_MARGIN))
         self.set_image_size(0, 0)
         self.__surfaces = []
         self.__ctx = None

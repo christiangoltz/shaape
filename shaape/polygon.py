@@ -13,6 +13,7 @@ class Polygon(Drawable, Named, Scalable):
         cycle_graph = nx.Graph()
         if node_list == []:
             raise ValueError
+        cycle_graph.add_cycle(node_list)
         self.__frame = OpenGraph(cycle_graph)
         self.style().set_target_type('fill')
         self.__frame.style().set_target_type('frame')

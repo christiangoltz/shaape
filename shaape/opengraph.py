@@ -19,6 +19,9 @@ class OpenGraph(Drawable, Scalable):
     def graph(self):
         return self.__graph
 
+    def min(self):
+        return (min([n[0] for n in self.__graph.nodes()]), min([n[1] for n in self.__graph.nodes()]))
+
     def max(self):
         return (max([n[0] for n in self.__graph.nodes()]), max([n[1] for n in self.__graph.nodes()]))
 

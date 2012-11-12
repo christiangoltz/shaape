@@ -1,5 +1,9 @@
 from parser import Parser
-from drawable import *
+from named import Named
+from drawable import Drawable
+from arrow import Arrow
+from polygon import Polygon
+from opengraph import OpenGraph
 from style import Style
 
 class StyleParser(Parser):
