@@ -3,7 +3,7 @@ from translatable import Translatable
 from scalable import Scalable
 
 class Text(Drawable, Translatable, Scalable):
-    def __init__(self, text, position = (0, 0)):
+    def __init__(self, text = "", position = (0, 0)):
         Drawable.__init__(self)
         Translatable.__init__(self, position)
         self.__text = text

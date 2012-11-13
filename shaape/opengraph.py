@@ -6,7 +6,7 @@ import networkx as nx
 import copy
 
 class OpenGraph(Drawable, Scalable):
-    def __init__(self, graph):
+    def __init__(self, graph = nx.Graph()):
         Drawable.__init__(self)
         self.style().set_target_type('line')
         self.__graph = nx.Graph(graph)

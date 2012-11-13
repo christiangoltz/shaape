@@ -35,3 +35,4 @@ upload-pipy:
 
 clean:
 	$(RM) $(BUILD_DIR)    
+	$(RM) shaape/*.pyc shaape/tests/*.pyc
