@@ -39,7 +39,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.ctx().paint()
         self.__backend.blur_surface()
         self.__backend.export_to_file(TestUtils.BLUR_GENERATED_IMAGE)
-        assert TestUtils.imagesEqual(TestUtils.BLUR_GENERATED_IMAGE, TestUtils.BLUR_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.BLUR_GENERATED_IMAGE, TestUtils.BLUR_EXPECTED_IMAGE)
 
     def test_push_surface(self):
         assert len(self.__backend.surfaces()) == 0
@@ -66,7 +66,7 @@ class TestCairoBackend(unittest.TestCase):
     def test_create_canvas(self):
         self.__backend.create_canvas()
         self.__backend.export_to_file(TestUtils.EMPTY_CANVAS_GENERATED_IMAGE)
-        assert TestUtils.imagesEqual(TestUtils.EMPTY_CANVAS_GENERATED_IMAGE, TestUtils.EMPTY_CANVAS_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.EMPTY_CANVAS_GENERATED_IMAGE, TestUtils.EMPTY_CANVAS_EXPECTED_IMAGE)
        
     def test_apply_dash(self):
         drawable = Drawable()
@@ -167,7 +167,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.draw_polygon(polygon2)
         self.__backend.export_to_file(TestUtils.POLYGON_GENERATED_IMAGE)
         self.__backend.pop_surface()
-        assert TestUtils.imagesEqual(TestUtils.POLYGON_GENERATED_IMAGE, TestUtils.POLYGON_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.POLYGON_GENERATED_IMAGE, TestUtils.POLYGON_EXPECTED_IMAGE)
 
     def test_draw_polygon_shadow(self):
         point_list = [(10, 10), (40, 10), (30, 20), (40, 40), (20, 30), (10, 10)]
@@ -183,7 +183,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.draw_polygon_shadow(polygon2)
         self.__backend.export_to_file(TestUtils.POLYGON_SHADOW_GENERATED_IMAGE)
         self.__backend.pop_surface()
-        assert TestUtils.imagesEqual(TestUtils.POLYGON_SHADOW_GENERATED_IMAGE, TestUtils.POLYGON_SHADOW_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.POLYGON_SHADOW_GENERATED_IMAGE, TestUtils.POLYGON_SHADOW_EXPECTED_IMAGE)
 
     def test_draw_open_graph(self):
         self.__backend.set_canvas_size(80, 80)
@@ -195,7 +195,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.draw_open_graph(open_graph)
         self.__backend.export_to_file(TestUtils.OPEN_GRAPH_EMPTY_GENERATED_IMAGE)
         self.__backend.pop_surface()
-        assert TestUtils.imagesEqual(TestUtils.OPEN_GRAPH_EMPTY_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EMPTY_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.OPEN_GRAPH_EMPTY_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EMPTY_EXPECTED_IMAGE)
 
         edge_list = [((10, 10), (40, 10)), ((40, 10), (60, 10)), ((40, 10), (50, 40)), ((50, 40), (20, 30)), ((50, 40), (50, 60))]
         for edge in edge_list:
@@ -208,7 +208,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.draw_open_graph(open_graph)
         self.__backend.export_to_file(TestUtils.OPEN_GRAPH_GENERATED_IMAGE)
         self.__backend.pop_surface()
-        assert TestUtils.imagesEqual(TestUtils.OPEN_GRAPH_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.OPEN_GRAPH_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_EXPECTED_IMAGE)
 
     def test_draw_open_graph_shadow(self):
         self.__backend.set_canvas_size(50, 150)
@@ -220,7 +220,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.draw_open_graph_shadow(open_graph)
         self.__backend.export_to_file(TestUtils.OPEN_GRAPH_SHADOW_EMPTY_GENERATED_IMAGE)
         self.__backend.pop_surface()
-        assert TestUtils.imagesEqual(TestUtils.OPEN_GRAPH_SHADOW_EMPTY_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EMPTY_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.OPEN_GRAPH_SHADOW_EMPTY_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EMPTY_EXPECTED_IMAGE)
 
         edge_list = [((10, 10), (40, 10)), ((40, 10), (60, 10)), ((40, 10), (50, 40)), ((50, 40), (20, 30)), ((50, 40), (50, 60))]
         edge_list2 = [((10, 10), (40, 10)), ((40, 10), (50, 40)), ((50, 40), (20, 30)),((20, 30), (10, 10))]
@@ -238,7 +238,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.draw_open_graph_shadow(open_graph2)
         self.__backend.export_to_file(TestUtils.OPEN_GRAPH_SHADOW_GENERATED_IMAGE)
         self.__backend.pop_surface()
-        assert TestUtils.imagesEqual(TestUtils.OPEN_GRAPH_SHADOW_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.OPEN_GRAPH_SHADOW_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EXPECTED_IMAGE)
 
     def test_draw_text(self):
         text = Text("abcdef123456!=_/>")
@@ -250,7 +250,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.export_to_file(TestUtils.TEXT_GENERATED_IMAGE)
         self.__backend.pop_surface()
         self.__backend.push_surface()
-        assert TestUtils.imagesEqual(TestUtils.TEXT_GENERATED_IMAGE, TestUtils.TEXT_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.TEXT_GENERATED_IMAGE, TestUtils.TEXT_EXPECTED_IMAGE)
 
     def test_apply_transform(self):
         translatable = Translatable((10, 20))

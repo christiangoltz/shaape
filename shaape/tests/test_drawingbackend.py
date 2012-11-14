@@ -28,7 +28,7 @@ class TestDrawingBackend(unittest.TestCase):
 
     def test_run(self):
         background = Background((400, 300)) 
-        polygon = TestUtils.generateTestPolygon(seed = 0, points = 12, radius_range = (1, 10))
+        polygon = TestUtils.generate_test_polygon(seed = 0, points = 12, radius_range = (1, 10))
         polygon_copy = copy.deepcopy(polygon)
         objects = [background, polygon]
         self.__backend.draw_objects = MagicMock()
@@ -44,10 +44,10 @@ class TestDrawingBackend(unittest.TestCase):
         assert TestUtils.unordered_lists_equal(self.__backend.draw_objects.call_args[0][0], objects)
 
     def test_draw_objects(self):
-        polygon1 = TestUtils.generateTestPolygon(seed = 0, points = 12, radius_range = (1, 10))
+        polygon1 = TestUtils.generate_test_polygon(seed = 0, points = 12, radius_range = (1, 10))
         polygon2 = copy.deepcopy(polygon1)
         polygon2.style().set_shadow('off')
-        opengraph1 = TestUtils.generateTestOpenGraph(seed = 0, points = 12, radius_range = (1, 10))
+        opengraph1 = TestUtils.generate_test_opengraph(seed = 0, points = 12, radius_range = (1, 10))
         opengraph2 = copy.deepcopy(opengraph1)
         opengraph2.style().set_shadow('off')
         text = Text()

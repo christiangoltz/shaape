@@ -31,7 +31,7 @@ class TestUtils(object):
     TEXT_EXPECTED_IMAGE = 'shaape/tests/expected_images/text.png'
     
     @staticmethod
-    def imagesEqual(image1, image2, acceptable_rms = 30):
+    def images_equal(image1, image2, acceptable_rms = 30):
         try:
             img1 = Image.open(image1)
             img2 = Image.open(image2)
@@ -45,7 +45,7 @@ class TestUtils(object):
         return rms <= acceptable_rms
     
     @staticmethod
-    def generateTestPolygon(seed = 0, points = 12, radius_range = (10, 50)):
+    def generate_test_polygon(seed = 0, points = 12, radius_range = (10, 50)):
         random.seed(seed)
         point_list = []
         for i in range(0, points):
@@ -58,7 +58,7 @@ class TestUtils(object):
         return polygon
 
     @staticmethod
-    def generateTestOpenGraph(seed = 0, points = 12, radius_range = (10, 50)):
+    def generate_test_opengraph(seed = 0, points = 12, radius_range = (10, 50)):
         random.seed(seed)
         point_list = []
         graph = nx.Graph()
@@ -76,3 +76,5 @@ class TestUtils(object):
     @staticmethod
     def unordered_lists_equal(a, b):
         return len(a) == len(b) and all(a.count(x) == b.count(x) for x in a)
+
+    __test__ = False
