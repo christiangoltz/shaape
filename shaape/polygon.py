@@ -31,7 +31,6 @@ class Polygon(Drawable, Named, Scalable):
                 if y <= max(p1y,p2y):
                     if x <= max(p1x,p2x):
                         xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
-                        print(p1x, p2x, xinters)
                         if p1x == p2x or x <= xinters:
                             inside = not inside
             p1x,p1y = p2x,p2y
@@ -50,7 +49,11 @@ class Polygon(Drawable, Named, Scalable):
         for n in range(0, len(self.__node_list)):
             node = self.__node_list[n]
             self.__node_list[n] = node * scale
-        self.__frame.scale(scale)
+        if isinstance(self.__frame, Scalable):
+            self.__frame.scale(scale)
 
     def frame(self):
         return self.__frame
+
+    def set_frame(self, frame):
+        self.__frame = frame

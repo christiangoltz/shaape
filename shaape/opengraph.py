@@ -1,13 +1,15 @@
 from drawable import Drawable
 from scalable import Scalable
 from operator import itemgetter
+from named import Named
 from graphalgorithms import *
 import networkx as nx
 import copy
 
-class OpenGraph(Drawable, Scalable):
+class OpenGraph(Drawable, Scalable, Named):
     def __init__(self, graph = nx.Graph()):
         Drawable.__init__(self)
+        Named.__init__(self)
         self.style().set_target_type('line')
         self.__graph = graph
         self.__generate_paths()

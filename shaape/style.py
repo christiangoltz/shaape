@@ -3,13 +3,19 @@ import copy
 class Style(object):
     COLORS = { 'red' : [1, 0, 0], 'green' : [0, 1, 0], 'blue' : [0, 0, 1] }
     DEFAULT_STYLE = { 'color' : [0, 0, 0, 1], 'type' : 'solid', 'shadow' : 'on', 'width' : 1 }
-    def __init__(self, apply_to_names, target_type, option_list):
+
+    def __init__(self, apply_to_names = [], target_type = '', option_list = []):
         self.__names = apply_to_names
         self.__target_type = target_type
         self.__options = {}
 
-        if type(option_list) <> list:
-            option_list = [option_list]
+        self.set_options(option_list)
+        return
+
+    def options(self):
+        return self.__options
+
+    def set_options(self, option_list):
         # find colors
         colors = filter(lambda x: x in Style.COLORS.keys(), option_list) 
         if len(colors) > 0:
@@ -42,15 +48,6 @@ class Style(object):
             if type(option) == float or type(option) == int:
                 self.set_width(option)
 
-        return
-
-    def options(self):
-        return self.__options
-
-    def set_default(style):
-        Style.DEFAULT_STYLE = dict(Style.DEFAULT_STYLE.items() + style.options().items())
-        return
-
     def merge(self, style):
         self.__options = dict(self.__options.items() + style.options().items())
         return
@@ -60,6 +57,9 @@ class Style(object):
 
     def names(self):
         return self.__names
+
+    def set_names(self, names):
+        self.__names = names
 
     def shadow(self):
         return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['shadow']
@@ -75,7 +75,7 @@ class Style(object):
         return dict(Style.DEFAULT_STYLE.items() + self.__options.items())['type']
 
     def width(self):
-        return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['width'] + 1
+        return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['width']
 
     def set_color(self, color):
         if len(color) == 3 or len(color) == 4:
@@ -93,6 +93,8 @@ class Style(object):
         return
 
     def set_width(self, width):
+        if width <= 0:
+            raise ValueError
         self.__options['width'] = width
         return
 

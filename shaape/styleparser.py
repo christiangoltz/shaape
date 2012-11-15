@@ -12,7 +12,6 @@ class StyleParser(Parser):
         return
 
     def run(self, raw_data, drawable_objects):
-        
         styles = filter(lambda x: isinstance(x, Style), drawable_objects)
         named_drawables = filter(lambda x: isinstance(x, Drawable) and isinstance(x, Named), drawable_objects)
         
@@ -32,18 +31,10 @@ class StyleParser(Parser):
                 elif isinstance(obj, Polygon):
                     obj.set_style(default_style['fill'])
                     obj.frame().set_style(default_style['frame'])
-                elif isinstance(obj, OpenGraph):
+                else:
                     obj.set_style(default_style['line'])
 
-            
-               
-
         for style in styles:
-            if '_arrows_' in style.names():
-                for obj in named_drawables:
-                    if style.target_type() == 'fill' and isinstance(obj, Arrow):
-                        obj.set_style(style)
-
             style_names = style.names()
             for obj in named_drawables:
                 if not isinstance(obj, Arrow):

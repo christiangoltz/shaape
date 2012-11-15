@@ -64,7 +64,7 @@ class Shaape:
     def backends(self):
         return self.__backends
 
-def main(arguments):
+def main(arguments = None):
     parser = argparse.ArgumentParser(description=' - Asciiart to image processing')
     parser.add_argument('infile', type=str)
     parser.add_argument('-o', '--outfile', type=str)
@@ -75,4 +75,4 @@ def main(arguments):
     shaape.run()
 
 if __name__ == "__main__": # pragma: no cover
-    main(sys.argv)
+    main()
