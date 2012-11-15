@@ -195,8 +195,22 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.draw_open_graph(open_graph)
         self.__backend.export_to_file(TestUtils.OPEN_GRAPH_EMPTY_GENERATED_IMAGE)
         self.__backend.pop_surface()
-        assert TestUtils.images_equal(TestUtils.OPEN_GRAPH_EMPTY_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_SHADOW_EMPTY_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.OPEN_GRAPH_EMPTY_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_EMPTY_EXPECTED_IMAGE)
 
+        graph.add_edge(Node(10, 10), Node(20, 10))
+        graph.add_edge(Node(20, 10), Node(20, 20))
+        graph.add_edge(Node(20, 20), Node(10, 20))
+        graph.add_edge(Node(10, 20), Node(10, 10))
+        open_graph = OpenGraph(graph)
+        self.__backend.push_surface()
+        self.__backend.draw_open_graph(open_graph)
+        self.__backend.export_to_file(TestUtils.OPEN_GRAPH_CLOSED_GENERATED_IMAGE)
+        self.__backend.pop_surface()
+        assert TestUtils.images_equal(TestUtils.OPEN_GRAPH_CLOSED_GENERATED_IMAGE, TestUtils.OPEN_GRAPH_CLOSED_EXPECTED_IMAGE)
+
+
+
+        graph = nx.Graph()
         edge_list = [((10, 10), (40, 10)), ((40, 10), (60, 10)), ((40, 10), (50, 40)), ((50, 40), (20, 30)), ((50, 40), (50, 60))]
         for edge in edge_list:
             graph.add_edge(Node(*edge[0]), Node(*edge[1]))

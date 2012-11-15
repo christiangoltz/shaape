@@ -5,11 +5,13 @@ from shaape.opengraph import OpenGraph
 from shaape.polygon import Polygon
 from shaape.rightarrow import RightArrow
 from shaape.text import Text
+from shaape.translatable import Translatable
 from shaape.tests.utils import TestUtils
 import copy
 import nose
 import unittest
 from mock import MagicMock
+from nose.tools import *
 
 class TestDrawingBackend(unittest.TestCase):
     def setUp(self):
@@ -30,7 +32,7 @@ class TestDrawingBackend(unittest.TestCase):
         background = Background((400, 300)) 
         polygon = TestUtils.generate_test_polygon(seed = 0, points = 12, radius_range = (1, 10))
         polygon_copy = copy.deepcopy(polygon)
-        objects = [background, polygon]
+        objects = [background, polygon, Translatable()]
         self.__backend.draw_objects = MagicMock()
         self.__backend.create_canvas = MagicMock()
         self.__backend.export_to_file = MagicMock()
@@ -87,3 +89,13 @@ class TestDrawingBackend(unittest.TestCase):
 
         self.__backend.blur_surface.assert_called_once_with()
          
+    def test_abstracts(self):
+        assert_raises(NotImplementedError,  self.__backend.draw_polygon_shadow)
+        assert_raises(NotImplementedError,  self.__backend.draw_polygon)
+        assert_raises(NotImplementedError,  self.__backend.draw_open_graph_shadow)
+        assert_raises(NotImplementedError,  self.__backend.draw_open_graph)
+        assert_raises(NotImplementedError,  self.__backend.draw_text)
+        assert_raises(NotImplementedError,  self.__backend.push_surface)
+        assert_raises(NotImplementedError,  self.__backend.pop_surface)
+        assert_raises(NotImplementedError,  self.__backend.translate)
+        assert_raises(NotImplementedError,  self.__backend.blur_surface)

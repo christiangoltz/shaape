@@ -9,6 +9,7 @@ class TestPolygon(unittest.TestCase):
     def test_init(self):
         polygon = Polygon([Node(0, 0)])
         assert polygon != None
+        assert_raises(ValueError, Polygon, [])
 
     def test_contains(self):
         polygon = TestUtils.generate_test_polygon(seed = 0, points = 12, radius_range = (5, 10))

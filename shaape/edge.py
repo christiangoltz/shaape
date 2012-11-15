@@ -1,8 +1,7 @@
 class Edge:
-    def __init__(self, node1, node2, action = 'none'):
+    def __init__(self, node1, node2):
         self.__start = node1
         self.__end = node2
-        self.__action = action
         return
 
     def start(self):
@@ -10,7 +9,3 @@ class Edge:
 
     def end(self):
         return self.__end
-
-    def action(self):
-        return self.__action
-

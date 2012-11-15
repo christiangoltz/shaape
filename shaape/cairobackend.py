@@ -241,8 +241,7 @@ class CairoBackend(DrawingBackend):
         return
 
     def export_to_file(self, filename):
-        if filename != "":
-            self.__surfaces[-1].write_to_png(filename)
+        self.__surfaces[-1].write_to_png(filename)
         return
 
     def ctx(self):

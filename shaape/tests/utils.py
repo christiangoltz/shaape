@@ -23,6 +23,8 @@ class TestUtils(object):
     POLYGON_SHADOW_EXPECTED_IMAGE = 'shaape/tests/expected_images/polygon_shadow.png'
     OPEN_GRAPH_GENERATED_IMAGE = 'shaape/tests/generated_images/open_graph.png'
     OPEN_GRAPH_EXPECTED_IMAGE = 'shaape/tests/expected_images/open_graph.png'
+    OPEN_GRAPH_CLOSED_GENERATED_IMAGE = 'shaape/tests/generated_images/open_graph_circle.png'
+    OPEN_GRAPH_CLOSED_EXPECTED_IMAGE = 'shaape/tests/expected_images/open_graph_circle.png'
     OPEN_GRAPH_EMPTY_GENERATED_IMAGE = 'shaape/tests/generated_images/open_graph_empty.png'
     OPEN_GRAPH_EMPTY_EXPECTED_IMAGE = 'shaape/tests/expected_images/open_graph_empty.png'
     OPEN_GRAPH_SHADOW_GENERATED_IMAGE = 'shaape/tests/generated_images/open_graph_shadow.png'
