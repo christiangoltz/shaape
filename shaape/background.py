@@ -2,7 +2,7 @@ from drawable import Drawable
 from scalable import Scalable
 
 class Background(Drawable, Scalable):
-    def __init__(self, size):
+    def __init__(self, size = (0, 0)):
         self.__size = size
         return
     

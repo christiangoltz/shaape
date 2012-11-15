@@ -31,8 +31,10 @@ class StyleParser(Parser):
                 elif isinstance(obj, Polygon):
                     obj.set_style(default_style['fill'])
                     obj.frame().set_style(default_style['frame'])
-                else:
+                elif isinstance(obj, OpenGraph):
                     obj.set_style(default_style['line'])
+                else:
+                    pass
 
         for style in styles:
             style_names = style.names()
