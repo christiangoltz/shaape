@@ -36,3 +36,7 @@ upload-pipy:
 clean:
 	$(RM) $(BUILD_DIR)    
 	$(RM) shaape/*.pyc shaape/tests/*.pyc
+	$(RM) cover .coverage
+	$(RM) html
+	$(RM) shaape/tests/generated_images/*
+	$(RM) shaape/tests/input/empty.shaape.png

@@ -237,11 +237,12 @@ class CairoBackend(DrawingBackend):
         if isinstance(obj, Translatable):
             self.__ctx.translate(obj.position()[0], obj.position()[1])
         if isinstance(obj, Rotatable):
-            self.__ctx.rotate(math.radians(obj.get_angle()))
+            self.__ctx.rotate(math.radians(obj.angle()))
         return
 
     def export_to_file(self, filename):
-        self.__surfaces[-1].write_to_png(filename)
+        if filename != "":
+            self.__surfaces[-1].write_to_png(filename)
         return
 
     def ctx(self):

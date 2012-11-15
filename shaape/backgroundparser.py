@@ -7,14 +7,15 @@ class BackgroundParser(Parser):
         return
 
     def run(self, raw_data, drawable_objects):
-        max_len = len(max(raw_data, key=len))
         self._parsed_data = []
-        for line in raw_data:
-            if line[-1] == '\n':
-                line = line[:-1]
-            self._parsed_data.append(line + (max_len - len(line)) * ' ' + '\n')
-         
-        canvas_size = (len(self._parsed_data[0]) - 1, len(self._parsed_data))
         self._drawable_objects = drawable_objects
-        self._drawable_objects.append(Background(canvas_size))
+        if raw_data != []:
+            max_len = len(max(raw_data, key=len))
+            for line in raw_data:
+                if line[-1] == '\n':
+                    line = line[:-1]
+                self._parsed_data.append(line + (max_len - len(line)) * ' ' + '\n')
+            canvas_size = (len(self._parsed_data[0]) - 1, len(self._parsed_data))
+            self._drawable_objects = drawable_objects
+            self._drawable_objects.append(Background(canvas_size))
         return

@@ -3,5 +3,5 @@ class Scalable(object):
         pass
 
     def scale(self, scale):
-        return NotImplemented
+        raise NotImplementedError
 

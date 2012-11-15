@@ -21,7 +21,6 @@ class Polygon(Drawable, Named, Scalable):
         return
 
     def contains(self, point):
-        # point inside polygon
         n = len(self.__node_list)
         inside = False
         x,y = point
@@ -31,8 +30,8 @@ class Polygon(Drawable, Named, Scalable):
             if y > min(p1y,p2y):
                 if y <= max(p1y,p2y):
                     if x <= max(p1x,p2x):
-                        if p1y != p2y:
-                            xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+                        xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+                        print(p1x, p2x, xinters)
                         if p1x == p2x or x <= xinters:
                             inside = not inside
             p1x,p1y = p2x,p2y

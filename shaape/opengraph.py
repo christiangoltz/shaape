@@ -9,10 +9,7 @@ class OpenGraph(Drawable, Scalable):
     def __init__(self, graph = nx.Graph()):
         Drawable.__init__(self)
         self.style().set_target_type('line')
-        self.__graph = nx.Graph(graph)
-        for node in self.__graph.nodes():
-            if self.__graph.degree(node) == 0:
-                self.__graph.remove_node(node)
+        self.__graph = graph
         self.__generate_paths()
         return
 
@@ -58,12 +55,11 @@ class OpenGraph(Drawable, Scalable):
                 last_dir = direction
             elif direction == 'reverse':
                 if last_dir <> 'reverse':
-                    if len(path) > 0:
-                        copy_path = copy.copy(path)
-                        copy_path.append(end)
-                        if len(path) > 2 and (self.__graph.has_edge(copy_path[0], copy_path[-1]) or self.__graph.has_edge(copy_path[-1], copy_path[0])):
-                            copy_path.append(copy_path[0])
-                        paths.append(copy_path)
+                    copy_path = copy.copy(path)
+                    copy_path.append(end)
+                    if len(path) > 2 and (self.__graph.has_edge(copy_path[0], copy_path[-1]) or self.__graph.has_edge(copy_path[-1], copy_path[0])):
+                        copy_path.append(copy_path[0])
+                    paths.append(copy_path)
                 if len(path) > 0:
                     path.pop()
                 last_dir = direction

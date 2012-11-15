@@ -8,18 +8,15 @@ from textparser import TextParser
 from arrowparser import ArrowParser
 from backgroundparser import BackgroundParser
 from cairobackend import CairoBackend
+from drawingbackend import DrawingBackend
+from parser import Parser
 
 import argparse
 import sys
 import os
 
-def print_verbose(line):
-    sys.stderr.write(str(line))
-    sys.stderr.write(os.linesep)
-
 class Shaape:
-    def __init__(self, source, output_file):
-
+    def __init__(self, source = '-', output_file = ""):
         if source == '-':
             source = sys.stdin.readlines()
         else:
@@ -39,10 +36,14 @@ class Shaape:
         self.register_backend(CairoBackend())
 
     def register_parser(self, parser):
+        if not isinstance(parser, Parser):
+            raise TypeError
         self.__parsers.append(parser)
         return
 
     def register_backend(self, backend):
+        if not isinstance(backend, DrawingBackend):
+            raise TypeError
         self.__backends.append(backend)
         return
 
@@ -57,12 +58,21 @@ class Shaape:
         for backend in self.__backends:
             backend.run(drawable_objects, self.__outfile)
 
-if __name__ == "__main__":
+    def parsers(self):
+        return self.__parsers
+
+    def backends(self):
+        return self.__backends
+
+def main(arguments):
     parser = argparse.ArgumentParser(description=' - Asciiart to image processing')
     parser.add_argument('infile', type=str)
     parser.add_argument('-o', '--outfile', type=str)
-    args = parser.parse_args()
+    args = parser.parse_args(arguments)
     if None == args.outfile:
         args.outfile = args.infile + ".png"
     shaape = Shaape(args.infile, args.outfile)
     shaape.run()
+
+if __name__ == "__main__": # pragma: no cover
+    main(sys.argv)

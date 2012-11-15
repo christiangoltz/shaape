@@ -13,6 +13,8 @@ class TestUtils(object):
     BLUR_INPUT = 'shaape/tests/input/lena.png'
     BLUR_GENERATED_IMAGE = 'shaape/tests/generated_images/blur.png'
     BLUR_EXPECTED_IMAGE = 'shaape/tests/expected_images/blur.png'
+    EMPTY_INPUT = 'shaape/tests/input/empty.shaape'
+    EMPTY_OUTPUT = 'shaape/tests/generated_images/empty.png'
     EMPTY_CANVAS_GENERATED_IMAGE = 'shaape/tests/generated_images/empty_canvas.png'
     EMPTY_CANVAS_EXPECTED_IMAGE = 'shaape/tests/expected_images/empty_canvas.png'
     POLYGON_GENERATED_IMAGE = 'shaape/tests/generated_images/polygon.png'
