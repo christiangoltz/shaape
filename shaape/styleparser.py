@@ -33,8 +33,6 @@ class StyleParser(Parser):
                     obj.frame().set_style(default_style['frame'])
                 elif isinstance(obj, OpenGraph):
                     obj.set_style(default_style['line'])
-                else:
-                    pass
 
         for style in styles:
             style_names = style.names()
