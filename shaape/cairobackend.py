@@ -1,5 +1,6 @@
 import cairo
 import os
+import errno
 import math
 import numpy as np
 from scipy import ndimage
@@ -241,6 +242,12 @@ class CairoBackend(DrawingBackend):
         return
 
     def export_to_file(self, filename):
+        path = os.path.dirname(filename)
+        try:
+            os.makedirs(path)
+        except OSError as exception:
+            if exception.errno != errno.EEXIST:
+                raise
         self.__surfaces[-1].write_to_png(filename)
         return
 
