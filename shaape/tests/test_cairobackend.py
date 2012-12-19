@@ -16,6 +16,9 @@ import math
 import networkx as nx
 import operator
 import os
+import copy
+import errno
+from mock import patch
 
 class TestCairoBackend(unittest.TestCase):
 
@@ -67,6 +70,8 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.create_canvas()
         self.__backend.export_to_file(TestUtils.EMPTY_CANVAS_GENERATED_IMAGE)
         assert TestUtils.images_equal(TestUtils.EMPTY_CANVAS_GENERATED_IMAGE, TestUtils.EMPTY_CANVAS_EXPECTED_IMAGE)
+        with patch('os.makedirs', side_effect=OSError(errno.EPERM)):
+            assert_raises(OSError, self.__backend.export_to_file, TestUtils.EMPTY_CANVAS_GENERATED_IMAGE)
        
     def test_apply_dash(self):
         drawable = Drawable()
