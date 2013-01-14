@@ -10,7 +10,7 @@ class DrawingBackend(object):
 
     DEFAULT_SCALE = 1.2
     DEFAULT_CANVAS_SIZE = (0, 0)
-    DEFAULT_SHADOW_TRANSLATION = (4, 4)
+    DEFAULT_SHADOW_TRANSLATION = (2, 2)
 
     def __init__(self):
         self._canvas_size = DrawingBackend.DEFAULT_CANVAS_SIZE
