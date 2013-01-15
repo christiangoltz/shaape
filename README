@@ -71,6 +71,7 @@ Dependencies
 ------------
 - NetworkX python graph package
 - pycairo
+- scipy
 
 Installation
 ------------
