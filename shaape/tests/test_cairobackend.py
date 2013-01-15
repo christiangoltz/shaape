@@ -42,7 +42,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.ctx().paint()
         self.__backend.blur_surface()
         self.__backend.export_to_file(TestUtils.BLUR_GENERATED_IMAGE)
-        assert TestUtils.images_equal(TestUtils.BLUR_GENERATED_IMAGE, TestUtils.BLUR_EXPECTED_IMAGE)
+        assert TestUtils.images_equal(TestUtils.BLUR_GENERATED_IMAGE, TestUtils.BLUR_EXPECTED_IMAGE), TestUtils.BLUR_GENERATED_IMAGE + " != " + TestUtils.BLUR_EXPECTED_IMAGE
 
     def test_push_surface(self):
         assert len(self.__backend.surfaces()) == 0
