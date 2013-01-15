@@ -14,7 +14,7 @@ DOC_OPTS = --graph all
 SOURCES = $(wildcard shaape/*.py)
 ASCIIDOC_FILTER = asciidoc-filter/shaape-filter.conf
 BUILD_DIR = build
-.PHONY: install clean doc tests
+.PHONY: install install-filter clean doc tests
 install-filter: 
 	$(RM) $(BUILD_DIR)    
 	$(MKDIR) $(BUILD_DIR)
@@ -24,6 +24,8 @@ install-filter:
 	-asciidoc --filter remove shaape   
 	asciidoc --filter install $(BUILD_DIR)/shaape.zip   
 
+readme: install-filter README
+	asciidoc -a data-uri README
 tests:
 	$(TEST_BIN) $(TEST_OPTS) $(TEST_DIR)
 

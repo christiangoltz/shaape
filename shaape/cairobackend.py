@@ -32,7 +32,7 @@ class CairoBackend(DrawingBackend):
         dst[:,:,0] = ndimage.gaussian_filter(src[:,:,0], sigma=3)
         dst[:,:,1] = ndimage.gaussian_filter(src[:,:,1], sigma=3)
         dst[:,:,2] = ndimage.gaussian_filter(src[:,:,2], sigma=3)
-        dst[:,:,:] = map(lambda x: x * 0.3, dst[:,:,:])
+        dst[:,:,:] = map(lambda x: x * 0.5, dst[:,:,:])
         blurred_image = cairo.ImageSurface.create_for_data(dst, cairo.FORMAT_ARGB32, width, height)
         self.__ctx.set_source_surface(blurred_image)
         self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
