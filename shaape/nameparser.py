@@ -13,9 +13,18 @@ class NameParser(Parser):
         polygons = filter(lambda x: isinstance(x, Polygon), drawable_objects)
         texts = filter(lambda x: isinstance(x, Text), drawable_objects)
         
-        for polygon in polygons:
-            for text in texts:
-                position = (text.position()[0] + 0.5, text.position()[1] + 0.5)
-                if polygon.contains(position) == True:
-                    polygon.add_name(text.text())
+        for text in texts:
+            position = (text.position()[0] + 0.5, text.position()[1] + 0.5)
+            polygons_containing_this_text = [polygon for polygon in polygons if polygon.contains(position)]
+            if len(polygons_containing_this_text) == 1:
+                polygons_containing_this_text[0].add_name(text.text())
+            else:
+                for polygon in polygons_containing_this_text:
+                    not_directly_named = False
+                    for other_polygon in [p for p in polygons_containing_this_text if p != polygon]:
+                        if polygon.contains(other_polygon):
+                            not_directly_named = True
+                            break
+                    if not_directly_named == False:
+                        polygon.add_name(text.text())
         return

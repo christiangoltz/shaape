@@ -1,4 +1,5 @@
 from drawable import Drawable
+from edge import Edge
 from named import Named
 from scalable import Scalable
 import networkx as nx
@@ -20,21 +21,41 @@ class Polygon(Drawable, Named, Scalable):
         self.__node_list = reduce_path(self.__node_list)
         return
 
-    def contains(self, point):
-        n = len(self.__node_list)
-        inside = False
-        x,y = point
-        p1x,p1y = self.__node_list[0]
-        for i in range(n+1):
-            p2x,p2y = self.__node_list[i % n]
-            if y > min(p1y,p2y):
-                if y <= max(p1y,p2y):
-                    if x <= max(p1x,p2x):
-                        xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
-                        if p1x == p2x or x <= xinters:
-                            inside = not inside
-            p1x,p1y = p2x,p2y
-        return inside
+    def contains(self, obj):
+        if type(obj) == Polygon:
+            inside = False
+
+            # check if at least one point is inside the polygon
+            for p in obj.nodes():
+                if self.contains(p):
+                    inside = True
+                    break;
+            if not inside:
+                return False;
+
+            # check for edge intersections
+            outer_edges = [Edge(self.nodes()[i], self.nodes()[i + 1]) for i in range(0, len(self.nodes()) - 1)]
+            inner_edges = [Edge(obj.nodes()[i], obj.nodes()[i + 1]) for i in range(0, len(obj.nodes()) - 1)]
+            for inner_edge in inner_edges:
+                for outer_edge in outer_edges:
+                    if inner_edge.intersects(outer_edge):
+                        return False
+            return inside
+        else:
+            n = len(self.__node_list)
+            inside = False
+            x,y = obj
+            p1x,p1y = self.__node_list[0]
+            for i in range(n+1):
+                p2x,p2y = self.__node_list[i % n]
+                if y > min(p1y,p2y):
+                    if y <= max(p1y,p2y):
+                        if x <= max(p1x,p2x):
+                            xinters = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+                            if p1x == p2x or x <= xinters:
+                                inside = not inside
+                p1x,p1y = p2x,p2y
+            return inside
 
     def nodes(self):
         return self.__node_list
