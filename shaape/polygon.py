@@ -15,8 +15,8 @@ class Polygon(Drawable, Named, Scalable):
         if node_list == []:
             raise ValueError
         cycle_graph.add_cycle(node_list)
-        self.__frame = OpenGraph(cycle_graph)
         self.style().set_target_type('fill')
+        self.__frame = OpenGraph(cycle_graph)
         self.__frame.style().set_target_type('frame')
         self.__node_list = reduce_path(self.__node_list)
         return

@@ -5,6 +5,7 @@ from arrow import Arrow
 from polygon import Polygon
 from opengraph import OpenGraph
 from style import Style
+import re
 
 class StyleParser(Parser):
     def __init__(self):
@@ -22,7 +23,7 @@ class StyleParser(Parser):
             'arrow' : Style([], 'fill', [[0, 0, 0], 'flat']),}
 
         for style in styles:
-            if '_default_' in style.names():
+            if '_default_' in style.name_pattern():
                  default_style[style.target_type()] = style
         for obj in drawable_objects:
             if isinstance(obj, Drawable):
@@ -35,16 +36,16 @@ class StyleParser(Parser):
                     obj.set_style(default_style['line'])
 
         for style in styles:
-            style_names = style.names()
+            name_pattern = re.compile(style.name_pattern())
             for obj in named_drawables:
-                if not isinstance(obj, Arrow):
-                    if len(set(style_names) & set(obj.names())) > 0:
-                        if style.target_type() == 'fill' and isinstance(obj, Polygon):
-                            obj.set_style(style)
-                        elif style.target_type() == 'frame' and isinstance(obj, Polygon):
-                            obj.frame().set_style(style)
-                        elif style.target_type() == 'line' and isinstance(obj, OpenGraph):
-                            obj.set_style(style)
+                for name in obj.names():
+                    if name_pattern.match(name):
+                        if style.target_type() == 'frame' and isinstance(obj, Polygon):
+                            target_obj = obj.frame()
+                        else:
+                            target_obj = obj
+                        if style.priority() > target_obj.style().priority():
+                            target_obj.set_style(style)
 
         self._parsed_data = raw_data
         self._drawable_objects = drawable_objects

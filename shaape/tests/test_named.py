@@ -11,12 +11,12 @@ class TestNamed(unittest.TestCase):
 
     def test_add_name(self):
         named = Named()
-        assert named.names() == []
+        assert named.names() == ['']
         named.add_name("abc")
         assert "abc" in named.names()
-        assert len(named.names()) == 1
+        assert len(named.names()) == 2
         named.add_name("def")
         assert "abc" in named.names()
         assert "def" in named.names()
-        assert len(named.names()) == 2
+        assert len(named.names()) == 3
 

@@ -1,6 +1,6 @@
 class Named(object):
     def __init__(self):
-        self.__names = []
+        self.__names = ['']
         return
     
     def names(self):

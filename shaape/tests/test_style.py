@@ -43,9 +43,9 @@ class TestStyle(unittest.TestCase):
         style.set_target_type('fill')
         assert style.target_type() == 'fill'
 
-    def test_names(self):
-        style = Style(apply_to_names = ["abc", "def"])
-        assert style.names() == ["abc", "def"]
+    def test_name_pattern(self):
+        style = Style(name_pattern = "(abc)|(def)")
+        assert style.name_pattern() == "(abc)|(def)"
 
     def test_shadow(self):
         style = Style()
@@ -73,10 +73,10 @@ class TestStyle(unittest.TestCase):
         assert_raises(ValueError, style.set_width, 0)
 
     def test_cmp(self):
-        style1 = Style(['abc'], 'line', ['red', 'flat', 'no-shadow', 3])
-        style2 = Style([], '', [])
+        style1 = Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])
+        style2 = Style('', '', [])
         assert style1 != style2
-        style2.set_names(['abc'])
+        style2.set_name_pattern('abc')
         assert style1 != style2
         style2.set_target_type('line')
         assert style1 != style2
@@ -85,5 +85,5 @@ class TestStyle(unittest.TestCase):
         assert style1 != 1
 
     def test_repr(self):
-        assert str(Style(['abc'], 'line', ['red', 'flat', 'no-shadow', 3])) == "(names: ['abc'], target_type:line, options:{'color': [1, 0, 0], 'width': 3, 'shadow': 'off', 'type': 'flat'})"
+        assert str(Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])) == "(name_pattern: abc, target_type:line, options:{'color': [1, 0, 0], 'width': 3, 'shadow': 'off', 'type': 'flat'})", Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])
 

@@ -10,7 +10,8 @@ class OpenGraph(Drawable, Scalable, Named):
     def __init__(self, graph = nx.Graph()):
         Drawable.__init__(self)
         Named.__init__(self)
-        self.style().set_target_type('line')
+        self.style().set_target_type('fill')
+        self.add_name('_line_')
         self.__graph = graph
         self.__generate_paths()
         return

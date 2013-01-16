@@ -20,10 +20,8 @@
  \    / /     /   | cyl  |                         +--+-------->'v'
   \  / +-----+    +      +                         |
    \/              ******                          +-----------> v2
-
-- -
-< > ^| v|      -> <- | ^  | v
->                    v |  ^ |
 options:
-_default_: {fill:[[0, 1, 1]], frame:[[0.3, 0.3, 0.3, 1], dashed, 2], line:[[1, 0, 0, 0.8], dotted, 3], arrow:[[0.2, 0.7, 0.5, 0.7], flat]}
-flat, top: {fill:[[1, 0.7, 0, 0.3], no-shadow, flat], frame:[[0.3, 0.8, 0], dotted, 3]}
+".*": {fill:[[0, 1, 1]], frame:[[0.3, 0.3, 0.3, 1], dashed, 2], line:[red,dotted, 1], arrow:[[0.2, 0.7, 0.5, 0.7], flat]}
+"(flat)|(top)": {fill:[[1, 0.7, 0, 0.3], no-shadow, flat], frame:[[0.3, 0.8, 0], dotted, 3]}
+"c.*l": {fill:[[0.7, 0.7, 0, 0.3], no-shadow, flat], frame:[[0.3, 0.8, 0], dotted, 3]}
+

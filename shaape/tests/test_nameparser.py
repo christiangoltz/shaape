@@ -19,6 +19,6 @@ class TestNameParser(unittest.TestCase):
         raw_data = '123'
         objects = [polygon, text1, text2]
         parser.run(raw_data, objects)
-        assert polygon.names() == ["abc"]
+        assert polygon.names() == ['', 'abc']
 
         

@@ -12,7 +12,7 @@ class TestOpenGraph(unittest.TestCase):
     def test_init(self):
         opengraph = OpenGraph()
         assert opengraph != None
-        assert opengraph.style().target_type() == 'line'
+        assert opengraph.style().target_type() == 'fill'
         assert opengraph.paths() == []
 
     def test_graph(self):
