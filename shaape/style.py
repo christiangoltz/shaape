@@ -110,4 +110,4 @@ class Style(object):
             return cmp((self.__name_pattern, self.__target_type, self.__options),(other.name_pattern(), other.target_type(), other.options()))
 
     def __repr__(self):
-        return "(name_pattern: " + str(self.__name_pattern) + ", target_type:" + self.__target_type + ", options:" + str(self.__options) + ")"
+        return "(name_pattern: " + str(self.__name_pattern) + ", target_type:" + self.__target_type + ", options:" + str(self.__options) + ", prio:" + str(self.priority()) + ")"

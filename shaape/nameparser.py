@@ -14,6 +14,7 @@ class NameParser(Parser):
         texts = filter(lambda x: isinstance(x, Text), drawable_objects)
         
         for text in texts:
+            text.add_name(text.text())
             position = (text.position()[0] + 0.5, text.position()[1] + 0.5)
             polygons_containing_this_text = [polygon for polygon in polygons if polygon.contains(position)]
             if len(polygons_containing_this_text) == 1:

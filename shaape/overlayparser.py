@@ -74,15 +74,15 @@ class OverlayParser(Parser):
         crossing_right = 1.0 - (1.0 - OverlayParser.CROSSING_LENGTH) / 4.0
         crossing_left_curve = crossing_left + OverlayParser.CROSSING_LENGTH / 5.0
         crossing_right_curve = crossing_right - OverlayParser.CROSSING_LENGTH / 5.0
-        crossing_top = 0.5 + OverlayParser.CROSSING_HEIGHT / 2
+        crossing_top = 0.5 - OverlayParser.CROSSING_HEIGHT / 2
         self.__sub_overlays.append(Overlay([['~']], [Edge(Node(0, 0.5, 'curve'), Node(crossing_left, 0.5, 'curve')), Edge(Node(crossing_left, 0.5, 'curve'), Node(crossing_left_curve, crossing_top, 'curve')), Edge(Node(crossing_left_curve, crossing_top, 'curve'), Node(crossing_right_curve, crossing_top, 'curve')), Edge(Node(crossing_right_curve, crossing_top, 'curve'), Node(crossing_right, 0.5, 'curve')), Edge(Node(crossing_right, 0.5, 'curve'), Node(1, 0.5, 'curve'))]))
 
         for crossing_indicator in ['[', ']', '(', ')']:
-            self.__sub_overlays.append(Overlay([['-', crossing_indicator]], [Edge(Node(1, 0.5), Node(1.5, 0.5))]))
-            self.__sub_overlays.append(Overlay([[crossing_indicator, '-']], [Edge(Node(0.5, 0.5), Node(1, 0.5))]))
+            self.__sub_overlays.append(Overlay([['-', crossing_indicator]], [Edge(Node(1, 0.5, fusable = False), Node(1.5, 0.5, fusable = False))]))
+            self.__sub_overlays.append(Overlay([[crossing_indicator, '-']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 0.5, fusable = False))]))
 
-        self.__sub_overlays.append(Overlay([['~'], ['|']], [Edge(Node(0.5, 1), Node(0.5, 0.5))]))
-        self.__sub_overlays.append(Overlay([['|'], ['~']], [Edge(Node(0.5, 1), Node(0.5, 1.5))]))
+        self.__sub_overlays.append(Overlay([['~'], ['|']], [Edge(Node(0.5, 1, fusable = False), Node(0.5, 0.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['|'], ['~']], [Edge(Node(0.5, 1, fusable = False), Node(0.5, 1.5, fusable = False))]))
         return
 
     def cycle_len(self, cycle):

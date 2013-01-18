@@ -1,11 +1,13 @@
 from drawable import Drawable
 from translatable import Translatable
 from scalable import Scalable
+from named import Named
 
-class Text(Drawable, Translatable, Scalable):
+class Text(Drawable, Translatable, Scalable, Named):
     def __init__(self, text = "", position = (0, 0)):
         Drawable.__init__(self)
         Translatable.__init__(self, position)
+        Named.__init__(self)
         self.__text = text
         self.__font_size = 1
         return

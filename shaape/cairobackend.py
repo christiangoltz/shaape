@@ -225,7 +225,7 @@ class CairoBackend(DrawingBackend):
         self.__ctx.select_font_face("monospace", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
         xbearing, ybearing, width, height, xadvance, yadvance = self.__ctx.text_extents(text)
         self.__ctx.save()
-        self.__ctx.set_source_rgb(0.0, 0.0, 0.0)
+        self.apply_line(text_obj)
         self.__ctx.set_font_size(text_obj.font_size() / 0.7)
         fascent, fdescent, fheight, fxadvance, fyadvance = self.__ctx.font_extents()
         for cx, letter in enumerate(text):
