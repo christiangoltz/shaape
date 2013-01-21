@@ -19,6 +19,7 @@ class Polygon(Drawable, Named, Scalable):
         self.__frame = OpenGraph(cycle_graph)
         self.__frame.style().set_target_type('frame')
         self.__node_list = reduce_path(self.__node_list)
+        
         return
 
     def contains(self, obj):

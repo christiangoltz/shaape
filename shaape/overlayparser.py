@@ -28,7 +28,9 @@ class OverlayParser(Parser):
         self.__sub_overlays.append(Overlay([[None, '/'],['+', None]], [Edge(Node(1, 1), Node(0.5, 1.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([[None, '*'],['+', None]], [Edge(Node(1.5, 0.5, 'curve'), Node(0.5, 1.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([['*', None],[None, '+']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['+', None],[None, '+']], [Edge(Node(0.5, 0.5, fusable = False), Node(1.5, 1.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([[None, '+'],['*', None]], [Edge(Node(1.5, 0.5), Node(0.5, 1.5, 'curve', fusable = False))]))
+        self.__sub_overlays.append(Overlay([[None, '+'],['+', None]], [Edge(Node(1.5, 0.5, fusable = False), Node(0.5, 1.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([['+', None],[None, '*']], [Edge(Node(0.5, 0.5), Node(1.5, 1.5, 'curve', fusable = False))]))
         self.__sub_overlays.append(Overlay([['\\', None],[None, '+']], [Edge(Node(1, 1), Node(1.5, 1.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([['+', None],[None, '\\']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 1))]))
@@ -103,6 +105,7 @@ class OverlayParser(Parser):
 
         components = nx.connected_component_subgraphs(graph)
         closed_polygons = []
+        polygons = []
         for component in components:
             # create directed graph
             digraph = nx.DiGraph()
@@ -163,7 +166,7 @@ class OverlayParser(Parser):
             path_graph.add_nodes_from(component.nodes())
 
             for polygon in minimum_cycles:
-                drawable_objects.append(Polygon(polygon))
+                polygons.append(Polygon(polygon))
                 path_graph.add_cycle(polygon)
 
             remaining_graph = nx.difference(component, path_graph)
@@ -174,6 +177,23 @@ class OverlayParser(Parser):
                 remaining_components = nx.connected_component_subgraphs(remaining_graph)
                 for c in remaining_components:
                     drawable_objects.append(OpenGraph(c))
+
+        unordered_polygons = polygons
+        current_z_order = 0
+        while unordered_polygons:
+            for i in range(0, len(unordered_polygons)):
+                polygon1 = unordered_polygons[i]
+                for j in range(i + 1, len(unordered_polygons)):
+                    polygon2 = unordered_polygons[j]
+                    if polygon1.contains(polygon2):
+                        polygon2.set_z_order(polygon1.z_order() + 1)
+                    elif polygon2.contains(polygon1):
+                        polygon1.set_z_order(polygon2.z_order() + 1)
+            
+            current_z_order = current_z_order + 1
+            unordered_polygons = filter(lambda p: p.z_order < current_z_order, unordered_polygons)
+
+        drawable_objects = drawable_objects + polygons
 
         self._drawable_objects = drawable_objects
         self._parsed_data = raw_data

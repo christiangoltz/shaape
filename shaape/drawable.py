@@ -7,7 +7,15 @@ from style import Style
 class Drawable(object):
     def __init__(self):
         self.__style = Style([], '', [])
+        self.__z_order = 0
         return
+
+    def set_z_order(self, z_order):
+        self.__z_order = z_order
+        return
+
+    def z_order(self):
+        return self.__z_order
 
     def set_style(self, style):
         self.__style.merge(style)

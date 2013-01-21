@@ -79,42 +79,59 @@ class DrawingBackend(object):
         raise NotImplementedError
 
     def draw_objects(self, drawable_objects):
+        polygons = filter(lambda d: isinstance(d, Polygon) and not isinstance(d, Arrow), drawable_objects)
+        text = filter(lambda d: isinstance(d, Text), drawable_objects)
+        arrows = filter(lambda d: isinstance(d, Arrow), drawable_objects)
+        graphs = filter(lambda d: isinstance(d, OpenGraph), drawable_objects)
+        max_depth = max(polygons, key=lambda p: p.z_order()).z_order()
+        polygon_lists_per_depth = [[] for x in xrange(max_depth + 1)]
+        for p in polygons:
+           polygon_lists_per_depth[p.z_order()].append(p) 
+        i = 0
+        for polygon_list in polygon_lists_per_depth:
+            self.push_surface()
+            self.translate(*self.shadow_translation())
+            for p in polygon_list:
+                if p.style().shadow() == 'on':
+                    self.draw_polygon_shadow(p)
+            self.blur_surface()
+            self.pop_surface()
+            self.push_surface()
+            for p in polygon_list:
+                self.draw_polygon(p)
+            self.pop_surface()
+            self.push_surface()
+            for p in polygon_list:
+                    self.draw_open_graph(p.frame())
+            self.pop_surface()
+            i = i + 1
+
         self.push_surface()
         self.translate(*self.shadow_translation())
-        for drawable_object in drawable_objects:
-            if isinstance(drawable_object, Polygon):
-                if drawable_object.style().shadow() == 'on':
-                    self.draw_polygon_shadow(drawable_object)
-        for drawable_object in drawable_objects:
-            if isinstance(drawable_object, OpenGraph):
-                if drawable_object.style().shadow() == 'on':
-                    self.draw_open_graph_shadow(drawable_object)
+        for drawable_object in graphs:
+            if drawable_object.style().shadow() == 'on':
+                self.draw_open_graph_shadow(drawable_object)
         self.blur_surface()
         self.pop_surface()
         self.push_surface()
-        for drawable_object in drawable_objects:
-            if isinstance(drawable_object, Polygon) and not isinstance(drawable_object, Arrow):
-                self.draw_polygon(drawable_object)
+        for drawable_object in graphs:
+            self.draw_open_graph(drawable_object)
+        self.pop_surface()
+
+        self.push_surface()
+        self.translate(*self.shadow_translation())
+        for drawable_object in arrows:
+            if drawable_object.style().shadow() == 'on':
+                self.draw_polygon_shadow(drawable_object)
+        self.blur_surface()
         self.pop_surface()
         self.push_surface()
-        for drawable_object in drawable_objects:
-            if isinstance(drawable_object, Polygon) and not isinstance(drawable_object, Arrow):
-                self.draw_open_graph(drawable_object.frame())
+        for drawable_object in arrows:
+            self.draw_polygon(drawable_object)
         self.pop_surface()
+
         self.push_surface()
-        for drawable_object in drawable_objects:
-            if isinstance(drawable_object, OpenGraph):
-                self.draw_open_graph(drawable_object)
-        self.pop_surface()
-        self.push_surface()
-        for drawable_object in drawable_objects:
-            if isinstance(drawable_object, Arrow):
-                self.draw_polygon(drawable_object)
-#                self.draw_open_graph(drawable_object.frame())
-        self.pop_surface()
-        self.push_surface()
-        for drawable_object in drawable_objects:
-            if isinstance(drawable_object, Text):
-                self.draw_text(drawable_object)
+        for drawable_object in text:
+            self.draw_text(drawable_object)
         self.pop_surface()
         return

@@ -43,13 +43,11 @@ class StyleParser(Parser):
             for obj in named_drawables:
                 for name in obj.names():
                     if name_pattern.match(name):
-			print(name, style)
-			print("match")
                         if style.target_type() == 'frame' and isinstance(obj, Polygon):
                             target_obj = obj.frame()
                         elif style.target_type() == 'text' and isinstance(obj, Text):
                             target_obj = obj
-                        elif style.target_type() == 'fill':
+                        elif style.target_type() == 'fill' and not isinstance(obj, Text):
                             target_obj = obj
                         else:
                             target_obj = None
