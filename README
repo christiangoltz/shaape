@@ -72,6 +72,12 @@ Dependencies
 - NetworkX python graph package
 - pycairo
 - scipy
+- pyyaml
+- networkx
+- for development:
+ - nose
+ - coverage
+ - mock
 
 Installation
 ------------

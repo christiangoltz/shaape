@@ -85,5 +85,5 @@ class TestStyle(unittest.TestCase):
         assert style1 != 1
 
     def test_repr(self):
-        assert str(Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])) == "(name_pattern: abc, target_type:line, options:{'color': [1, 0, 0], 'width': 3, 'shadow': 'off', 'type': 'flat'})", Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])
+        assert str(Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])) == "(name_pattern: abc, target_type:line, options:{'color': [1, 0, 0], 'width': 3, 'shadow': 'off', 'type': 'flat'}, prio:-1)", Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])
 

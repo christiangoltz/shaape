@@ -20,10 +20,10 @@ class StyleParser(Parser):
         
         default_style = {
             'fill' : Style([], 'fill', [[0.9 ,0.9, 0.9], 'gradient']),
-            'frame' : Style([], 'frame', [[0, 0, 0], 'solid', 2]),
-            'line' : Style([], 'fill', [[0, 0, 0, 1], 'solid', 2]),
+            'frame' : Style([], 'frame', [[0, 0, 0], 'solid', 1]),
+            'line' : Style([], 'fill', [[0, 0, 0, 1], 'solid', 1]),
             'arrow' : Style([], 'fill', [[0, 0, 0], 'flat']),
-            'text' : Style([], 'text', [[0, 0, 0], 'solid', 2])}
+            'text' : Style([], 'text', [[0, 0, 0]])}
 
         for obj in drawable_objects:
             if isinstance(obj, Drawable):
@@ -43,6 +43,8 @@ class StyleParser(Parser):
             for obj in named_drawables:
                 for name in obj.names():
                     if name_pattern.match(name):
+			print(name, style)
+			print("match")
                         if style.target_type() == 'frame' and isinstance(obj, Polygon):
                             target_obj = obj.frame()
                         elif style.target_type() == 'text' and isinstance(obj, Text):

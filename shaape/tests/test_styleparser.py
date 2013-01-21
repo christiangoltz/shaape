@@ -19,7 +19,7 @@ class TestStyleParser(unittest.TestCase):
         parser = StyleParser()
         arrow_style = Style('_arrow_', 'fill', ['red'], 1)
         fill_style = Style('.*', 'fill', ['blue'], 0)
-        line_style = Style('_line_', 'line', ['green'], 2)
+        line_style = Style('_line_', 'fill', ['green'], 2)
         frame_style = Style('.*', 'frame', [[0.1, 0.2, 0.3]], 0)
         custom_fill_style = Style('(abc)|(def)', 'fill', [[0.3, 0.2, 0.3]], 3)
         custom_line_style = Style('line', 'fill', [[0.4, 0.3, 0.3]], 3)
