@@ -73,6 +73,7 @@ def main(arguments = None):
         args.outfile = args.infile + ".png"
     shaape = Shaape(args.infile, args.outfile)
     shaape.run()
+    print(" ")
 
 if __name__ == "__main__": # pragma: no cover
     main()

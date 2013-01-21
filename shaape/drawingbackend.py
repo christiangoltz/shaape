@@ -83,8 +83,11 @@ class DrawingBackend(object):
         text = filter(lambda d: isinstance(d, Text), drawable_objects)
         arrows = filter(lambda d: isinstance(d, Arrow), drawable_objects)
         graphs = filter(lambda d: isinstance(d, OpenGraph), drawable_objects)
-        max_depth = max(polygons, key=lambda p: p.z_order()).z_order()
-        polygon_lists_per_depth = [[] for x in xrange(max_depth + 1)]
+        if polygons:
+            max_depth = max(polygons, key=lambda p: p.z_order()).z_order()
+            polygon_lists_per_depth = [[] for x in xrange(max_depth + 1)]
+        else:
+            polygon_lists_per_depth = []
         for p in polygons:
            polygon_lists_per_depth[p.z_order()].append(p) 
         i = 0
