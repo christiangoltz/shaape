@@ -31,10 +31,10 @@ class TestOverlayParser(unittest.TestCase):
         assert type(parser.drawable_objects()[1]) == OpenGraph
 
         parser.run(["++","++"],[])
-        assert len(parser.drawable_objects()) == 1
+        assert len(parser.drawable_objects()) == 3, "got " + str(len(parser.drawable_objects())) + " drawable objects"
         assert type(parser.drawable_objects()[0]) == Polygon
 
         parser.run(["+--+", "| ++", "| ++", "+--+"],[])
-        assert len(parser.drawable_objects()) == 2
+        assert len(parser.drawable_objects()) == 6, "got " + str(len(parser.drawable_objects())) + " drawable objects"
         assert type(parser.drawable_objects()[0]) == Polygon
         assert type(parser.drawable_objects()[1]) == Polygon
