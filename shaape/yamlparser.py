@@ -16,9 +16,9 @@ class YamlParser(Parser):
             raw_data.append('\n')
             options = yaml.load(''.join(raw_data[options_start+1:-1]))
             priority = 0
-            for (key,value) in options.items():
-                names = key
-                for (target_type, option) in value.items():
+            for item in options:
+                names = item.keys()[0]
+                for (target_type, option) in item[names].items():
                     drawable_objects.append(Style(names, target_type, option, priority))
                 priority = priority + 1
             self._parsed_data = raw_data[0:options_start]

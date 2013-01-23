@@ -95,9 +95,9 @@ class CairoBackend(DrawingBackend):
         self.__ctx.set_line_join (cairo.LINE_JOIN_ROUND)
         width =  drawable.style().width() * self._scale
         if len(drawable.style().color()) == 3:
-            self.__ctx.set_source_rgb(*(drawable.style().color()))
+            self.__ctx.set_source_rgb(*(drawable.style().color()[0]))
         else:
-            self.__ctx.set_source_rgba(*(drawable.style().color()))
+            self.__ctx.set_source_rgba(*(drawable.style().color()[0]))
 
         self.apply_dash(drawable)
         self.__ctx.set_line_width(width)
@@ -106,23 +106,25 @@ class CairoBackend(DrawingBackend):
     def apply_fill(self, drawable):
         minimum = drawable.min()
         maximum = drawable.max()
-        color =  drawable.style().color()
+        colors =  drawable.style().color()
         if drawable.style().fill_type() == 'gradient':
             linear_gradient = cairo.LinearGradient(minimum[0], minimum[1], maximum[0], maximum[1])
-            if len(color) == 4:
-                linear_gradient.add_color_stop_rgba(0, 1,1,1,color[3])
-                color = map(lambda x: 0.6 * x, color[0:3]) + [color[3]]
-                linear_gradient.add_color_stop_rgba(1, *color)
-            else:
-                linear_gradient.add_color_stop_rgb(0, 1,1,1)
-                color = map(lambda x: 0.6 * x, color[0:3])
-                linear_gradient.add_color_stop_rgb(1, *color)
+            n = 0
+            if len(colors) < 2:
+                colors.insert(0, [1, 1, 1])
+            for color in colors:
+                stop = n * (1.0 / (len(colors) - 1))
+                if len(color) == 4:
+                    linear_gradient.add_color_stop_rgba(stop, *color)
+                else:
+                    linear_gradient.add_color_stop_rgb(stop, *color)
+                n = n + 1
             self.__ctx.set_source(linear_gradient)
         else:
-            if len(color) == 4:
-                self.__ctx.set_source_rgba(*color)
+            if len(colors[0]) == 4:
+                self.__ctx.set_source_rgba(*colors[0])
             else:
-                self.__ctx.set_source_rgb(*color)
+                self.__ctx.set_source_rgb(*colors[0])
     
     def draw_polygon(self, polygon):
         self.__ctx.save()

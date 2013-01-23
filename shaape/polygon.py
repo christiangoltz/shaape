@@ -10,16 +10,16 @@ class Polygon(Drawable, Named, Scalable):
     def __init__(self, node_list):
         Drawable.__init__(self)
         Named.__init__(self)
+        node_list = reduce_path(node_list)
         self.__node_list = node_list
         cycle_graph = nx.Graph()
         if node_list == []:
             raise ValueError
-        cycle_graph.add_cycle(node_list)
+        for n in range(1, len(node_list)):
+            cycle_graph.add_edge(node_list[n - 1], node_list[n])
         self.style().set_target_type('fill')
         self.__frame = OpenGraph(cycle_graph)
         self.__frame.style().set_target_type('frame')
-        self.__node_list = reduce_path(self.__node_list)
-        
         return
 
     def contains(self, obj):

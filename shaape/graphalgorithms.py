@@ -11,7 +11,7 @@ def reduce_path(nodes):
     if len(new_nodes) > 2 and new_nodes[0] == new_nodes[-1]:
         first_edge = new_nodes[1] - new_nodes[0]
         last_edge = new_nodes[-1] - new_nodes[-2]
-        if has_same_direction(first_edge, last_edge):
+        if new_nodes[-1].fusable() == True and has_same_direction(first_edge, last_edge):
             del new_nodes[-1]
             new_nodes[0] = new_nodes[-1]
     return new_nodes
