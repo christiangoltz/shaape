@@ -10,7 +10,7 @@ class TextParser(Parser):
 
     def run(self, raw_data, drawable_objects):
         quoted_string_pattern = re.compile('\'([^\']+)\'')
-        unquoted_string_pattern = re.compile('([\w]{2,})')
+        unquoted_string_pattern = re.compile('(([\w]{2,})|([^\Wv]))')
         line_number = 0
         for line in raw_data:
             matches = quoted_string_pattern.finditer(line)
@@ -22,7 +22,8 @@ class TextParser(Parser):
             for match in matches:
                 span = match.span()
                 line = line[:span[0]] + ''.join([' ' for n in range(span[0], span[1])]) + line[span[1] :]
-                drawable_objects.append(Text(match.group(1), (span[0], line_number))) 
+                text = Text(match.group(1), (span[0], line_number))
+                drawable_objects.append(text) 
             raw_data[line_number] = line
             line_number = line_number + 1
                 

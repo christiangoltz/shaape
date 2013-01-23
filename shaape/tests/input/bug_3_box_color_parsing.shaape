@@ -12,5 +12,5 @@
 +-----------+
 
 options:
-boxb: {fill:[[1,1,1],flat]}
-boxc: {fill:[[1,0,0],flat]}
+- boxb: {fill:[[1,1,1],flat]}
+- boxc: {fill:[[1,0,0],flat]}
