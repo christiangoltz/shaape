@@ -118,7 +118,7 @@ class TestCairoBackend(unittest.TestCase):
         drawable = Drawable()
         self.__backend.create_canvas()
         drawable.style().set_width(4.5)  
-        drawable.style().set_color((0.1, 0.2, 0.3)) 
+        drawable.style().add_color((0.1, 0.2, 0.3)) 
         self.__backend.apply_line(drawable)
         assert self.__backend.ctx().get_line_cap() == cairo.LINE_CAP_BUTT 
         assert self.__backend.ctx().get_line_join() == cairo.LINE_JOIN_ROUND 
@@ -126,7 +126,8 @@ class TestCairoBackend(unittest.TestCase):
         assert type(self.__backend.ctx().get_source()) == cairo.SolidPattern
         assert self.__backend.ctx().get_source().get_rgba() == (0.1, 0.2, 0.3, 1.0)
         
-        drawable.style().set_color((0.1, 0.2, 0.3, 0.4)) 
+        drawable = Drawable()
+        drawable.style().add_color((0.1, 0.2, 0.3, 0.4)) 
         self.__backend.apply_line(drawable)
         assert type(self.__backend.ctx().get_source()) == cairo.SolidPattern
         assert self.__backend.ctx().get_source().get_rgba() == (0.1, 0.2, 0.3, 0.4)
@@ -138,22 +139,26 @@ class TestCairoBackend(unittest.TestCase):
     def test_apply_fill(self):
         drawable = Polygon([Node(0,0)])
         self.__backend.create_canvas()
-        drawable.style().set_color((0.1, 0.2, 0.3)) 
+        drawable.style().add_color((0.1, 0.2, 0.3)) 
         drawable.style().set_type('solid') 
         self.__backend.apply_fill(drawable)
         assert type(self.__backend.ctx().get_source()) == cairo.SolidPattern
         assert self.__backend.ctx().get_source().get_rgba() == (0.1, 0.2, 0.3, 1.0)
 
-        drawable.style().set_color((0.1, 0.2, 0.3, 0.4)) 
+        drawable = Polygon([Node(0,0)])
+        drawable.style().add_color((0.1, 0.2, 0.3, 0.4)) 
         self.__backend.apply_fill(drawable)
         assert self.__backend.ctx().get_source().get_rgba() == (0.1, 0.2, 0.3, 0.4)
 
-        drawable.style().set_color((0.1, 0.2, 0.3)) 
+        drawable = Polygon([Node(0,0)])
+        drawable.style().add_color((0.1, 0.2, 0.3)) 
         drawable.style().set_type('gradient') 
         self.__backend.apply_fill(drawable)
         assert type(self.__backend.ctx().get_source()) == cairo.LinearGradient
 
-        drawable.style().set_color((0.1, 0.2, 0.3, 0.4)) 
+        
+        drawable = Polygon([Node(0,0)])
+        drawable.style().add_color((0.1, 0.2, 0.3, 0.4)) 
         drawable.style().set_type('gradient') 
         self.__backend.apply_fill(drawable)
         assert type(self.__backend.ctx().get_source()) == cairo.LinearGradient

@@ -21,23 +21,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 About Shaape
 ------------
-Shaape processes ascii drawings of diagrams and converts them to pixel or
-vector graphics. Shaape is meant to be used inside asciidoc documents to 
-enable writers to easily draw diagrams inside their asciidoc source documents.
+Shaape processes ascii drawings of diagrams and converts them to pixel
+graphics. Shaape is meant to be used inside raw ascii documents (like asciidoc
+or markdown) to enable writers to easily draw diagrams inside their source 
+documents.
 
 The word *Shaape* itself is a neologism from *shape* and *ascii art*.
 
 Why to use Shaape
 ~~~~~~~~~~~~~~~~~
-There are already other projects, namely ditaa and aafigure, out there that
-have a similar functionality as Shaape. However those are either inconsistent
-between source and image, do not support diagonal lines or encourage you to use 
-too much markup inside the drawing.
+There are already other projects for asciidoc, namely ditaa and aafigure,
+out there that have a similar goal as Shaape. 
+However those are either inconsistent between source and image, 
+do not support diagonal lines or encourage you to use too much markup inside
+the drawing.
 
 Shaape supports a very natural form of ascii drawing (see the examples below)
-and uses *absolutely no special markup* inside the drawing. Special markup
-inside drawings makes those hard to read in the asciidoc document and thus have
-to be avoided.
+and uses *no special markup* inside the drawing. By special markup, I mean
+symbols, that only have a meaning in the converted graphic and don't add
+information to the ascii drawing itself.
+Special markup inside drawings makes those hard to read in the source document
+and thus have to be avoided.
 
 This way Shaape encourages you to keep an easy to read and clean drawing style
 and makes sure your diagrams are consistent between the asciidoc source
@@ -45,7 +49,7 @@ document and it's output.
 
 What is supported
 ~~~~~~~~~~~~~~~~~
-- abritrary shapes
+- arbitrary shapes
 - arbitrary connected lines
 - lines ending with arrows
 - gradient filled polygons
@@ -63,8 +67,8 @@ What will be supported
 
 What will *not* be supported
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-- rotated text: cannot be displayed in ascii art)
-- circles: cannot be displayed consistently in ascii art)
+- rotated text: (cannot be displayed in ascii art)
+- circles: (cannot be displayed consistently in ascii art)
 - svg rendering
 
 Dependencies
@@ -74,7 +78,8 @@ Dependencies
 - scipy
 - pyyaml
 - networkx
-- for development:
+
+- additionally for development:
  - nose
  - coverage
  - mock
@@ -174,50 +179,71 @@ Styles
 Although I basically want to disencourage you using fancy colors and styles,
 there may be some use cases when you need it.
 
-A style defines how an object is draw. Styles can be defined in a special
+A style defines how an object is drawn. Styles can be defined in a special
 area below the diagram. This area starts with the identifier 'options:'.
 On the next line the style description starts. The syntax for the style
 description is http://www.yaml.org/spec/1.2/spec.html[YAML].
 
-The style description should contain mappings from box names to a mapping of
-attributes:
+==== Shaape Identification
+To apply a style to an element in the drawing, you need to give it a name.
+This is possible for all polygons by simply writing some text as a name
+inside it. As most polygons naturally contain text, this text should be
+'abused' as it's name.
 
-`boxname: { fill: [ red, flat], line : [ blue, dashed], no-shadow }`
+If a polygon can contain as many text as you want it to. The polygons name
+is thus defined as a list of all the single words found inside it.
 
-The key of the outer mapping can consist of different names:
+If you want the polygon to have a name consisting of more than one word,
+then you have to quote the words.
 
-`box1,box2,box3: { fill: [ red, flat], line: [ blue, dashed, 3], no-shadow }`
+==== Style definition
+The actual style definition always is a yaml list element consisting itself
+of a dictionary with one element. The key of this element represents the names
+of the shapes that it should be applied to.
+The key should always be quoted. It is interpreted as a regular expression and
+matched against the names of all polygons. Polygons with matching names get
+this style applied.
 
-.List of style attributes
-- fill can contain:
-    * red, blue, green for the respective color
-    * list of 3 or 4 elements ranging from 0.0 to 1.0,
-      e.g. `[0.2, 0.3, 0.4, 0.5]`, for the respective rgba color
-    * flat, gradient
-- line can contain:
-    * dashed, dotted, solid
-    * the same color mechanism as fills
-    * an integer or float describing the line width
+` - "boxname[0-9]": {fill: [red, flat], frame: [blue, dashed], no-shadow}`
 
-["shaape"]
----------------------------------------------------------------------
+==== Multiple style application & Style order
+If a polygon matches multiple style definitions, then all matching styles are
+applied sequentially from top to bottom of the style definition. That way you
+can use a default style for some attributes and change specific attributes for
+some polygons:
 
-               +-------+
- +-----+      /flatbox/
- | abc |     /       /
- +-----+--->+-------+
-                    | +---+
-                    v |   |
-                  +---+   |
-                 /  style |
-                +---------+
+` - ".*": {fill: [red, flat], frame: [blue, dashed], no-shadow}`
+` - "boxname[0-9]": {fill: [blue]}`
 
+==== Default Styles
+The global default style for all elements can be set with ".*" as a style key.
+As arrows and lines don't have any associated identifiers, they need a special
+name for their default style. To set the default style for arrows, 
+use "_arrow_" as key and to set the default style for lines, use "_line_".
 
+==== Possible style attributes
+The style definition itself contains a yaml dictionary, that may have 3 keys:
+- fill: defines style properties for filling a polygon, arrow or line
+- frame: defines the style properties for the frame of a polygon or arrow
+- text: defines the style properties for text
 
-options:
-abc: {fill: [green], frame: [[0.6, 0.4, 0.4, 0.7], 3]}
-flatbox,style: {fill: [[0.9, 0.9, 0.7, 0.3], flat, no-shadow], frame: [[0.2, 0.2, 0.0, 0.9], 2]}
----------------------------------------------------------------------
+===== Fill
+Fill may contain:
+- shadow / no-shadow: selects wether the object drops a shadow 
+                      (default is shadow)
+- solid / dashed / dotted / dash-dotted: selects the line style (only applied
+                                         to lines, default is solid)
+- multiple color definitions, where a color is:
+ - red / green / blue
+ - a list with three floats from 0.0 to 1.0, representing RGB 
+   (e.g. [0.5, 0.5, 0,.5])
+ - a list with four floats from 0.0 to 1.0, representing RGBA
+ Note:: If you provide more than one color, then the polygon will use a
+        gradient for it's fill.
+
+===== Frame
+
+===== Text
 
 ==== Advanced Example
 

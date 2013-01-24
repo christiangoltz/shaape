@@ -9,7 +9,7 @@ class TestStyle(unittest.TestCase):
         style = Style()
         assert style != None
         style = Style(option_list = ['red', 'flat', 'no-shadow', 3])
-        assert style.color() == Style.COLORS['red']
+        assert style.color() == [Style.COLORS['red']]
         assert style.fill_type() == 'flat'
         assert style.shadow() == 'off'
         assert style.width() == 3
@@ -30,7 +30,7 @@ class TestStyle(unittest.TestCase):
         style1 = Style(option_list = ['red', 'flat', 'no-shadow', 3])
         style2 = Style(option_list = ['blue', 'dotted'])
         style1.merge(style2)
-        assert style1.color() == Style.COLORS['blue']
+        assert style1.color() == [Style.COLORS['blue']]
         assert style1.fill_type() == 'dotted'
         assert style1.shadow() == 'off'
         assert style1.width() == 3
@@ -58,11 +58,12 @@ class TestStyle(unittest.TestCase):
     def test_color(self):
         style = Style()
         assert style.color() == Style.DEFAULT_STYLE['color']
-        style.set_color((0.1, 0.2, 0.3))
-        assert style.color() == (0.1, 0.2, 0.3)
-        style.set_color((0.1, 0.2, 0.3, 0.4))
-        assert style.color() == (0.1, 0.2, 0.3, 0.4)
-        assert_raises(ValueError, style.set_color, (0.1, 0.2))
+        style.add_color((0.1, 0.2, 0.3))
+        assert style.color() == [(0.1, 0.2, 0.3)]
+        style = Style()
+        style.add_color((0.1, 0.2, 0.3, 0.4))
+        assert style.color() == [(0.1, 0.2, 0.3, 0.4)]
+        assert_raises(ValueError, style.add_color, (0.1, 0.2))
         
     def test_width(self):
         style = Style()
@@ -85,5 +86,5 @@ class TestStyle(unittest.TestCase):
         assert style1 != 1
 
     def test_repr(self):
-        assert str(Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])) == "(name_pattern: abc, target_type:line, options:{'color': [1, 0, 0], 'width': 3, 'shadow': 'off', 'type': 'flat'}, prio:-1)", Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])
+        assert str(Style('abc', 'fill', ['red', 'flat', 'no-shadow', 3])) == "(name_pattern: abc, target_type:fill, options:{'color': [[1, 0, 0]], 'width': 3, 'shadow': 'off', 'type': 'flat'}, prio:-1)", Style('abc', 'fill', ['red', 'flat', 'no-shadow', 3])
 
