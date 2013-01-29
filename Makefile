@@ -8,6 +8,11 @@ TEST_BIN = nosetests
 TEST_OPTS = --with-coverage --cover-package=shaape --cover-branches --cover-html
 TEST_DIR = shaape/tests
 
+PROFILE_BIN = nosetests
+PROFILE_FILE = prof_stats.tmp
+PROFILE_IMAGE = prof_stats.png
+PROFILE_OPTS = --with-profile --profile-stats-file=$(PROFILE_FILE) $(TEST_DIR)
+
 DOC_BIN = epydoc
 DOC_OPTS = --graph all
 
@@ -28,6 +33,10 @@ readme: install-filter README
 	asciidoc -a data-uri README
 tests:
 	$(TEST_BIN) $(TEST_OPTS) $(TEST_DIR)
+
+profile:
+	$(PROFILE_BIN) $(PROFILE_OPTS)
+	hotshot2dot $(PROFILE_FILE) | dot -Tpng -o $(PROFILE_IMAGE)
 
 doc:
 	$(DOC_BIN) $(DOC_OPTS) $(SOURCES)
