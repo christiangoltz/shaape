@@ -23,9 +23,10 @@ class NameParser(Parser):
                 for polygon in polygons_containing_this_text:
                     not_directly_named = False
                     for other_polygon in [p for p in polygons_containing_this_text if p != polygon]:
-                        if polygon.contains(other_polygon):
+                        if polygon.contains(other_polygon): # pragma: no cover
                             not_directly_named = True
                             break
+
                     if not_directly_named == False:
                         polygon.add_name(text.text())
         return

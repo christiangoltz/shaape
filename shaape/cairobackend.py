@@ -94,7 +94,7 @@ class CairoBackend(DrawingBackend):
         self.__ctx.set_line_cap(cairo.LINE_CAP_BUTT)
         self.__ctx.set_line_join (cairo.LINE_JOIN_ROUND)
         width =  drawable.style().width() * self._scale
-        if len(drawable.style().color()) == 3:
+        if len(drawable.style().color()[0]) == 3:
             self.__ctx.set_source_rgb(*(drawable.style().color()[0]))
         else:
             self.__ctx.set_source_rgba(*(drawable.style().color()[0]))

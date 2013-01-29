@@ -53,8 +53,10 @@ class TestDrawingBackend(unittest.TestCase):
         opengraph2 = copy.deepcopy(opengraph1)
         opengraph2.style().set_shadow('off')
         text = Text()
-        arrow = RightArrow()
-        objects = [polygon1, polygon2, opengraph1, opengraph2, text, arrow]
+        arrow1 = RightArrow()
+        arrow2 = RightArrow()
+        arrow2.style().set_shadow('off')
+        objects = [polygon1, polygon2, opengraph1, opengraph2, text, arrow2, arrow1]
         self.__backend.push_surface = MagicMock()
         self.__backend.pop_surface = MagicMock()
         self.__backend.draw_polygon_shadow = MagicMock()
@@ -68,14 +70,15 @@ class TestDrawingBackend(unittest.TestCase):
         assert self.__backend.push_surface.call_count == self.__backend.pop_surface.call_count
         assert self.__backend.translate.call_count == 3
 
-        assert self.__backend.draw_polygon.call_count == 3
+        assert self.__backend.draw_polygon.call_count == 4
         self.__backend.draw_polygon.assert_any_call(polygon1)
         self.__backend.draw_polygon.assert_any_call(polygon2)
-        self.__backend.draw_polygon.assert_any_call(arrow)
+        self.__backend.draw_polygon.assert_any_call(arrow1)
+        self.__backend.draw_polygon.assert_any_call(arrow2)
 
         assert self.__backend.draw_polygon_shadow.call_count == 2
         self.__backend.draw_polygon_shadow.assert_any_call(polygon1)
-        self.__backend.draw_polygon_shadow.assert_any_call(arrow)
+        self.__backend.draw_polygon_shadow.assert_any_call(arrow1)
 
         assert self.__backend.draw_open_graph.call_count == 4
         self.__backend.draw_open_graph.assert_any_call(polygon1.frame())

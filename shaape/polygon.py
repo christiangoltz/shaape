@@ -71,11 +71,7 @@ class Polygon(Drawable, Named, Scalable):
         for n in range(0, len(self.__node_list)):
             node = self.__node_list[n]
             self.__node_list[n] = node * scale
-        if isinstance(self.__frame, Scalable):
-            self.__frame.scale(scale)
+        self.__frame.scale(scale)
 
     def frame(self):
         return self.__frame
-
-    def set_frame(self, frame):
-        self.__frame = frame
