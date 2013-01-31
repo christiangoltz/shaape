@@ -2,7 +2,7 @@ import math
 
 class Node(object):
     def __init__(self, x, y, style = 'miter', fusable = True):
-        self.__position = (x, y)
+        self.m_position = (x, y)
         if style in ['miter', 'curve']:
             self.__style = style
         else:
@@ -11,7 +11,7 @@ class Node(object):
         return
 
     def position(self):
-        return self.__position
+        return self.m_position
 
     def fusable(self):
         return self.__fusable
@@ -25,51 +25,48 @@ class Node(object):
     
     def __getitem__(self, index):
         if index == 0 or index == 1:
-    		return self.__position[index]
+    		return self.m_position[index]
         raise IndexError
 
     def __add__(self, other):
-		return Node(self.position()[0] + other[0], self.position()[1] + other[1], self.style(), self.fusable())
+		return Node(self.m_position[0] + other[0], self.m_position[1] + other[1], self.style(), self.fusable())
 
     def __sub__(self, other):
-		return Node(self.position()[0] - other[0], self.position()[1] - other[1], self.style(), self.fusable())
+		return Node(self.m_position[0] - other[0], self.m_position[1] - other[1], self.style(), self.fusable())
 
     def __div__(self, other):
         if isinstance(other, (float, int)):
-            return Node(self.position()[0] / other, self.position()[1] / other, self.style(), self.fusable())
+            return Node(self.m_position[0] / other, self.m_position[1] / other, self.style(), self.fusable())
         else:
             raise NotImplementedError
 
     def __mul__(self, other):
         if isinstance(other, (float, int)):
-    		return Node(self.position()[0] * other, self.position()[1] * other, self.style(), self.fusable())
+    		return Node(self.m_position[0] * other, self.m_position[1] * other, self.style(), self.fusable())
         else:
-    		return Node(self.position()[0] * other[0], self.position()[1] * other[1], self.style(), self.fusable())
+    		return Node(self.m_position[0] * other[0], self.m_position[1] * other[1], self.style(), self.fusable())
 
     def __key__(self):
-        return self.__position
+        return self.m_position
 
     def __hash__(self):
-        return hash(self.__key__())
+        return hash(self.m_position)
 
     def __cmp__(self, other):
-        if not isinstance(other, Node):
-            return -1
-        else:
-            return cmp((self.position()[0], self.position()[1]), (other.position()[0], other.position()[1]))
+        return cmp(self.m_position, other.m_position)
 
     def __repr__(self):
-        return "(" + str(self.position()) + "," + self.style() + "," + str(self.fusable()) + ")"
+        return "(" + str(self.m_position) + "," + self.style() + "," + str(self.fusable()) + ")"
 
     def __iter__(self):
-        return (n for n in self.position())
+        return (n for n in self.m_position)
 
     def length(self):
-        return math.sqrt(sum(self.__position[i]* self.__position[i] for i in range(len(self.__position))))
+        return math.sqrt(sum(self.m_position[i]* self.m_position[i] for i in range(len(self.m_position))))
 
     def normalize(self):
         length = self.length()
         if length == 0:
             raise ArithmeticError
-        self.__position = (self / length).position()
+        self.m_position = (self / length).m_position
         return

@@ -114,7 +114,6 @@ class TestNode(unittest.TestCase):
         assert node1 < node2
         assert node2 > node1
         assert node1 == node3
-        assert node1 != 3
 
     def test_repr(self):
         assert str(Node(1.1, 2.2, 'miter', True)) == "((1.1, 2.2),miter,True)"
