@@ -109,62 +109,7 @@ class OverlayParser(Parser):
         closed_polygons = []
         polygons = []
         for component in components:
-            _type = 0
-            if _type == 1:
-                # create directed graph
-                digraph = nx.DiGraph()
-                edges = component.edges()
-                # and for every edge add the reversed one
-                for edge in edges:
-                    digraph.add_edge(edge[0], edge[1])
-                    digraph.add_edge(edge[1], edge[0])
-
-                # get all cycles in the graph and sort them for length
-                cycles = nx.simple_cycles(digraph)
-                cycles = [cycle for cycle in cycles if len(cycle) > 3]
-                cycles_with_length = [(self.cycle_len(cycle), cycle) for cycle in cycles]
-                sorted_cycles = sorted(cycles_with_length, key=lambda cycle_with_length: cycle_with_length[0])
-                sorted_cycles = [cycle for (length, cycle) in sorted_cycles]
-
-                edges_in_cycle_base = []
-                minimum_cycles = []
-            
-                # go through the sorted cycles and take every cycle which has at least
-                # one edge that is not in the minimal cycle base
-                for cycle in sorted_cycles:
-                    edges_in_cycle = []
-                    for i in range(0, len(cycle) - 1):
-                        edges_in_cycle.append((cycle[i],cycle[i+1]))
-
-                    cycle_independent = False
-                    for edge in edges_in_cycle:
-                        if edge not in edges_in_cycle_base:
-                            cycle_independent = True
-                            break;
-                
-                    if cycle_independent == True:
-                        polygon = Polygon(cycle)
-                        contains_cycle = False
-                        have_common_node = False
-                        for minimum_cycle in minimum_cycles:
-                            for node in minimum_cycle:
-                                if node in cycle:
-                                    have_common_node = True
-                                    break
-                            if have_common_node == True:
-                                for node in minimum_cycle:
-                                    if polygon.contains(node.position()) and node not in cycle:
-                                        contains_cycle = True
-                                        break
-                            if contains_cycle == True:
-                                break
-                        if contains_cycle == False:               
-                            minimum_cycles.append(cycle)
-                            edges_in_cycle_base = edges_in_cycle_base + edges_in_cycle
-                            edges_in_cycle = [(node1, node0) for (node0, node1) in edges_in_cycle]
-                            edges_in_cycle_base = edges_in_cycle_base + edges_in_cycle
-            else:
-                minimum_cycles = planar_cycles(component)
+            minimum_cycles = planar_cycles(component)
 
             # the polygons are the same as the minimum cycles
             closed_polygons += minimum_cycles

@@ -39,8 +39,10 @@ class OpenGraph(Drawable, Scalable, Named):
     def __generate_paths(self):
         self.__paths = []
         graph = copy.copy(self.__graph)
-        path = [graph.nodes()[0]]
         paths = []
+        if not graph.nodes():
+            return
+        path = [graph.nodes()[0]]
 
         while path:
             neighbors = nx.neighbors(graph, path[-1])

@@ -24,15 +24,10 @@ class Polygon(Drawable, Named, Scalable):
 
     def contains(self, obj):
         if type(obj) == Polygon:
-            inside = False
-
-            # check if at least one point is inside the polygon
+            # check if all nodes are inside
             for p in obj.nodes():
-                if self.contains(p):
-                    inside = True
-                    break;
-            if not inside:
-                return False;
+                if not self.contains(p):
+                    return False
 
             # check for edge intersections
             outer_edges = [Edge(self.nodes()[i], self.nodes()[i + 1]) for i in range(0, len(self.nodes()) - 1)]
@@ -41,7 +36,7 @@ class Polygon(Drawable, Named, Scalable):
                 for outer_edge in outer_edges:
                     if inner_edge.intersects(outer_edge):
                         return False
-            return inside
+            return True
         else:
             n = len(self.__node_list)
             inside = False
