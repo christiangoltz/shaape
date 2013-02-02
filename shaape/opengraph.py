@@ -38,35 +38,21 @@ class OpenGraph(Drawable, Scalable, Named):
 
     def __generate_paths(self):
         self.__paths = []
-        nodes = [node for node in self.__graph.nodes() if self.__graph.degree(node) == 1]
-        if nodes == []:
-            nodes = [node for node in self.__graph.nodes() if node.fusable() == False]
-        if nodes == []:
-            nodes = self.__graph.nodes()
-        if nodes == []:
-            return
-        min_node = sorted(nodes, key=itemgetter(0, 1))[0] 
-        path_gen = nx.dfs_labeled_edges(self.__graph, min_node)
-        path = []
+        graph = copy.copy(self.__graph)
+        path = [graph.nodes()[0]]
         paths = []
-        last_dir = ''
-        for start, end, direction_dir in path_gen:
-            direction = direction_dir['dir']
-            if direction == 'forward':
-                if len(path) == 0 or path[-1] <> start:
-                    path.append(start)
-                last_dir = direction
-            elif direction == 'reverse':
-                if last_dir <> 'reverse':
-                    copy_path = copy.copy(path)
-                    copy_path.append(end)
-                    if len(path) > 2 and (self.__graph.has_edge(copy_path[0], copy_path[-1]) or self.__graph.has_edge(copy_path[-1], copy_path[0])):
-                        copy_path.append(copy_path[0])
-                    paths.append(copy_path)
-                if len(path) > 0:
+
+        while path:
+            neighbors = nx.neighbors(graph, path[-1])
+            if neighbors:
+                node = neighbors[0]
+                graph.remove_edge(path[-1], node)
+                path.append(node)
+            else:
+                paths.append(copy.copy(path))
+                while path and not graph.neighbors(path[-1]):
                     path.pop()
-                last_dir = direction
-        
+                
         for path in paths:
             self.__paths.append(reduce_path(path))
         
