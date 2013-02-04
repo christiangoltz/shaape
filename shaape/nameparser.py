@@ -18,6 +18,7 @@ class NameParser(Parser):
             position = (text.position()[0] + 0.5, text.position()[1] + 0.5)
             polygons_containing_this_text = [polygon for polygon in polygons if polygon.contains(position)]
             if len(polygons_containing_this_text) == 1:
+                text.set_z_order(polygons_containing_this_text[0].z_order())
                 polygons_containing_this_text[0].add_name(text.text())
             else:
                 for polygon in polygons_containing_this_text:
@@ -29,4 +30,6 @@ class NameParser(Parser):
 
                     if not_directly_named == False:
                         polygon.add_name(text.text())
+                        if polygon.z_order() > text.z_order():
+                            text.set_z_order(polygon.z_order())
         return

@@ -40,5 +40,6 @@ class Overlay:
                             top_of_end = edge.top_of().end() + (data_x, data_y)
                             graph.add_edge(start, end, top_of = Edge(top_of_start, top_of_end))
                         else:
-                            graph.add_edge(start, end)
+                            if not graph.has_edge(start, end):
+                                graph.add_edge(start, end)
         return graph

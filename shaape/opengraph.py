@@ -44,7 +44,7 @@ class OpenGraph(Drawable, Scalable, Named):
     
     def __generate_paths(self):
         self.__paths = []
-        graph = copy.copy(self.__graph)
+        graph = copy.deepcopy(self.__graph)
         paths = []
         if not graph.nodes():
             return

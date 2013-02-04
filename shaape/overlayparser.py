@@ -1,4 +1,5 @@
 import networkx as nx
+import warnings
 import operator
 import math
 from opengraph import OpenGraph
@@ -130,35 +131,47 @@ class OverlayParser(Parser):
                 for c in remaining_components:
                     new_objects.append(OpenGraph(c))
 
-        unordered_polygons = polygons
-        current_z_order = 0
-        while unordered_polygons:
-            for i in range(0, len(unordered_polygons)):
-                polygon1 = unordered_polygons[i]
-                for j in range(i + 1, len(unordered_polygons)):
-                    polygon2 = unordered_polygons[j]
-                    if polygon1.contains(polygon2):
-                        polygon2.set_z_order(polygon1.z_order() + 1)
-                    elif polygon2.contains(polygon1):
-                        polygon1.set_z_order(polygon2.z_order() + 1)
-            
-            current_z_order = current_z_order + 1
-            unordered_polygons = filter(lambda p: p.z_order < current_z_order, unordered_polygons)
-
-       
+        
         new_objects = new_objects + polygons
-
+        z_order_graph = nx.DiGraph()
+        z_order_graph.add_nodes_from(new_objects)
+        
+        for i in range(0, len(polygons)):
+            polygon1 = polygons[i]
+            for j in range(i + 1, len(polygons)):
+                polygon2 = polygons[j]
+                if polygon1 != polygon2:
+                    if polygon1.contains(polygon2):
+                        z_order_graph.add_edge(polygon1, polygon2)
+                    elif polygon2.contains(polygon1):
+                        z_order_graph.add_edge(polygon2, polygon1)
+            
+       
         for obj in new_objects:
             for edge in obj.edges():
                 if 'top_of' in graph[edge[0]][edge[1]]:
                     top_of = graph[edge[0]][edge[1]]['top_of']
                     if top_of != None:
                         for obj_above in new_objects:
-                            print(edge[0], edge[1], top_of.start(), top_of.end())
-                            if obj_above.has_edge(top_of.start(), top_of.end()):
-                                print("yeah")
-                                if obj_above.z_order() <= obj.z_order():
-                                    obj_above.set_z_order(obj.z_order() + 1)
+                            if obj != obj_above:
+                                if obj_above.has_edge(top_of.start(), top_of.end()):
+                                    z_order_graph.add_edge(obj, obj_above)
+        cycles = nx.simple_cycles(z_order_graph)
+        if cycles:
+            warnings.warn("The diagram contains objects. that have an ambiguous z-order. Shaape estimates their z-order.", RuntimeWarning)
+        for cycle in cycles:
+            cycle_edges = [(cycle[i], cycle[i + 1]) for i in range(0, len(cycle) - 1)]
+            for edge in cycle_edges:
+                z_order_graph.remove_edge(edge[0], edge[1])
+                       
+
+        current_z_order = 0
+        while z_order_graph.nodes():
+            nodes_without_predecessors = [node for node in z_order_graph.nodes() if not z_order_graph.predecessors(node)]
+            for node in nodes_without_predecessors:
+                node.set_z_order(current_z_order)
+            current_z_order = current_z_order + 1
+            z_order_graph.remove_nodes_from(nodes_without_predecessors)
 
         drawable_objects = drawable_objects + new_objects
 

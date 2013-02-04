@@ -90,7 +90,6 @@ class DrawingBackend(object):
            objects_lists_per_depth[o.z_order()].append(o) 
         i = 0
         for obj_list in objects_lists_per_depth:
-            print(obj_list)
             polygons = filter(lambda d: isinstance(d, Polygon) and not isinstance(d, Arrow), obj_list)
             text = filter(lambda d: isinstance(d, Text), obj_list)
             arrows = filter(lambda d: isinstance(d, Arrow), obj_list)
