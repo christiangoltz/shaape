@@ -22,3 +22,14 @@ class TestGraphAlgorithms(unittest.TestCase):
         assert has_same_direction(Node(1, 2), Node(2, 4)) == True
         assert has_same_direction(Node(1, 2), Node(-2, -4)) == True
         assert has_same_direction(Node(1, 2), Node(2, 3)) == False
+
+    def test_is_chord_free(self):
+        graph = nx.Graph()
+        graph.add_edge(Node(0.5, 0.5), Node(0.5, 1.5))
+        graph.add_edge(Node(0.5, 0.5), Node(1.5, 1.5))
+        graph.add_edge(Node(0.5, 0.5), Node(1.5, 0.5))
+        graph.add_edge(Node(0.5, 1.5), Node(1.5, 1.5))
+        graph.add_edge(Node(0.5, 1.5), Node(1.5, 0.5))
+        graph.add_edge(Node(1.5, 0.5), Node(1.5, 1.5))
+        cycle = [Node(1.5, 1.5), Node(0.5, 1.5), Node(0.5, 0.5), Node(1.5, 0.5), Node(1.5, 1.5)]
+        assert is_chord_free(graph, cycle) == False
