@@ -1,7 +1,8 @@
 class Edge:
-    def __init__(self, node1, node2):
+    def __init__(self, node1, node2, top_of = None):
         self.__start = node1
         self.__end = node2
+        self.__top_of = top_of
         return
 
     def start(self):
@@ -9,6 +10,9 @@ class Edge:
 
     def end(self):
         return self.__end
+
+    def top_of(self):
+        return self.__top_of
 
     def __ccw(self, a, b, c):
 	    return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])

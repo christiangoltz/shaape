@@ -21,8 +21,8 @@ class OverlayParser(Parser):
         self.__sub_overlays.append(Overlay([['|']], [Edge(Node(0.5, 0), Node(0.5, 1))]))
         self.__sub_overlays.append(Overlay([['/']], [Edge(Node(0, 1), Node(1, 0))]))
         self.__sub_overlays.append(Overlay([['\\']], [Edge(Node(1, 1), Node(0, 0))]))
-        self.__sub_overlays.append(Overlay([['-','|','-']], [Edge(Node(1, 0.5), Node(2, 0.5))]))
-        self.__sub_overlays.append(Overlay([['|'],['-'],['|']], [Edge(Node(0.5, 1), Node(0.5, 2))]))
+        self.__sub_overlays.append(Overlay([['-','|','-']], [Edge(Node(1, 0.5), Node(2, 0.5), top_of = Edge(Node(1.5, 0), Node(1.5, 1)))]))
+        self.__sub_overlays.append(Overlay([['|'],['-'],['|']], [Edge(Node(0.5, 1), Node(0.5, 2), top_of = Edge(Node(0, 1.5), Node(1, 1.5)))]))
         self.__sub_overlays.append(Overlay([['+','-']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 0.5))]))
         self.__sub_overlays.append(Overlay([['-','+']], [Edge(Node(1, 0.5), Node(1.5, 0.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([['+'],['|']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1))]))
@@ -97,6 +97,7 @@ class OverlayParser(Parser):
 
     def run(self, raw_data, drawable_objects):
         graphs = []
+        new_objects = []
         for overlay in self.__sub_overlays:
             g = overlay.substitutes(raw_data)
             graphs.append(g)
@@ -127,7 +128,7 @@ class OverlayParser(Parser):
             if len(remaining_graph.edges()) > 0:
                 remaining_components = nx.connected_component_subgraphs(remaining_graph)
                 for c in remaining_components:
-                    drawable_objects.append(OpenGraph(c))
+                    new_objects.append(OpenGraph(c))
 
         unordered_polygons = polygons
         current_z_order = 0
@@ -144,7 +145,22 @@ class OverlayParser(Parser):
             current_z_order = current_z_order + 1
             unordered_polygons = filter(lambda p: p.z_order < current_z_order, unordered_polygons)
 
-        drawable_objects = drawable_objects + polygons
+       
+        new_objects = new_objects + polygons
+
+        for obj in new_objects:
+            for edge in obj.edges():
+                if 'top_of' in graph[edge[0]][edge[1]]:
+                    top_of = graph[edge[0]][edge[1]]['top_of']
+                    if top_of != None:
+                        for obj_above in new_objects:
+                            print(edge[0], edge[1], top_of.start(), top_of.end())
+                            if obj_above.has_edge(top_of.start(), top_of.end()):
+                                print("yeah")
+                                if obj_above.z_order() <= obj.z_order():
+                                    obj_above.set_z_order(obj.z_order() + 1)
+
+        drawable_objects = drawable_objects + new_objects
 
         self._drawable_objects = drawable_objects
         self._parsed_data = raw_data

@@ -36,6 +36,12 @@ class OpenGraph(Drawable, Scalable, Named):
                 path[i] = path[i] * scale
         return
 
+    def edges(self):
+        return self.__graph.edges()
+
+    def has_edge(self, start, end):
+        return self.__graph.has_edge(start, end)
+    
     def __generate_paths(self):
         self.__paths = []
         graph = copy.copy(self.__graph)

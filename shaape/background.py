@@ -3,6 +3,8 @@ from scalable import Scalable
 
 class Background(Drawable, Scalable):
     def __init__(self, size = (0, 0)):
+        Drawable.__init__(self)
+        Scalable.__init__(self)
         self.__size = size
         return
     

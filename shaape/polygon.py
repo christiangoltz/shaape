@@ -10,7 +10,7 @@ class Polygon(Drawable, Named, Scalable):
     def __init__(self, node_list):
         Drawable.__init__(self)
         Named.__init__(self)
-        node_list = reduce_path(node_list)
+        # node_list = reduce_path(node_list)
         self.__node_list = node_list
         cycle_graph = nx.Graph()
         if node_list == []:
@@ -55,6 +55,19 @@ class Polygon(Drawable, Named, Scalable):
 
     def nodes(self):
         return self.__node_list
+
+    def edges(self):
+        return [(self.__node_list[i], self.__node_list[i + 1]) for i in range(0, len(self.__node_list) - 1)] 
+
+    def has_edge(self, start, end):
+        i = 0
+        while True:
+            try:
+                i = self.__node_list.index(start, i + 1)
+                if self.__node_list[i - 1] == end or (i < len(self.__node_list) - 1 and self.__node_list[i + 1] == end):
+                    return True
+            except ValueError:
+                return False
 
     def max(self):
         return (max([n[0] for n in self.__node_list]), max([n[1] for n in self.__node_list]))

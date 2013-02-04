@@ -35,5 +35,10 @@ class Overlay:
                     for edge in self.__substitutes:
                         start = edge.start() + (data_x, data_y)
                         end = edge.end() + (data_x, data_y)
-                        graph.add_edge(start, end)
+                        if edge.top_of() != None:
+                            top_of_start = edge.top_of().start() + (data_x, data_y)
+                            top_of_end = edge.top_of().end() + (data_x, data_y)
+                            graph.add_edge(start, end, top_of = Edge(top_of_start, top_of_end))
+                        else:
+                            graph.add_edge(start, end)
         return graph
