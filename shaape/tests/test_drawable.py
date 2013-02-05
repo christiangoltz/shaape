@@ -12,7 +12,7 @@ class TestDrawable(unittest.TestCase):
 
     def test_style(self):
         drawable = Drawable()
-        style = Style(['abc', 'def', 'geh'], 'line', ['flat', 'dotted', 'shadow'])
+        style = Style(['abc', 'def', 'geh'], 'line', ['dotted', 'shadow'])
         drawable.set_style(style)
         assert drawable.style().options() == style.options()
 

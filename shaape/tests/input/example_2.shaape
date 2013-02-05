@@ -14,6 +14,6 @@ y|  3   3  | +-+ | | | | | | | | |
            |             |       time
            +-------------+   
 options:
-- "^a$": {fill:[red, flat],text:[[0, 0, 0, 0]]}
-- "^b$": {fill:[blue, flat],text:[[0, 0, 0, 0]]}
-- "important|area": {fill:[[1, 1, 0, 0.6],[0, 1, 1, 0.2],gradient,no-shadow],frame:[[0,0,0,0]]}
+- "^a$": {fill:[red],text:[[0, 0, 0, 0]]}
+- "^b$": {fill:[blue],text:[[0, 0, 0, 0]]}
+- "important|area": {fill:[[1, 1, 0, 0.6],[0, 1, 1, 0.2],no-shadow],frame:[[0,0,0,0]]}

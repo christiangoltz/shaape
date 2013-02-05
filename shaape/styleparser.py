@@ -19,10 +19,10 @@ class StyleParser(Parser):
         named_drawables = filter(lambda x: isinstance(x, Drawable) and isinstance(x, Named), drawable_objects)
         
         default_style = {
-            'fill' : Style([], 'fill', [[1, 1, 1], [0.5 ,0.5, 0.5], 'gradient']),
+            'fill' : Style([], 'fill', [[1, 1, 1], [0.5 ,0.5, 0.5]]),
             'frame' : Style([], 'frame', [[0, 0, 0], 'solid', 1]),
             'line' : Style([], 'fill', [[0, 0, 0, 1], 'solid', 1]),
-            'arrow' : Style([], 'fill', [[0, 0, 0], 'flat']),
+            'arrow' : Style([], 'fill', [[0, 0, 0]]),
             'text' : Style([], 'text', [[0, 0, 0]])}
 
         for obj in drawable_objects:

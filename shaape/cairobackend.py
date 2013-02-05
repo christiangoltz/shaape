@@ -107,11 +107,9 @@ class CairoBackend(DrawingBackend):
         minimum = drawable.min()
         maximum = drawable.max()
         colors =  drawable.style().color()
-        if drawable.style().fill_type() == 'gradient':
+        if len(colors) > 1:
             linear_gradient = cairo.LinearGradient(minimum[0], minimum[1], maximum[0], maximum[1])
             n = 0
-            if len(colors) < 2:
-                colors.insert(0, [1, 1, 1])
             for color in colors:
                 stop = n * (1.0 / (len(colors) - 1))
                 if len(color) == 4:

@@ -152,14 +152,14 @@ class TestCairoBackend(unittest.TestCase):
 
         drawable = Polygon([Node(0,0)])
         drawable.style().add_color((0.1, 0.2, 0.3)) 
-        drawable.style().set_type('gradient') 
+        drawable.style().add_color((0.1, 0.2, 0.3)) 
         self.__backend.apply_fill(drawable)
         assert type(self.__backend.ctx().get_source()) == cairo.LinearGradient
 
         
         drawable = Polygon([Node(0,0)])
         drawable.style().add_color((0.1, 0.2, 0.3, 0.4)) 
-        drawable.style().set_type('gradient') 
+        drawable.style().add_color((0.1, 0.2, 0.3, 0.4)) 
         self.__backend.apply_fill(drawable)
         assert type(self.__backend.ctx().get_source()) == cairo.LinearGradient
 

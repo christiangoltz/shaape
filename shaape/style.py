@@ -30,11 +30,6 @@ class Style(object):
             if len(color_lists) > 0:
                 for color in color_lists:
                     self.add_color(color)
-        # gradient                
-        if 'flat' in option_list:
-            self.set_type('flat')
-        elif 'gradient' in option_list:
-            self.set_type('gradient')
 
         if 'solid' in option_list:
             self.set_type('solid')

@@ -173,6 +173,9 @@ class OverlayParser(Parser):
             current_z_order = current_z_order + 1
             z_order_graph.remove_nodes_from(nodes_without_predecessors)
 
+        for o in new_objects:
+            if type(o) == Polygon:
+                o.reduce_nodes()
         drawable_objects = drawable_objects + new_objects
 
         self._drawable_objects = drawable_objects

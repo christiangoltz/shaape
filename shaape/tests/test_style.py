@@ -8,13 +8,11 @@ class TestStyle(unittest.TestCase):
     def test_init(self):
         style = Style()
         assert style != None
-        style = Style(option_list = ['red', 'flat', 'no-shadow', 3])
+        style = Style(option_list = ['red', 'no-shadow', 3])
         assert style.color() == [Style.COLORS['red']]
-        assert style.fill_type() == 'flat'
         assert style.shadow() == 'off'
         assert style.width() == 3
-        style = Style(option_list = ['gradient', 'shadow', 3.2])
-        assert style.fill_type() == 'gradient'
+        style = Style(option_list = ['shadow', 3.2])
         assert style.shadow() == 'on'
         assert style.width() == 3.2
         style = Style(option_list = ['solid'])
@@ -27,7 +25,7 @@ class TestStyle(unittest.TestCase):
         assert style.fill_type() == 'dotted'
 
     def test_merge(self):
-        style1 = Style(option_list = ['red', 'flat', 'no-shadow', 3])
+        style1 = Style(option_list = ['red', 'no-shadow', 3])
         style2 = Style(option_list = ['blue', 'dotted'])
         style1.merge(style2)
         assert style1.color() == [Style.COLORS['blue']]
@@ -74,17 +72,17 @@ class TestStyle(unittest.TestCase):
         assert_raises(ValueError, style.set_width, 0)
 
     def test_cmp(self):
-        style1 = Style('abc', 'line', ['red', 'flat', 'no-shadow', 3])
+        style1 = Style('abc', 'line', ['red', 'no-shadow', 3])
         style2 = Style('', '', [])
         assert style1 != style2
         style2.set_name_pattern('abc')
         assert style1 != style2
         style2.set_target_type('line')
         assert style1 != style2
-        style2.set_options(['red', 'flat', 'no-shadow', 3])
+        style2.set_options(['red', 'no-shadow', 3])
         assert style1 == style2
         assert style1 != 1
 
     def test_repr(self):
-        assert str(Style('abc', 'fill', ['red', 'flat', 'no-shadow', 3])) == "(name_pattern: abc, target_type:fill, options:{'color': [[1, 0, 0]], 'width': 3, 'shadow': 'off', 'type': 'flat'}, prio:-1)", Style('abc', 'fill', ['red', 'flat', 'no-shadow', 3])
+        assert str(Style('abc', 'fill', ['red', 'no-shadow', 3])) == "(name_pattern: abc, target_type:fill, options:{'color': [[1, 0, 0]], 'width': 3, 'shadow': 'off'}, prio:-1)", Style('abc', 'fill', ['red', 'no-shadow', 3])
 
