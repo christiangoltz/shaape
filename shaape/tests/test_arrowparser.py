@@ -19,7 +19,7 @@ class TestArrowParser(unittest.TestCase):
         objects = []
         arrowparser.run(data, objects)
         assert arrowparser.parsed_data() == data
-        assert arrowparser.drawable_objects() == objects
+        assert arrowparser.drawable_objects() == objects, str(arrowparser.drawable_objects()) + str(objects)
         assert len(objects) == 4
         assert [o for o in objects if type(o) == RightArrow]
         assert [o for o in objects if type(o) == LeftArrow]

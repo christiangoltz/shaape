@@ -8,4 +8,4 @@ class TestLeftArrow(unittest.TestCase):
         arrow = LeftArrow()
         assert arrow != None
         arrow = LeftArrow((3, -1))
-        assert arrow.position() == (3, -1)
+        assert arrow.position() == (3, -1), arrow.position()

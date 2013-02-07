@@ -1,7 +1,15 @@
+from node import Node
 from arrow import Arrow
-from rotatable import Rotatable
+from polygon import Polygon
 
-class DownArrow(Arrow, Rotatable):
+class DownArrow(Arrow):
     def __init__(self, position = (0, 0)):
-        Arrow.__init__(self, (position[0], position[1] + 0.3))
-        Rotatable.__init__(self, 90)
+        Arrow.__init__(self, position)
+        Polygon.__init__(self, [Node(-0.4, 0.0), Node(0, 0.5), Node(0.4, 0.0)])
+
+    def tip(self):
+        return Node(*(self.position())) + self.nodes()[1]
+
+    def direction(self):
+        return Node(0, 1)
+

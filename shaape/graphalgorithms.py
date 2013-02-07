@@ -52,6 +52,16 @@ def right_angle(v1, v2):
         _angle = 2 * math.pi - _angle
     return _angle
 
+def angle(v1, v2):
+    x = np.array([v1[0], v1[1]])
+    y = np.array([v2[0], v2[1]])
+    cross = np.cross(x, y)
+    dot = np.dot(x, y)
+    x_length = np.sqrt((x * x).sum())
+    y_length = np.sqrt((y * y).sum())
+    _angle = np.arccos(dot / x_length / y_length) / math.pi * 180
+    return _angle
+
 def is_chord_free(_graph, _cycle):
     angle_sum = 0
     nodes = 0

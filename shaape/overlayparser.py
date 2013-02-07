@@ -45,16 +45,18 @@ class OverlayParser(Parser):
         self.__sub_overlays.append(Overlay([['+','+']], [Edge(Node(0.5, 0.5, fusable = False), Node(1.5, 0.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([['+'],['+']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1.5, fusable = False))]))
 
-        self.__sub_overlays.append(Overlay([['|'], ['v']], [Edge(Node(0.5, 1), Node(0.5, 1.55))]))
-        self.__sub_overlays.append(Overlay([['^'], ['|']], [Edge(Node(0.5, 0.45), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['|'], ['v']], [Edge(Node(0.5, 1), Node(0.5, 1.5))]))
+        self.__sub_overlays.append(Overlay([['^'], ['|']], [Edge(Node(0.5, 0.5), Node(0.5, 1))]))
 
-        self.__sub_overlays.append(Overlay([['|'], ['^']], [Edge(Node(0.5, 1), Node(0.5, 1.45))]))
-        self.__sub_overlays.append(Overlay([['v'], ['|']], [Edge(Node(0.5, 0.55), Node(0.5, 1))]))
-        self.__sub_overlays.append(Overlay([['-', '<']], [Edge(Node(1, 0.5), Node(2, 0.5))]))
-        self.__sub_overlays.append(Overlay([['>', '-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([['+'], ['v']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
+        self.__sub_overlays.append(Overlay([['^'], ['+']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
+        # self.__sub_overlays.append(Overlay([['|'], ['^']], [Edge(Node(0.5, 1), Node(0.5, 1.45))]))
+        # self.__sub_overlays.append(Overlay([['v'], ['|']], [Edge(Node(0.5, 0.55), Node(0.5, 1))]))
+        # self.__sub_overlays.append(Overlay([['-', '<']], [Edge(Node(1, 0.5), Node(2, 0.5))]))
+        # self.__sub_overlays.append(Overlay([['>', '-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
 
-        self.__sub_overlays.append(Overlay([['+'], ['^']], [Edge(Node(0.5, 0.5), Node(0.5, 1.45))]))
-        self.__sub_overlays.append(Overlay([['v'], ['+']], [Edge(Node(0.5, 0.55), Node(0.5, 1.5))]))
+        self.__sub_overlays.append(Overlay([['+'], ['^']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
+        self.__sub_overlays.append(Overlay([['v'], ['+']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
         self.__sub_overlays.append(Overlay([['+', '<']], [Edge(Node(0.5, 0.5), Node(2, 0.5))]))
         self.__sub_overlays.append(Overlay([['>', '+']], [Edge(Node(0, 0.5), Node(1.5, 0.5))]))
 
@@ -177,6 +179,7 @@ class OverlayParser(Parser):
             if type(o) == Polygon:
                 o.reduce_nodes()
         drawable_objects = drawable_objects + new_objects
+        drawable_objects.append(graph)
 
         self._drawable_objects = drawable_objects
         self._parsed_data = raw_data
