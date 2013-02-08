@@ -59,17 +59,17 @@ What is supported
 - styles for background, polygons, lines and text including colors, fills and
   line styles without markup inside the drawing
 - png rendering
+- md5sum generation/checking to prevent image generation on unchanged sources
 
 What will be supported
 ~~~~~~~~~~~~~~~~~~~~~~
 - text styles without markup inside the drawing
-- md5sum generation/checking to prevent image generation on unchanged sources
+- svg rendering
 
 What will *not* be supported
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 - rotated text: (cannot be displayed in ascii art)
 - circles: (cannot be displayed consistently in ascii art)
-- svg rendering
 
 Dependencies
 ------------

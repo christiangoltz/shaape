@@ -11,29 +11,38 @@ from cairobackend import CairoBackend
 from drawingbackend import DrawingBackend
 from parser import Parser
 
+import copy
+import hashlib
 import argparse
 import sys
 import os
 
 class Shaape:
-    def __init__(self, source = '-', output_file = ""):
+    def __init__(self, source = '-', output_file = "", enable_hashing = False):
         if source == '-':
             source = sys.stdin.readlines()
         else:
             file_data = open(source, 'r')
             source = list(file_data)
+
+            
         self.__parsers = []
         self.__backends = []
         self.__source = source
+        self.__original_source = copy.copy(source)
         self.__outfile = output_file
-        self.register_parser(YamlParser())
-        self.register_parser(BackgroundParser())
-        self.register_parser(TextParser())
-        self.register_parser(OverlayParser())
-        self.register_parser(ArrowParser())
-        self.register_parser(NameParser())
-        self.register_parser(StyleParser())
-        self.register_backend(CairoBackend())
+        if not enable_hashing or not hash_check(source, output_file + ".md5"):
+            self.register_parser(YamlParser())
+            self.register_parser(BackgroundParser())
+            self.register_parser(TextParser())
+            self.register_parser(OverlayParser())
+            self.register_parser(ArrowParser())
+            self.register_parser(NameParser())
+            self.register_parser(StyleParser())
+            self.register_backend(CairoBackend())
+
+    def original_source(self):
+        return self.__original_source
 
     def register_parser(self, parser):
         if not isinstance(parser, Parser):
@@ -64,15 +73,35 @@ class Shaape:
     def backends(self):
         return self.__backends
 
+def hash_check(content, hashfile):
+    if not os.path.isfile(hashfile):
+        return False
+    m = hashlib.md5()
+    m.update(''.join(content))
+    hash_data = open(hashfile, 'r')
+    data = hash_data.readline()
+    hash_data.close()
+    return data == m.hexdigest()
+
+def hash_update(content, hashfile):
+    m = hashlib.md5()
+    m.update(''.join(content))
+    hash_data = open(hashfile, 'w')
+    hash_data.write(m.hexdigest())
+    hash_data.close()
+
 def main(arguments = None):
     parser = argparse.ArgumentParser(description=' - Asciiart to image processing')
-    parser.add_argument('infile', type=str)
-    parser.add_argument('-o', '--outfile', type=str)
+    parser.add_argument('infile', type=str, help='input file, can be - if the input comes from stdin')
+    parser.add_argument('-o', '--outfile', type=str, help='output file, will be infile.png if not specified')
+    parser.add_argument('--hash', action='store_true', help='only update the image if the hash sum of the input changed', dest='do_hash')
     args = parser.parse_args(arguments)
     if None == args.outfile:
         args.outfile = args.infile + ".png"
-    shaape = Shaape(args.infile, args.outfile)
+    shaape = Shaape(args.infile, args.outfile, enable_hashing = args.do_hash)
     shaape.run()
+    if args.do_hash:
+        hash_update(shaape.original_source(), args.outfile + ".md5")
     print(" ")
 
 if __name__ == "__main__": # pragma: no cover
