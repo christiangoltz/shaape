@@ -38,8 +38,11 @@ class CairoBackend(DrawingBackend):
         self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
         self.__ctx.paint()
 
+    def new_surface(self, name = None):
+        return cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size()[0] + self.margin()[0] + self.margin()[1])), int(math.ceil(self.image_size()[1] + self.margin()[2] + self.margin()[3])))
+
     def push_surface(self):
-        surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0] + self.__margin[0] + self.__margin[1])), int(math.ceil(self.__image_size[1] + self.__margin[2] + self.__margin[3])))
+        surface = self.new_surface()
         self.__surfaces.append(surface)
         self.__ctx = cairo.Context(surface)
         self.__drawn_graph = nx.Graph()

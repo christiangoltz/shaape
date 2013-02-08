@@ -8,6 +8,7 @@ from textparser import TextParser
 from arrowparser import ArrowParser
 from backgroundparser import BackgroundParser
 from cairobackend import CairoBackend
+from cairosvgbackend import CairoSvgBackend
 from drawingbackend import DrawingBackend
 from parser import Parser
 
@@ -18,7 +19,7 @@ import sys
 import os
 
 class Shaape:
-    def __init__(self, source = '-', output_file = "", enable_hashing = False):
+    def __init__(self, source = '-', output_file = "", enable_hashing = False, output_type = "png"):
         if source == '-':
             source = sys.stdin.readlines()
         else:
@@ -39,7 +40,10 @@ class Shaape:
             self.register_parser(ArrowParser())
             self.register_parser(NameParser())
             self.register_parser(StyleParser())
-            self.register_backend(CairoBackend())
+            if output_type == 'svg':
+                self.register_backend(CairoSvgBackend())
+            else:
+                self.register_backend(CairoBackend())
 
     def original_source(self):
         return self.__original_source
@@ -94,11 +98,12 @@ def main(arguments = None):
     parser = argparse.ArgumentParser(description=' - Asciiart to image processing')
     parser.add_argument('infile', type=str, help='input file, can be - if the input comes from stdin')
     parser.add_argument('-o', '--outfile', type=str, help='output file, will be infile.png if not specified')
-    parser.add_argument('--hash', action='store_true', help='only update the image if the hash sum of the input changed', dest='do_hash')
+    parser.add_argument('--hash', action='store_true', help='only update the image if the hash sum of t: png svg pdf epshe input changed', dest='do_hash')
+    parser.add_argument('-t', '--type', choices=['png','svg','pdf','eps'], help='image type to generate', dest='output_type', default = 'png')
     args = parser.parse_args(arguments)
     if None == args.outfile:
-        args.outfile = args.infile + ".png"
-    shaape = Shaape(args.infile, args.outfile, enable_hashing = args.do_hash)
+        args.outfile = args.infile + "." + args.output_type
+    shaape = Shaape(args.infile, args.outfile, enable_hashing = args.do_hash, output_type = args.output_type)
     shaape.run()
     if args.do_hash:
         hash_update(shaape.original_source(), args.outfile + ".md5")
