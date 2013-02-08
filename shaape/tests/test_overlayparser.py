@@ -22,7 +22,7 @@ class TestOverlayParser(unittest.TestCase):
         parser.run("",[])
 
         parser.run("-",[])
-        assert len(parser.drawable_objects()) == 1
+        assert len(parser.drawable_objects()) == 1, parser.drawable_objects()
         assert type(parser.drawable_objects()[0]) == OpenGraph
 
         parser.run("- -",[])

@@ -17,7 +17,7 @@ class TestYamlParser(unittest.TestCase):
         objects = []
         yamlparser.run(data, objects)
         assert yamlparser.parsed_data() == []
-        assert yamlparser.drawable_objects() == objects
+        assert yamlparser.objects() == objects
         assert len(objects) == 2
         assert [o for o in objects if o.target_type() == 'frame' and o.width() == 3 and o.fill_type() == 'dotted' and o.color() == [[0.3, 0.8, 0]] and o.name_pattern() == '(flat)|(top)'], objects
         assert [o for o in objects if o.target_type() == 'fill' and o.shadow() == 'off' and o.color() == [[1, 0.7, 0, 0.3]] and o.name_pattern() == '(flat)|(top)']

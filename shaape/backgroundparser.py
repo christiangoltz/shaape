@@ -6,9 +6,9 @@ class BackgroundParser(Parser):
         super(BackgroundParser, self).__init__()
         return
 
-    def run(self, raw_data, drawable_objects):
+    def run(self, raw_data, objects):
         self._parsed_data = []
-        self._drawable_objects = drawable_objects
+        self._objects = objects
         if raw_data != []:
             max_len = len(max(raw_data, key=len))
             for line in raw_data:
@@ -16,6 +16,6 @@ class BackgroundParser(Parser):
                     line = line[:-1]
                 self._parsed_data.append(line + (max_len - len(line)) * ' ' + '\n')
             canvas_size = (len(self._parsed_data[0]) - 1, len(self._parsed_data))
-            self._drawable_objects = drawable_objects
-            self._drawable_objects.append(Background(canvas_size))
+            self._objects = objects
+            self._objects.append(Background(canvas_size))
         return

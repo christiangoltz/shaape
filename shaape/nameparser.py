@@ -7,11 +7,11 @@ class NameParser(Parser):
         super(NameParser, self).__init__()
         return
 
-    def run(self, raw_data, drawable_objects):
+    def run(self, raw_data, objects):
         self._parsed_data = raw_data
-        self._drawable_objects = drawable_objects
-        polygons = filter(lambda x: isinstance(x, Polygon), drawable_objects)
-        texts = filter(lambda x: isinstance(x, Text), drawable_objects)
+        self._objects = objects
+        polygons = filter(lambda x: isinstance(x, Polygon), objects)
+        texts = filter(lambda x: isinstance(x, Text), objects)
         
         for text in texts:
             text.add_name(text.text())

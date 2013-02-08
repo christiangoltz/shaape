@@ -6,7 +6,7 @@ class YamlParser(Parser):
     def __init__(self):
         super(YamlParser, self).__init__()
         return
-    def run(self, raw_data, drawable_objects):
+    def run(self, raw_data, objects):
         options_start = -1
         for i in range(0, len(raw_data)):
             if raw_data[i].find('options:') == 0:
@@ -19,10 +19,10 @@ class YamlParser(Parser):
             for item in options:
                 names = item.keys()[0]
                 for (target_type, option) in item[names].items():
-                    drawable_objects.append(Style(names, target_type, option, priority))
+                    objects.append(Style(names, target_type, option, priority))
                 priority = priority + 1
             self._parsed_data = raw_data[0:options_start]
         else:
             self._parsed_data = raw_data
-        self._drawable_objects = drawable_objects
+        self._objects = objects
         return

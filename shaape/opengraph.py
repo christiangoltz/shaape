@@ -39,8 +39,14 @@ class OpenGraph(Drawable, Scalable, Named):
     def edges(self):
         return self.__graph.edges()
 
+    def nodes(self):
+        return self.__graph.nodes()
+
     def has_edge(self, start, end):
         return self.__graph.has_edge(start, end)
+
+    def has_node(self, node):
+        return self.__graph.has_node(node)
     
     def __generate_paths(self):
         self.__paths = []
@@ -68,3 +74,6 @@ class OpenGraph(Drawable, Scalable, Named):
 
     def paths(self):
         return self.__paths
+
+    def add_path(self, path):
+        self.__paths.append(path)

@@ -49,14 +49,14 @@ class Shaape:
 
     def run(self):
         raw_data = self.__source
-        drawable_objects = []
+        objects = []
         for parser in self.__parsers:
-            parser.run(raw_data, drawable_objects)
+            parser.run(raw_data, objects)
             raw_data = parser.parsed_data()
-            drawable_objects = parser.drawable_objects()
+            objects = parser.objects()
 
         for backend in self.__backends:
-            backend.run(drawable_objects, self.__outfile)
+            backend.run(objects, self.__outfile)
 
     def parsers(self):
         return self.__parsers

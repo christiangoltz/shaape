@@ -12,10 +12,9 @@ class Polygon(Drawable, Named, Scalable):
         Named.__init__(self)
         self.__node_list = node_list
         cycle_graph = nx.Graph()
-        if node_list == []:
-            raise ValueError
-        for n in range(1, len(node_list)):
-            cycle_graph.add_edge(node_list[n - 1], node_list[n])
+        if node_list :
+            for n in range(1, len(node_list)):
+                cycle_graph.add_edge(node_list[n - 1], node_list[n])
         self.style().set_target_type('fill')
         self.__frame = OpenGraph(cycle_graph)
         self.__frame.style().set_target_type('frame')

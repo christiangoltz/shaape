@@ -13,10 +13,10 @@ class StyleParser(Parser):
         super(StyleParser, self).__init__()
         return
 
-    def run(self, raw_data, drawable_objects):
-        styles = filter(lambda x: isinstance(x, Style), drawable_objects)
+    def run(self, raw_data, objects):
+        styles = filter(lambda x: isinstance(x, Style), objects)
         styles = sorted(styles, key = lambda x: x.priority())
-        named_drawables = filter(lambda x: isinstance(x, Drawable) and isinstance(x, Named), drawable_objects)
+        named_drawables = filter(lambda x: isinstance(x, Drawable) and isinstance(x, Named), objects)
         
         default_style = {
             'fill' : Style([], 'fill', [[1, 1, 1], [0.5 ,0.5, 0.5]]),
@@ -25,7 +25,7 @@ class StyleParser(Parser):
             'arrow' : Style([], 'fill', [[0, 0, 0]]),
             'text' : Style([], 'text', [[0, 0, 0]])}
 
-        for obj in drawable_objects:
+        for obj in objects:
             if isinstance(obj, Drawable):
                 if isinstance(obj, Arrow):
                     obj.set_style(default_style['arrow'])
@@ -36,7 +36,6 @@ class StyleParser(Parser):
                     obj.set_style(default_style['line'])
                 elif isinstance(obj, Text):
                     obj.set_style(default_style['text'])
-
 
         for style in styles:
             name_pattern = re.compile(style.name_pattern())
@@ -56,5 +55,5 @@ class StyleParser(Parser):
                                 target_obj.set_style(style)
 
         self._parsed_data = raw_data
-        self._drawable_objects = drawable_objects
+        self._objects = objects
         return
