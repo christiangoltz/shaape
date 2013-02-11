@@ -41,7 +41,10 @@ class TestUtils(object):
             img2 = Image.open(image2)
         except:
             return False
-        diff = ImageChops.difference(img1, img2)
+        try:
+            diff = ImageChops.difference(img1, img2)
+        except ValueError:
+            return False
         h = ImageChops.difference(img1, img2).histogram()
         sq = (value*((idx%256)**2) for idx, value in enumerate(h))
         sum_of_squares = sum(sq)

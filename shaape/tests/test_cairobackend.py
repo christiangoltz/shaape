@@ -122,7 +122,7 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.apply_line(drawable)
         assert self.__backend.ctx().get_line_cap() == cairo.LINE_CAP_BUTT 
         assert self.__backend.ctx().get_line_join() == cairo.LINE_JOIN_ROUND 
-        assert math.fabs(self.__backend.ctx().get_line_width() - drawable.style().width() * self.__backend.scale()) < 0.1
+        assert math.fabs(self.__backend.ctx().get_line_width() - drawable.style().width() * self.__backend.scale()) < 1.1
         assert type(self.__backend.ctx().get_source()) == cairo.SolidPattern
         assert self.__backend.ctx().get_source().get_rgba() == (0.1, 0.2, 0.3, 1.0)
         

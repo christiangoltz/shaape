@@ -18,6 +18,7 @@ class OverlayParser(Parser):
     def __init__(self):
         super(OverlayParser, self).__init__()
         self.__sub_overlays = []
+        self.__sub_overlays.append(Overlay([['+']], [Node(0.5, 0.5)]))
         self.__sub_overlays.append(Overlay([['-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
         self.__sub_overlays.append(Overlay([['|']], [Edge(Node(0.5, 0), Node(0.5, 1))]))
         self.__sub_overlays.append(Overlay([['/']], [Edge(Node(0, 1), Node(1, 0))]))

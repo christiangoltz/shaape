@@ -11,12 +11,14 @@ from rotatable import Rotatable
 
 class CairoBackend(DrawingBackend):
     DEFAULT_MARGIN = (10, 10, 10, 10)
+    SHADOW_OPAQUENESS = 0.4
     def __init__(self):
         super(CairoBackend, self).__init__()
         self.set_margin(*(CairoBackend.DEFAULT_MARGIN))
         self.set_image_size(0, 0)
         self.__surfaces = []
         self.__ctx = None
+        self.__drawn_graph = None
         return
 
     def blur_surface(self):
@@ -32,7 +34,6 @@ class CairoBackend(DrawingBackend):
         dst[:,:,0] = ndimage.gaussian_filter(src[:,:,0], sigma=3)
         dst[:,:,1] = ndimage.gaussian_filter(src[:,:,1], sigma=3)
         dst[:,:,2] = ndimage.gaussian_filter(src[:,:,2], sigma=3)
-        dst[:,:,:] = map(lambda x: x * 0.5, dst[:,:,:])
         blurred_image = cairo.ImageSurface.create_for_data(dst, cairo.FORMAT_ARGB32, width, height)
         self.__ctx.set_source_surface(blurred_image)
         self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
@@ -53,6 +54,7 @@ class CairoBackend(DrawingBackend):
         self.__ctx.set_source_surface(surface)
         self.__ctx.set_operator(cairo.OPERATOR_OVER)
         self.__ctx.paint()
+        self.__drawn_graph = None
 
     def surfaces(self):
         return self.__surfaces
@@ -93,20 +95,23 @@ class CairoBackend(DrawingBackend):
         else:
             self.__ctx.set_dash([])
 
-    def apply_line(self, drawable):
+    def apply_line(self, drawable, opaqueness = 1.0, shadow = False):
         self.__ctx.set_line_cap(cairo.LINE_CAP_BUTT)
         self.__ctx.set_line_join (cairo.LINE_JOIN_ROUND)
-        width =  drawable.style().width() * self._scale
-        if len(drawable.style().color()[0]) == 3:
-            self.__ctx.set_source_rgb(*(drawable.style().color()[0]))
+        width =  math.floor(drawable.style().width() * self._scale)
+        color = drawable.style().color()[0]
+        if len(color) == 3:
+            adapted_color = tuple(color[:3]) + tuple([opaqueness])
         else:
-            self.__ctx.set_source_rgba(*(drawable.style().color()[0]))
-
+            adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
+        if shadow:
+            adapted_color = map(lambda x: (1 - adapted_color[3]) * x, adapted_color[:3]) + [adapted_color[3]]
+        self.__ctx.set_source_rgba(*adapted_color)
         self.apply_dash(drawable)
         self.__ctx.set_line_width(width)
         return
 
-    def apply_fill(self, drawable):
+    def apply_fill(self, drawable, opaqueness = 1.0, shadow = False):
         minimum = drawable.min()
         maximum = drawable.max()
         colors =  drawable.style().color()
@@ -115,17 +120,22 @@ class CairoBackend(DrawingBackend):
             n = 0
             for color in colors:
                 stop = n * (1.0 / (len(colors) - 1))
-                if len(color) == 4:
-                    linear_gradient.add_color_stop_rgba(stop, *color)
-                else:
-                    linear_gradient.add_color_stop_rgb(stop, *color)
+                if len(color) == 3:
+                    color = tuple(color) + tuple([1])
+                if shadow:
+                    color = map(lambda x: (1 - color[3]) * x, color[:3]) + [color[3]]
+                adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
+                linear_gradient.add_color_stop_rgba(stop, *adapted_color)
                 n = n + 1
             self.__ctx.set_source(linear_gradient)
         else:
-            if len(colors[0]) == 4:
-                self.__ctx.set_source_rgba(*colors[0])
-            else:
-                self.__ctx.set_source_rgb(*colors[0])
+            color = colors[0]
+            if len(color) == 3:
+                color = tuple(color) + tuple([1])
+            if shadow:
+                color = map(lambda x: (1 - color[3]) * x, color[:3]) + [color[3]]
+            adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
+            self.__ctx.set_source_rgba(*adapted_color)
     
     def draw_polygon(self, polygon):
         self.__ctx.save()
@@ -143,8 +153,7 @@ class CairoBackend(DrawingBackend):
 
     def draw_polygon_shadow(self, polygon):
         self.__ctx.save()
-        self.apply_fill(polygon)
-        self.__ctx.set_source_rgba(0, 0, 0, 1)
+        self.apply_fill(polygon, opaqueness = self.SHADOW_OPAQUENESS, shadow = True)
         self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
         self.apply_transform(polygon)
         nodes = polygon.nodes()
@@ -157,7 +166,7 @@ class CairoBackend(DrawingBackend):
         return
 
     def draw_open_graph_shadow(self, open_graph):
-        self.apply_line(open_graph)
+        self.apply_line(open_graph, opaqueness = self.SHADOW_OPAQUENESS, shadow = True)
         self.__ctx.save()
         self.apply_transform(open_graph)
         self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
@@ -168,36 +177,39 @@ class CairoBackend(DrawingBackend):
                     nodes = [path[-2]] + path 
                 else:
                     nodes = [path[0]] + path + [path[-1]]
+                self.apply_line(open_graph, opaqueness = self.SHADOW_OPAQUENESS, shadow = True)
                 self.apply_path(nodes)
-                self.apply_line(open_graph)
-                self.__ctx.set_dash([])
-                self.__ctx.set_line_width(self.__ctx.get_line_width())
-                self.__ctx.set_operator(cairo.OPERATOR_CLEAR)
-                self.__ctx.stroke_preserve()
-                self.apply_line(open_graph)
-                self.__ctx.set_source_rgba(0, 0, 0, 1)
                 self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
                 self.__ctx.stroke()
         self.__ctx.restore()
         return
+
+    def _transform_to_sharp_space(self, node):
+        if self.__ctx.get_line_width() % 2 == 1:
+            return (node[0] + 0.5, node[1] + 0.5)
+        else:
+            return node
+
 
     def apply_path(self, nodes):
         if nodes[0].style() == 'curve':
             line_end = nodes[1] + ((nodes[0] - nodes[1]) * 0.5)
         else: 
             line_end = nodes[0]
-        self.__ctx.move_to(*line_end)
+        self.__ctx.move_to(*self._transform_to_sharp_space(line_end))
         for i in range(1, len(nodes) - 1):
             if nodes[i].style() == 'curve':
                 if i > 0 and nodes[i - 1].style() == 'miter':
                     temp_end = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.5)
-                    self.__ctx.line_to(*temp_end)
+                    self.__ctx.line_to(*self._transform_to_sharp_space(temp_end))
                 line_end = nodes[i] + ((nodes[i + 1] - nodes[i]) * 0.5)
                 cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.9)
                 cp2 = nodes[i + 1] + ((nodes[i] - nodes[i + 1]) * 0.9)
-                self.__ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], line_end[0], line_end[1])
+                cp1 = self._transform_to_sharp_space(cp1)
+                cp2 = self._transform_to_sharp_space(cp2)
+                self.__ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], *self._transform_to_sharp_space(line_end))
             else:
-                self.__ctx.line_to(*nodes[i])
+                self.__ctx.line_to(*self._transform_to_sharp_space(nodes[i]))
                 line_end = nodes[i]
         return
 
@@ -211,11 +223,10 @@ class CairoBackend(DrawingBackend):
                     nodes = [path[-2]] + path 
                 else:
                     nodes = [path[0]] + path + [path[-1]]
-                self.apply_path(nodes)
                 self.apply_line(open_graph)
-                self.__ctx.set_dash([])
-                self.__ctx.set_line_width(self.__ctx.get_line_width())
+                self.apply_path(nodes)
                 self.__ctx.set_operator(cairo.OPERATOR_CLEAR)
+                self.__ctx.set_dash([])
                 self.__ctx.stroke_preserve()
                 self.apply_line(open_graph)
                 self.__ctx.set_operator(cairo.OPERATOR_SOURCE)

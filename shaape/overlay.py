@@ -1,5 +1,6 @@
 import networkx as nx
 from edge import Edge
+from node import Node
 
 class Overlay:
     def __init__(self, array = [], edges = []):
@@ -32,14 +33,19 @@ class Overlay:
                         if orig_y >= len(data) and ov_y < len(self.__overlay):
                             matched = False
                 if True == matched:
-                    for edge in self.__substitutes:
-                        start = edge.start() + (data_x, data_y)
-                        end = edge.end() + (data_x, data_y)
-                        if edge.top_of() != None:
-                            top_of_start = edge.top_of().start() + (data_x, data_y)
-                            top_of_end = edge.top_of().end() + (data_x, data_y)
-                            graph.add_edge(start, end, top_of = Edge(top_of_start, top_of_end))
-                        else:
-                            if not graph.has_edge(start, end):
-                                graph.add_edge(start, end)
+                    for obj in self.__substitutes:
+                        if isinstance(obj, Edge):
+                            edge = obj
+                            start = edge.start() + (data_x, data_y)
+                            end = edge.end() + (data_x, data_y)
+                            if edge.top_of() != None:
+                                top_of_start = edge.top_of().start() + (data_x, data_y)
+                                top_of_end = edge.top_of().end() + (data_x, data_y)
+                                graph.add_edge(start, end, top_of = Edge(top_of_start, top_of_end))
+                            else:
+                                if not graph.has_edge(start, end):
+                                    graph.add_edge(start, end)
+                        elif isinstance(obj, Node):
+                            start = obj + (data_x, data_y)
+                            graph.add_node(start)
         return graph
