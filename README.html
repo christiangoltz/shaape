@@ -743,25 +743,45 @@ asciidoc.install();
 <div class="sect1">
 <h2 id="_copyright">Copyright</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Shaape - Ascii art to image converter
-Copyright &#169; 2012  Christian Goltz</p></div>
-<div class="paragraph"><p>This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.</p></div>
-<div class="paragraph"><p>This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.</p></div>
-<div class="paragraph"><p>You should have received a copy of the GNU General Public License
-along with this program.  If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p></div>
+<div class="paragraph"><p>Copyright (c) 2013, Christian Goltz
+All rights reserved.</p></div>
+<div class="paragraph"><p>Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:</p></div>
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Redistributions of source code must retain the above copyright notice, this
+   list of conditions and the following disclaimer.
+</p>
+</li>
+<li>
+<p>
+Redistributions in binary form must reproduce the above copyright notice,
+   this list of conditions and the following disclaimer in the documentation
+   and/or other materials provided with the distribution.
+</p>
+</li>
+</ol></div>
+<div class="paragraph"><p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</p></div>
+<div class="paragraph"><p>The views and conclusions contained in the software and documentation are those
+of the authors and should not be interpreted as representing official policies,
+either expressed or implied, of the FreeBSD Project.</p></div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_about_shaape">About Shaape</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>Shaape processes ascii drawings of diagrams and converts them to pixel
-graphics. Shaape is meant to be used inside raw ascii documents (like asciidoc
+<div class="paragraph"><p>Shaape processes ascii drawings of diagrams and converts them to pixel or
+vector graphics. Shaape is meant to be used inside raw ascii documents (like asciidoc
 or markdown) to enable writers to easily draw diagrams inside their source
 documents.</p></div>
 <div class="paragraph"><p>The word <strong>Shaape</strong> itself is a neologism from <strong>shape</strong> and <strong>ascii art</strong>.</p></div>
@@ -1352,7 +1372,10 @@ of the shapes that it should be applied to.
 The key should always be quoted. It is interpreted as a regular expression and
 matched against the names of all polygons. Polygons with matching names get
 this style applied.</p></div>
-<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt> - "boxname[0-9]": {fill: [red, flat], frame: [blue, dashed], no-shadow}</tt></pre>
+</div></div>
 </div>
 <div class="sect3">
 <h4 id="_multiple_style_application_amp_style_order">Multiple style application &amp; Style order</h4>
@@ -1360,7 +1383,11 @@ this style applied.</p></div>
 applied sequentially from top to bottom of the style definition. That way you
 can use a default style for some attributes and change specific attributes for
 some polygons:</p></div>
-<div class="paragraph"><p></p></div>
+<div class="listingblock">
+<div class="content">
+<pre><tt> - ".*": {fill: [red, flat], frame: [blue, dashed], no-shadow}
+ - "boxname[0-9]": {fill: [blue]}</tt></pre>
+</div></div>
 </div>
 <div class="sect3">
 <h4 id="_default_styles">Default Styles</h4>
@@ -2751,7 +2778,7 @@ EARBEARBEARBKDb+PxDClIjiFyG4AAAAAElFTkSuQmCC" />
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2013-02-11 16:22:05 CET
+Last updated 2013-02-14 18:46:16 CET
 </div>
 </div>
 </body>

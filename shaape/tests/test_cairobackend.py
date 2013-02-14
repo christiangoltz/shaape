@@ -1,6 +1,6 @@
 from shaape.cairobackend import CairoBackend
 from shaape.tests.utils import TestUtils
-from shaape.shaape import Shaape
+from shaape.run import Shaape
 from shaape.drawable import Drawable
 from shaape.polygon import Polygon
 from shaape.opengraph import OpenGraph

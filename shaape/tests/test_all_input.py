@@ -1,7 +1,7 @@
 import nose
 import unittest
 from nose.tools import *
-from shaape.shaape import Shaape
+from shaape.run import Shaape
 from shaape.tests.utils import TestUtils
 import os
 

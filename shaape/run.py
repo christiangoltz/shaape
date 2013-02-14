@@ -1,16 +1,16 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
-from nameparser import NameParser
-from styleparser import StyleParser
-from yamlparser import YamlParser
-from overlayparser import OverlayParser
-from textparser import TextParser
-from arrowparser import ArrowParser
-from backgroundparser import BackgroundParser
-from cairobackend import CairoBackend
-from cairosvgbackend import CairoSvgBackend
-from drawingbackend import DrawingBackend
-from parser import Parser
+from shaape.nameparser import NameParser
+from shaape.styleparser import StyleParser
+from shaape.yamlparser import YamlParser
+from shaape.overlayparser import OverlayParser
+from shaape.textparser import TextParser
+from shaape.arrowparser import ArrowParser
+from shaape.backgroundparser import BackgroundParser
+from shaape.cairobackend import CairoBackend
+from shaape.cairosvgbackend import CairoSvgBackend
+from shaape.drawingbackend import DrawingBackend
+from shaape.parser import Parser
 
 import copy
 import hashlib
@@ -94,7 +94,7 @@ def hash_update(content, hashfile):
     hash_data.write(m.hexdigest())
     hash_data.close()
 
-def main(arguments = None):
+def run(arguments = None):
     parser = argparse.ArgumentParser(description=' - Asciiart to image processing')
     parser.add_argument('infile', type=str, help='input file, can be - if the input comes from stdin')
     parser.add_argument('-o', '--outfile', type=str, help='output file, will be infile.png if not specified')
@@ -108,6 +108,3 @@ def main(arguments = None):
     if args.do_hash:
         hash_update(shaape.original_source(), args.outfile + ".md5")
     print(" ")
-
-if __name__ == "__main__": # pragma: no cover
-    main()

@@ -20,17 +20,23 @@ SOURCES = $(wildcard shaape/*.py)
 ASCIIDOC_FILTER = asciidoc-filter/shaape-filter.conf
 BUILD_DIR = build
 .PHONY: install install-filter clean doc tests
-install-filter: 
+
+all:
+
+install:
+	easy_install ./
+
+install-filter: install
 	$(RM) $(BUILD_DIR)    
 	$(MKDIR) $(BUILD_DIR)
-	$(CP) $(SOURCES) $(BUILD_DIR)
 	$(CP) $(ASCIIDOC_FILTER) $(BUILD_DIR)
 	$(CD) $(BUILD_DIR) && $(ZIP) shaape.zip ./* -r    
 	-asciidoc --filter remove shaape   
 	asciidoc --filter install $(BUILD_DIR)/shaape.zip   
 
-readme: install-filter README
+readme: README
 	asciidoc -a data-uri README
+
 tests:
 	$(TEST_BIN) $(TEST_OPTS) $(TEST_DIR)
 
