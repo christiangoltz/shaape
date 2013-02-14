@@ -181,7 +181,7 @@ class OverlayParser(Parser):
             z_order_graph.remove_nodes_from(nodes_without_predecessors)
 
         for o in new_objects:
-            if type(o) == Polygon:
+            if type(o) == Polygon or type(o) == OpenGraph:
                 o.reduce_nodes()
         objects = objects + new_objects
         objects.append(graph)

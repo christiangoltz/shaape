@@ -2,6 +2,7 @@ from shaape.nameparser import NameParser
 from shaape.text import Text
 from shaape.tests.utils import TestUtils
 import nose
+from sets import Set
 import unittest
 from nose.tools import *
 
@@ -19,6 +20,6 @@ class TestNameParser(unittest.TestCase):
         raw_data = '123'
         objects = [polygon, text1, text2]
         parser.run(raw_data, objects)
-        assert polygon.names() == ['', 'abc']
+        assert polygon.names() == Set(['', 'abc'])
 
         

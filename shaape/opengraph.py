@@ -16,6 +16,19 @@ class OpenGraph(Drawable, Scalable, Named):
         self.__generate_paths()
         return
 
+    def reduce_nodes(self):
+        node_reduced = True
+        while node_reduced == True:
+            node_reduced = False
+            for node in self.__graph.nodes():
+                if self.__graph.degree(node) == 2:
+                    neighbors = self.__graph.neighbors(node)
+                    if has_same_direction(neighbors[0] - node, node - neighbors[1]):
+                        self.__graph.add_edge(neighbors[0], neighbors[1])
+                        self.__graph.remove_node(node)
+                        node_reduced = True
+
+
     def graph(self):
         return self.__graph
 

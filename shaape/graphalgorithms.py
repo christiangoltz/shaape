@@ -148,3 +148,45 @@ def planar_cycles(undirected_graph):
         c.append(c[0])
     
     return cycles
+
+  
+def ccw(a, b, c):
+    return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0])
+
+def line_segments_intersect(seg1, seg2):
+    return ccw(seg1[0], seg2[0], seg2[1]) != ccw(seg1[1], seg2[0], seg2[1]) and ccw(seg1[0], seg1[1], seg2[0]) != ccw(seg1[0], seg1[1], seg2[1])
+
+def vector_length(v):
+    return np.sqrt(v.dot(v))
+
+def vector_length_squared(v):
+    return v.dot(v)
+
+def line_segment_point_distance(point, seg):
+    seg_start = np.array(seg[0])
+    seg_end = np.array(seg[1])
+    point = np.array(point)
+    seg_dir = seg_end - seg_start
+    seg_length = vector_length_squared(seg_dir)
+    if seg_length == 0:
+      return vector_length(point - seg_start)
+
+    t = np.dot(point - seg_start, seg_dir) / seg_length
+    if t < 0:
+      return vector_length(point - seg_start)
+    elif t > 1:
+      return vector_length(point - seg_end)
+
+    projection = seg_start + t * seg_dir
+    return vector_length(point - projection)
+
+def line_segments_distance(seg1, seg2):
+    if line_segments_intersect(seg1, seg2):
+        return 0
+    else:
+        distances = []
+        distances.append(line_segment_point_distance(seg1[0], seg2))
+        distances.append(line_segment_point_distance(seg1[1], seg2))
+        distances.append(line_segment_point_distance(seg2[0], seg1))
+        distances.append(line_segment_point_distance(seg2[1], seg1))
+        return min(distances)
