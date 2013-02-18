@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 
-from shaape.nameparser import NameParser
-from shaape.styleparser import StyleParser
-from shaape.yamlparser import YamlParser
-from shaape.overlayparser import OverlayParser
-from shaape.textparser import TextParser
-from shaape.arrowparser import ArrowParser
-from shaape.backgroundparser import BackgroundParser
-from shaape.cairobackend import CairoBackend
-from shaape.cairosvgbackend import CairoSvgBackend
-from shaape.cairoepsbackend import CairoEpsBackend
-from shaape.cairopdfbackend import CairoPdfBackend
-from shaape.drawingbackend import DrawingBackend
-from shaape.parser import Parser
+from nameparser import NameParser
+from styleparser import StyleParser
+from yamlparser import YamlParser
+from overlayparser import OverlayParser
+from textparser import TextParser
+from arrowparser import ArrowParser
+from backgroundparser import BackgroundParser
+from cairobackend import CairoBackend
+from cairosvgbackend import CairoSvgBackend
+from cairoepsbackend import CairoEpsBackend
+from cairopdfbackend import CairoPdfBackend
+from drawingbackend import DrawingBackend
+from parser import Parser
 
 import copy
 import hashlib

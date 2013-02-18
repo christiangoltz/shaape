@@ -33,12 +33,12 @@ What is supported
    - line types: solid, dotted, dashed, dash-dotted
 - monospaced text in the whole drawing
 - corners can be either miter or round (the '*' character)
-- renders to png, svg, eps, pdf
+- renders to png, svg, eps(experimental), pdf(experimental)
 - md5sum generation/checking to prevent image generation on unchanged sources
 
 What will be supported
 ~~~~~~~~~~~~~~~~~~~~~~
-- text styles without markup inside the drawing
+- advanced text styles without markup inside the drawing
 
 What will *not* be supported
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,10 +60,11 @@ Dependencies
 
 Installation
 ------------
-There is no dedicated installation process at the moment, you can use the
-source as it is.
+Use 
 
-`./shaape.py` will print the usage help.
+`$ sudo make install`
+
+to install shaape.
 
 You can use `make install-filter` to install the asciidoc filter.
 
