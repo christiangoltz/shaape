@@ -136,45 +136,95 @@ renders:
 
 ==== Arrows
 There are 4 types of arrows supported:
-----
+---------------------------------------------------------------------
 < > ^ v
-----
+---------------------------------------------------------------------
 
 renders:
+
 [shaape]
-----
+---------------------------------------------------------------------
 < > ^ v
-----
+---------------------------------------------------------------------
 
 Arrows can also be used in connection with lines
-----
+---------------------------------------------------------------------
 <-- --> ^ |   >-- --< | v
         | v           ^ |
-----
+---------------------------------------------------------------------
+
 renders:
+
 [shaape]
-----
+---------------------------------------------------------------------
 <-- --> ^ |   >-- --< | v
         | v           ^ |
-----
+---------------------------------------------------------------------
+
+Arrows snap to corners, that are near where they are pointing to:
+---------------------------------------------------------------------
+    +---+   v      <     v
+ -->|   |    \    /     >+<
+ -->+   |     \  /       ^
+    |   |     ^ >        
+    +---+
+---------------------------------------------------------------------
+
+renders:
+
+[shaape]
+---------------------------------------------------------------------
+    +---+   v      <     v
+ -->|   |    \    /     >+<
+ -->+   |     \  /       ^
+    |   |     ^ >        
+    +---+
+---------------------------------------------------------------------
 
 ==== Connectors
-----
- \|/          |        
---+--   +--   +---  ---+---
- /|\   /               |
-----
+
+The `+` character is used to connect lines:
+---------------------------------------------------------------------
+  \|/          |        
+ --+--   +--   +---  ---+---
+  /|\   /               |
+---------------------------------------------------------------------
 
 renders:
 
-["shaape"]
+[shaape]
 ---------------------------------------------------------------------
- \|/          |        
---+--   +--   +---  ---+---
- /|\   /               |
+  \|/          |        
+ --+--   +--   +---  ---+---
+  /|\   /               |
+---------------------------------------------------------------------
+
+If you want to visually connect two lines, without actually connecting them
+internally, to avoid closing a polygon, you can just directly connect
+perpendicular lines without the `+`:
+
+---------------------------------------------------------------------
+ +----+     +----+
+ |    |-----|    |
+ |    |-----|    |
+ +----+     +----+
+---------------------------------------------------------------------
+
+renders:
+
+[shaape]
+---------------------------------------------------------------------
+ +----+     +----+
+ |    |-----|    |
+ |    |-----|    |
+ +----+     +----+
 ---------------------------------------------------------------------
 
 ==== Bezier curves
+Bezier curves are drawn using the `*` character. Shaape tries to match the
+drawn curve smoothly. Bezier curves can be connected to lines and connectors.
+The `*` itself is a similar connector as `+` and thus can be used to create
+junctions in special cases too. 
 ----
  **  **  **  ---+       ****
 *      **        \     *
@@ -183,7 +233,7 @@ renders:
 
 renders:
 
-["shaape"]
+[shaape]
 ---------------------------------------------------------------------
  **  **  **  ---+       ****
 *      **        \     *
@@ -191,8 +241,15 @@ renders:
 ---------------------------------------------------------------------
 
 ==== Crossings
-Crossings are used to let lines go over or under each other without creating a junction between them.
-----
+Crossings are used to let lines go over or under each other without creating
+a junction between them.
+You can use brackets and braces to explicitly indicate these junctions via
+curved lines in the generated image or you can use normal line characters
+to draw straight crossing lines.
+
+e.g.
+
+---------------------------------------------------------------------
    | | | | | |
  +-]-[-(-)-|----+
  | | | | | | |  |
@@ -202,11 +259,11 @@ Crossings are used to let lines go over or under each other without creating a j
  | +-+-+-+------~--
  |              |
  +--------------+
-----
+---------------------------------------------------------------------
 
 renders:
 
-["shaape"]
+[shaape]
 ---------------------------------------------------------------------
    | | | | | |
  +-]-[-(-)-|----+
@@ -271,36 +328,51 @@ use "_arrow_" as key and to set the default style for lines, use "_line_".
 
 ==== Possible style attributes
 The style definition itself contains a yaml dictionary, that may have 3 keys:
-- fill: defines style properties for filling a polygon, arrow or line
-- frame: defines the style properties for the frame of a polygon or arrow
-- text: defines the style properties for text
+
+fill:: defines style properties for filling a polygon, arrow or line
+frame:: defines the style properties for the frame of a polygon or arrow
+text:: defines the style properties for text
 
 ===== Fill
 Fill may contain:
-- shadow / no-shadow: selects wether the object drops a shadow 
+
+* shadow / no-shadow: selects wether the object drops a shadow 
                       (default is shadow)
-- solid / dashed / dotted / dash-dotted: selects the line style (only applied
+* solid / dashed / dotted / dash-dotted: selects the line style (only applied
                                          to lines, default is solid)
-- multiple color definitions, where a color is:
- - red / green / blue
- - a list with three floats from 0.0 to 1.0, representing RGB 
+* multiple color definitions, where a color is:
+  - red / green / blue
+  - a list with three floats from 0.0 to 1.0, representing RGB 
    (e.g. [0.5, 0.5, 0,.5])
- - a list with four floats from 0.0 to 1.0, representing RGBA
- Note:: If you provide more than one color, then the polygon will use a
-        gradient for it's fill.
+  - a list with four floats from 0.0 to 1.0, representing RGBA
+    NOTE: If you provide more than one color, then the polygon will use a
+          gradient for it's fill.
 
 ===== Frame
+Frame may contain:
+
+* solid / dashed / dotted / dash-dotted: selects the line style 
+* a color definition, where a color is:
+  - red / green / blue
+  - a list with three floats from 0.0 to 1.0, representing RGB 
+   (e.g. [0.5, 0.5, 0,.5])
 
 ===== Text
+Text may contain:
+
+* a color definition, where a color is:
+  - red / green / blue
+  - a list with three floats from 0.0 to 1.0, representing RGB 
+   (e.g. [0.5, 0.5, 0,.5])
 
 ==== Advanced Example
 
 ----
-      ^  ^                     |        in>---+-----+-----> out1
-      |  |                     +              |     |
-   >--[--[--+--*              /|\             |     *----->'out 2'
-      |  |  |  |             +'c'+            |
-      +--+--(--(---*         |   |            |    +------>'3'
+      ^  ^         v           |        in>---+-----+-----> out1
+      |  |  |  |   |           +              |     |
+   >--[--[--|--|---|          /|\             |     *----->'out 2'
+      |  |  |  |   |         +'c'+            |
+      +--+--(--(---|         |   |            |    +------>'3'
             |  |   |        'd' 'e'           |   /
             |  +---~--->                      +--+-------->'v'    
             |      |                 
@@ -312,7 +384,7 @@ Fill may contain:
  |          |        | +------------+ stacked +------------+ |                 
  ^ arrowbox v        | | inner1     |         | inner2     | |                 
  |          | +--+   | | +-------++ +--**     | +--------+ | |                  
- ^          v |  |   | | |inner3  | |    **-->| |inner4  | | |                  
+ ^          v |  |   | | |inner3  | |    **-->+ |inner4  | | |                  
  |          | *  |   | | |        | |         | |        | | |                  
  +--<-<-<-<-+ *  *   | | |        +-------------+        | | |                 
               *  *   | | +--------+ |         | +--------+ | | 
@@ -339,13 +411,13 @@ options:
 
 renders:
 
-["shaape"]
+[shaape]
 ---------------------------------------------------------------------
-      ^  ^                     |        in>---+-----+-----> out1
-      |  |                     +              |     |
-   >--[--[--+--*              /|\             |     *----->'out 2'
-      |  |  |  |             +'c'+            |
-      +--+--(--(---*         |   |            |    +------>'3'
+      ^  ^         v           |        in>---+-----+-----> out1
+      |  |  |  |   |           +              |     |
+   >--[--[--|--|---|          /|\             |     *----->'out 2'
+      |  |  |  |   |         +'c'+            |
+      +--+--(--(---|         |   |            |    +------>'3'
             |  |   |        'd' 'e'           |   /
             |  +---~--->                      +--+-------->'v'    
             |      |                 
