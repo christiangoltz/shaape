@@ -175,7 +175,7 @@ class OverlayParser(Parser):
                     if z_order != None:
                         for other_obj in new_objects:
                             if obj != other_obj:
-                                if (isinstance(other_obj, Polygon) and other_obj.frame().intersects(edge)) or other_obj.intersects(edge):
+                                if (isinstance(other_obj, Polygon) and other_obj.frame().intersects(edge)) or (isinstance(other_obj, OpenGraph) and other_obj.intersects(edge)):
                                     if z_order == 'above':
                                         z_order_graph.add_edge(other_obj, obj)
                                     elif z_order == 'below':
