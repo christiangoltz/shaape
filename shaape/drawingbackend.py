@@ -100,6 +100,9 @@ class DrawingBackend(object):
             for p in polygons:
                 if p.style().shadow() == 'on':
                     self.draw_polygon_shadow(p)
+            for drawable_object in graphs:
+                if drawable_object.style().shadow() == 'on':
+                    self.draw_open_graph_shadow(drawable_object)
             self.blur_surface()
             self.pop_surface()
             self.push_surface()
@@ -112,13 +115,6 @@ class DrawingBackend(object):
             self.pop_surface()
             i = i + 1
 
-            self.push_surface()
-            self.translate(*self.shadow_translation())
-            for drawable_object in graphs:
-                if drawable_object.style().shadow() == 'on':
-                    self.draw_open_graph_shadow(drawable_object)
-            self.blur_surface()
-            self.pop_surface()
             self.push_surface()
             for drawable_object in graphs:
                 self.draw_open_graph(drawable_object)

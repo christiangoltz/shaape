@@ -68,7 +68,7 @@ class TestDrawingBackend(unittest.TestCase):
         self.__backend.blur_surface = MagicMock()
         self.__backend.draw_objects(objects)
         assert self.__backend.push_surface.call_count == self.__backend.pop_surface.call_count
-        assert self.__backend.translate.call_count == 3
+        assert self.__backend.translate.call_count == 2
 
         assert self.__backend.draw_polygon.call_count == 4
         self.__backend.draw_polygon.assert_any_call(polygon1)
@@ -90,7 +90,7 @@ class TestDrawingBackend(unittest.TestCase):
  
         self.__backend.draw_text.assert_called_once_with(text)
 
-        assert self.__backend.blur_surface.call_count == 3
+        assert self.__backend.blur_surface.call_count == 2
          
     def test_abstracts(self):
         assert_raises(NotImplementedError,  self.__backend.draw_polygon_shadow)
