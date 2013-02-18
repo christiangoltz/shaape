@@ -74,7 +74,11 @@ class OpenGraph(Drawable, Scalable, Named):
         paths = []
         if not graph.nodes():
             return
-        path = [graph.nodes()[0]]
+        start_nodes = [n for n in graph.nodes() if (n.style() != 'curve' or (nx.degree(graph, n) == 1)) ]
+        if start_nodes:
+            path = [start_nodes[0]]
+        else:
+            path = [graph.nodes()[0]]
 
         while path:
             neighbors = nx.neighbors(graph, path[-1])
