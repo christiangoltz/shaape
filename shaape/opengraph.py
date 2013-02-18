@@ -1,4 +1,5 @@
 from drawable import Drawable
+from edge import Edge
 from scalable import Scalable
 from operator import itemgetter
 from named import Named
@@ -18,15 +19,15 @@ class OpenGraph(Drawable, Scalable, Named):
 
     def reduce_nodes(self):
         node_reduced = True
-        # while node_reduced == True:
-        #     node_reduced = False
-        #     for node in self.__graph.nodes():
-        #         if self.__graph.degree(node) == 2:
-        #             neighbors = self.__graph.neighbors(node)
-        #             if has_same_direction(neighbors[0] - node, node - neighbors[1]):
-        #                 self.__graph.add_edge(neighbors[0], neighbors[1])
-        #                 self.__graph.remove_node(node)
-        #                 node_reduced = True
+        while node_reduced == True:
+            node_reduced = False
+            for node in self.__graph.nodes():
+                if self.__graph.degree(node) == 2:
+                    neighbors = self.__graph.neighbors(node)
+                    if has_same_direction(neighbors[0] - node, node - neighbors[1]):
+                        self.__graph.add_edge(neighbors[0], neighbors[1])
+                        self.__graph.remove_node(node)
+                        node_reduced = True
 
 
     def graph(self):
@@ -60,6 +61,12 @@ class OpenGraph(Drawable, Scalable, Named):
 
     def has_node(self, node):
         return self.__graph.has_node(node)
+
+    def intersects(self, obj):
+        for edge in self.edges():
+            if line_segments_intersect(edge, obj):
+                return True
+        return False
     
     def __generate_paths(self):
         self.__paths = []

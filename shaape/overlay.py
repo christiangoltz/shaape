@@ -38,13 +38,18 @@ class Overlay:
                             edge = obj
                             start = edge.start() + (data_x, data_y)
                             end = edge.end() + (data_x, data_y)
-                            if edge.top_of() != None:
-                                top_of_start = edge.top_of().start() + (data_x, data_y)
-                                top_of_end = edge.top_of().end() + (data_x, data_y)
-                                graph.add_edge(start, end, top_of = Edge(top_of_start, top_of_end))
-                            else:
-                                if not graph.has_edge(start, end):
-                                    graph.add_edge(start, end)
+                            _above = None
+                            _below = None
+                            z_order = None
+                            if edge.above() != None:
+                                above_start = edge.above().start() + (data_x, data_y)
+                                above_end = edge.above().end() + (data_x, data_y)
+                                _above =  Edge(above_start, above_end)
+                            if edge.below() != None:
+                                below_start = edge.below().start() + (data_x, data_y)
+                                below_end = edge.below().end() + (data_x, data_y)
+                                _below = Edge(below_start, below_end)
+                            graph.add_edge(start, end, above = _above, below = _below, z_order = edge.z_order())
                         elif isinstance(obj, Node):
                             start = obj + (data_x, data_y)
                             graph.add_node(start)

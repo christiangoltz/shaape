@@ -108,3 +108,6 @@ def run(arguments = None):
     if args.do_hash:
         hash_update(shaape.original_source(), args.outfile + ".md5")
     print(" ")
+
+if __name__ == "__main__":
+    run()
