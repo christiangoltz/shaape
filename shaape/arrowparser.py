@@ -39,7 +39,7 @@ class ArrowParser(Parser):
         if graph != None:
             for arrow in arrows:
                 connector = Node(*(arrow.tip()))
-                nodes_in_front = [node for node in graph.nodes() if angle(arrow.direction(), node - connector) <= 90]
+                nodes_in_front = [node for node in graph.nodes() if (node == connector) or angle(arrow.direction(), node - connector) <= 90]
                 if nodes_in_front:
                     nearest_node = min(nodes_in_front, key=lambda node: (node - connector.position()).length())
                     diff = nearest_node - connector

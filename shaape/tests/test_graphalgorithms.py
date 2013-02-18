@@ -31,5 +31,5 @@ class TestGraphAlgorithms(unittest.TestCase):
         graph.add_edge(Node(0.5, 1.5), Node(1.5, 1.5))
         graph.add_edge(Node(0.5, 1.5), Node(1.5, 0.5))
         graph.add_edge(Node(1.5, 0.5), Node(1.5, 1.5))
-        cycle = [Node(1.5, 1.5), Node(0.5, 1.5), Node(0.5, 0.5), Node(1.5, 0.5), Node(1.5, 1.5)]
+        cycle = [Node(1.5, 1.5), Node(0.5, 1.5), Node(0.5, 0.5), Node(1.5, 0.5)]
         assert is_chord_free(graph, cycle) == False
