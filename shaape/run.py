@@ -9,6 +9,8 @@ from shaape.arrowparser import ArrowParser
 from shaape.backgroundparser import BackgroundParser
 from shaape.cairobackend import CairoBackend
 from shaape.cairosvgbackend import CairoSvgBackend
+from shaape.cairoepsbackend import CairoEpsBackend
+from shaape.cairopdfbackend import CairoPdfBackend
 from shaape.drawingbackend import DrawingBackend
 from shaape.parser import Parser
 
@@ -40,8 +42,14 @@ class Shaape:
             self.register_parser(ArrowParser())
             self.register_parser(NameParser())
             self.register_parser(StyleParser())
-            if output_type == 'svg':
-                self.register_backend(CairoSvgBackend())
+            backends = {
+                    'svg': CairoSvgBackend,
+                    'pdf': CairoPdfBackend,
+                    'eps': CairoEpsBackend,
+                    'png': CairoBackend
+                    }
+            if output_type in backends:
+                self.register_backend(backends[output_type]())
             else:
                 self.register_backend(CairoBackend())
 

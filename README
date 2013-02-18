@@ -8,49 +8,37 @@ include::LICENSE[]
 About Shaape
 ------------
 Shaape processes ascii drawings of diagrams and converts them to pixel or
-vector graphics. Shaape is meant to be used inside raw ascii documents (like asciidoc
-or markdown) to enable writers to easily draw diagrams inside their source 
-documents.
-
+vector graphics. 
 The word *Shaape* itself is a neologism from *shape* and *ascii art*.
 
 Why to use Shaape
 ~~~~~~~~~~~~~~~~~
-There are already other projects for asciidoc, namely ditaa and aafigure,
-out there that have a similar goal as Shaape. 
-However those are either inconsistent between source and image, 
-do not support diagonal lines or encourage you to use too much markup inside
-the drawing.
 
-Shaape supports a very natural form of ascii drawing (see the examples below)
-and uses *no special markup* inside the drawing. By special markup, I mean
-symbols, that only have a meaning in the converted graphic and don't add
-information to the ascii drawing itself.
-Special markup inside drawings makes those hard to read in the source document
-and thus have to be avoided.
-
-This way Shaape encourages you to keep an easy to read and clean drawing style
-and makes sure your diagrams are consistent between the asciidoc source
-document and it's output.
+- Shaape is consistent between ascii source code and the produced image,
+  What-You-See-Is-What-You-Generate
+- Shaape supports a very natural form of ascii drawing (see the examples below)
+  and attempts to keep the ascii source picture readable
+- Shaape has an extensive feature set while maintaining a small and natural
+  syntax
 
 What is supported
 ~~~~~~~~~~~~~~~~~
-- arbitrary shapes
-- arbitrary connected lines
-- lines ending with arrows
-- gradient filled polygons
-- shadows for polygons, lines and arrows
+- arbitrary shapes (e.g. polygons, paths, planar graphs)
+- arrows (that even can snap to target points)
+- extensive styles:
+   - color
+   - gradients
+   - shadows
+   - transparency
+   - line types: solid, dotted, dashed, dash-dotted
 - monospaced text in the whole drawing
-- rounded corners with the '*' character
-- styles for background, polygons, lines and text including colors, fills and
-  line styles without markup inside the drawing
-- png rendering
+- corners can be either miter or round (the '*' character)
+- renders to png, svg, eps, pdf
 - md5sum generation/checking to prevent image generation on unchanged sources
 
 What will be supported
 ~~~~~~~~~~~~~~~~~~~~~~
 - text styles without markup inside the drawing
-- svg rendering
 
 What will *not* be supported
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -69,7 +57,6 @@ Dependencies
  - nose
  - coverage
  - mock
- - pbp.scripts
 
 Installation
 ------------

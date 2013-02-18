@@ -18,61 +18,52 @@ class OverlayParser(Parser):
     def __init__(self):
         super(OverlayParser, self).__init__()
         self.__sub_overlays = []
-        self.__sub_overlays.append(Overlay([['+']], [Node(0.5, 0.5)]))
+        self.__sub_overlays.append(Overlay([['\+']], [Node(0.5, 0.5)]))
         self.__sub_overlays.append(Overlay([['-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
-        self.__sub_overlays.append(Overlay([['|']], [Edge(Node(0.5, 0), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['\|']], [Edge(Node(0.5, 0), Node(0.5, 1))]))
         self.__sub_overlays.append(Overlay([['/']], [Edge(Node(0, 1), Node(1, 0))]))
-        self.__sub_overlays.append(Overlay([['\\']], [Edge(Node(1, 1), Node(0, 0))]))
-        self.__sub_overlays.append(Overlay([['|','-']], [Edge(Node(0.5, 0.5), Node(1, 0.5))]))
-        self.__sub_overlays.append(Overlay([['-','|']], [Edge(Node(1.5, 0.5), Node(1, 0.5))]))
-        self.__sub_overlays.append(Overlay([['-'],['|']], [Edge(Node(0.5, 0.5), Node(0.5, 1))]))
-        self.__sub_overlays.append(Overlay([['|'],['-']], [Edge(Node(0.5, 1.5), Node(0.5, 1))]))
-        self.__sub_overlays.append(Overlay([['-','|','-']], [Edge(Node(1, 0.5), Node(2, 0.5), below = Edge(Node(1.5, 0), Node(1.5, 1)))]))
-        self.__sub_overlays.append(Overlay([['|'],['-'],['|']], [Edge(Node(0.5, 1), Node(0.5, 2), below = Edge(Node(0, 1.5), Node(1, 1.5)))]))
-        self.__sub_overlays.append(Overlay([['+','-']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 0.5))]))
-        self.__sub_overlays.append(Overlay([['-','+']], [Edge(Node(1, 0.5), Node(1.5, 0.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([['+'],['|']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1))]))
-        self.__sub_overlays.append(Overlay([['|'],['+']], [Edge(Node(0.5, 1), Node(0.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([[None, '/'],['+', None]], [Edge(Node(1, 1), Node(0.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([[None, '*'],['+', None]], [Edge(Node(1.5, 0.5, 'curve'), Node(0.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([['*', None],[None, '+']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([['+', None],[None, '+']], [Edge(Node(0.5, 0.5, fusable = False), Node(1.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([[None, '+'],['*', None]], [Edge(Node(1.5, 0.5), Node(0.5, 1.5, 'curve', fusable = False))]))
-        self.__sub_overlays.append(Overlay([[None, '+'],['+', None]], [Edge(Node(1.5, 0.5, fusable = False), Node(0.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([['+', None],[None, '*']], [Edge(Node(0.5, 0.5), Node(1.5, 1.5, 'curve', fusable = False))]))
-        self.__sub_overlays.append(Overlay([['\\', None],[None, '+']], [Edge(Node(1, 1), Node(1.5, 1.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([['+', None],[None, '\\']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 1))]))
-        self.__sub_overlays.append(Overlay([[None, '+'],['/', None]], [Edge(Node(1.5, 0.5, fusable = False), Node(1, 1))]))
-        self.__sub_overlays.append(Overlay([['|'],['*']], [Edge(Node(0.5, 1), Node(0.5, 1.5, 'curve'))]))
-        self.__sub_overlays.append(Overlay([['*'],['|']], [Edge(Node(0.5, 0.5, 'curve'), Node(0.5, 1))]))
-        self.__sub_overlays.append(Overlay([['*','-']], [Edge(Node(0.5, 0.5, 'curve'), Node(1, 0.5))]))
-        self.__sub_overlays.append(Overlay([['-','*']], [Edge(Node(1, 0.5), Node(1.5, 0.5, 'curve'))]))
-        self.__sub_overlays.append(Overlay([['+','+']], [Edge(Node(0.5, 0.5, fusable = False), Node(1.5, 0.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([['+'],['+']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([["\\\\"]], [Edge(Node(1, 1), Node(0, 0))]))
+        self.__sub_overlays.append(Overlay([["[^-]",'\|','-']], [Edge(Node(0.5, 0.5), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([['-','\|',"[^-]"]], [Edge(Node(1.5, 0.5), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([["[^\|]"],['-'],['\|']], [Edge(Node(0.5, 0.5), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['\|'],['-'],["[^\|]"]], [Edge(Node(0.5, 1.5), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['-','\|','-']], [Edge(Node(1, 0.5), Node(2, 0.5), below = Edge(Node(1.5, 0), Node(1.5, 1)))]))
+        self.__sub_overlays.append(Overlay([['\|'],['-'],['\|']], [Edge(Node(0.5, 1), Node(0.5, 2), below = Edge(Node(0, 1.5), Node(1, 1.5)))]))
+        self.__sub_overlays.append(Overlay([['\+','-']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([['-','\+']], [Edge(Node(1, 0.5), Node(1.5, 0.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\+'],['\|']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['\|'],['\+']], [Edge(Node(0.5, 1), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([[None, '/'],['\+', None]], [Edge(Node(1, 1), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([[None, '\*'],['\+', None]], [Edge(Node(1.5, 0.5, 'curve'), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\*', None],[None, '\+']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\+', None],[None, '\+']], [Edge(Node(0.5, 0.5, fusable = False), Node(1.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([[None, '\+'],['\*', None]], [Edge(Node(1.5, 0.5), Node(0.5, 1.5, 'curve', fusable = False))]))
+        self.__sub_overlays.append(Overlay([[None, '\+'],['\+', None]], [Edge(Node(1.5, 0.5, fusable = False), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\+', None],[None, '\*']], [Edge(Node(0.5, 0.5), Node(1.5, 1.5, 'curve', fusable = False))]))
+        self.__sub_overlays.append(Overlay([["\\\\", None],[None, '\+']], [Edge(Node(1, 1), Node(1.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\+', None],[None, "\\\\"]], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 1))]))
+        self.__sub_overlays.append(Overlay([[None, '\+'],['/', None]], [Edge(Node(1.5, 0.5, fusable = False), Node(1, 1))]))
+        self.__sub_overlays.append(Overlay([['\|'],['\*']], [Edge(Node(0.5, 1), Node(0.5, 1.5, 'curve'))]))
+        self.__sub_overlays.append(Overlay([['\*'],['\|']], [Edge(Node(0.5, 0.5, 'curve'), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['\*','-']], [Edge(Node(0.5, 0.5, 'curve'), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([['-','\*']], [Edge(Node(1, 0.5), Node(1.5, 0.5, 'curve'))]))
+        self.__sub_overlays.append(Overlay([['\+','\+']], [Edge(Node(0.5, 0.5, fusable = False), Node(1.5, 0.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\+'],['\+']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1.5, fusable = False))]))
 
-        self.__sub_overlays.append(Overlay([['|'], ['v']], [Edge(Node(0.5, 1), Node(0.5, 1.5))]))
-        self.__sub_overlays.append(Overlay([['^'], ['|']], [Edge(Node(0.5, 0.5), Node(0.5, 1))]))
+        self.__sub_overlays.append(Overlay([['\|'], ['v']], [Edge(Node(0.5, 1), Node(0.5, 1.5))]))
+        self.__sub_overlays.append(Overlay([['\^'], ['\|']], [Edge(Node(0.5, 0.5), Node(0.5, 1))]))
         self.__sub_overlays.append(Overlay([['-', '>']], [Edge(Node(1, 0.5), Node(1.5, 0.5))]))
         self.__sub_overlays.append(Overlay([['<', '-']], [Edge(Node(1, 0.5), Node(0.5, 0.5))]))
 
-        self.__sub_overlays.append(Overlay([['+'], ['v']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
-        self.__sub_overlays.append(Overlay([['^'], ['+']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
-        self.__sub_overlays.append(Overlay([['+', '>']], [Edge(Node(0.5, 0.5), Node(1.5, 0.5))]))
-        self.__sub_overlays.append(Overlay([['<', '+']], [Edge(Node(1.5, 0.5), Node(0.5, 0.5))]))
-        # self.__sub_overlays.append(Overlay([['|'], ['^']], [Edge(Node(0.5, 1), Node(0.5, 1.45))]))
-        # self.__sub_overlays.append(Overlay([['v'], ['|']], [Edge(Node(0.5, 0.55), Node(0.5, 1))]))
-        # self.__sub_overlays.append(Overlay([['-', '<']], [Edge(Node(1, 0.5), Node(2, 0.5))]))
-        # self.__sub_overlays.append(Overlay([['>', '-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
+        self.__sub_overlays.append(Overlay([['\+'], ['v']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
+        self.__sub_overlays.append(Overlay([['\^'], ['\+']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
+        self.__sub_overlays.append(Overlay([['\+', '>']], [Edge(Node(0.5, 0.5), Node(1.5, 0.5))]))
+        self.__sub_overlays.append(Overlay([['<', '\+']], [Edge(Node(1.5, 0.5), Node(0.5, 0.5))]))
 
-        # self.__sub_overlays.append(Overlay([['+'], ['^']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
-        # self.__sub_overlays.append(Overlay([['v'], ['+']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
-        # self.__sub_overlays.append(Overlay([['+', '<']], [Edge(Node(0.5, 0.5), Node(2, 0.5))]))
-        # self.__sub_overlays.append(Overlay([['>', '+']], [Edge(Node(0, 0.5), Node(1.5, 0.5))]))
-
-        self.__sub_overlays.append(Overlay([['*','*']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 0.5, 'curve'))]))
-        self.__sub_overlays.append(Overlay([['*'],['*']], [Edge(Node(0.5, 0.5, 'curve'), Node(0.5, 1.5,'curve'))]))
-        self.__sub_overlays.append(Overlay([[None, '*'],['*', None]], [Edge(Node(1.5, 0.5, 'curve'), Node(0.5, 1.5,'curve'))]))
-        self.__sub_overlays.append(Overlay([['*', None],[None, '*']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 1.5,'curve'))]))
+        self.__sub_overlays.append(Overlay([['\*','\*']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 0.5, 'curve'))]))
+        self.__sub_overlays.append(Overlay([['\*'],['\*']], [Edge(Node(0.5, 0.5, 'curve'), Node(0.5, 1.5,'curve'))]))
+        self.__sub_overlays.append(Overlay([[None, '\*'],['\*', None]], [Edge(Node(1.5, 0.5, 'curve'), Node(0.5, 1.5,'curve'))]))
+        self.__sub_overlays.append(Overlay([['\*', None],[None, '\*']], [Edge(Node(0.5, 0.5, 'curve'), Node(1.5, 1.5,'curve'))]))
 
         crossing_top = (1.0 - OverlayParser.CROSSING_LENGTH) / 2.0
         crossing_bottom = 1.0 - (1.0 - OverlayParser.CROSSING_LENGTH) / 2.0
@@ -85,10 +76,10 @@ class OverlayParser(Parser):
         right_bracket_node_list = [Edge(Node(0.5, 0), Node(0.5, crossing_top)), Edge(Node(0.5, crossing_top), Node(crossing_right, crossing_top)), Edge(Node(crossing_right, crossing_top), Node(crossing_right, crossing_bottom), z_order = 'above'), Edge(Node(0.5, crossing_bottom), Node(crossing_right, crossing_bottom)), Edge(Node(0.5, 1), Node(0.5, crossing_bottom))]
         left_parentheses_node_list = [Edge(Node(0.5, 0, 'curve'), Node(0.5, crossing_top, 'curve')), Edge(Node(0.5, crossing_top, 'curve'), Node(crossing_left, crossing_top_curve, 'curve')), Edge(Node(crossing_left, crossing_top_curve, 'curve'), Node(crossing_left, crossing_bottom_curve, 'curve'), z_order = 'above'), Edge(Node(0.5, crossing_bottom, 'curve'), Node(crossing_left, crossing_bottom_curve, 'curve')), Edge(Node(0.5, 1, 'curve'), Node(0.5, crossing_bottom, 'curve'))]
         right_parentheses_node_list = [Edge(Node(0.5, 0, 'curve'), Node(0.5, crossing_top, 'curve')), Edge(Node(0.5, crossing_top, 'curve'), Node(crossing_left, crossing_top_curve, 'curve')), Edge(Node(crossing_left, crossing_top_curve, 'curve'), Node(crossing_left, crossing_bottom_curve, 'curve'), z_order = 'above'), Edge(Node(0.5, crossing_bottom, 'curve'), Node(crossing_left, crossing_bottom_curve, 'curve')), Edge(Node(0.5, 1, 'curve'), Node(0.5, crossing_bottom, 'curve'))]
-        self.__sub_overlays.append(Overlay([['[']], left_bracked_node_list))
-        self.__sub_overlays.append(Overlay([[']']], right_bracket_node_list))
-        self.__sub_overlays.append(Overlay([['(']], left_parentheses_node_list))
-        self.__sub_overlays.append(Overlay([[')']], right_parentheses_node_list))
+        self.__sub_overlays.append(Overlay([['\[']], left_bracked_node_list))
+        self.__sub_overlays.append(Overlay([['\]']], right_bracket_node_list))
+        self.__sub_overlays.append(Overlay([['\(']], left_parentheses_node_list))
+        self.__sub_overlays.append(Overlay([['\)']], right_parentheses_node_list))
 
         crossing_left = (1.0 - OverlayParser.CROSSING_LENGTH) / 4.0
         crossing_right = 1.0 - (1.0 - OverlayParser.CROSSING_LENGTH) / 4.0
@@ -96,14 +87,14 @@ class OverlayParser(Parser):
         crossing_right_curve = crossing_right - OverlayParser.CROSSING_LENGTH / 5.0
         crossing_top = 0.5 - OverlayParser.CROSSING_HEIGHT / 2
         tilde_node_list = [Edge(Node(0, 0.5, 'curve'), Node(crossing_left, 0.5, 'curve')), Edge(Node(crossing_left, 0.5, 'curve'), Node(crossing_left_curve, crossing_top, 'curve')), Edge(Node(crossing_left_curve, crossing_top, 'curve'), Node(crossing_right_curve, crossing_top, 'curve'), z_order = 'above'), Edge(Node(crossing_right_curve, crossing_top, 'curve'), Node(crossing_right, 0.5, 'curve')), Edge(Node(crossing_right, 0.5, 'curve'), Node(1, 0.5, 'curve'))]
-        self.__sub_overlays.append(Overlay([['~']], tilde_node_list))
+        self.__sub_overlays.append(Overlay([['\~']], tilde_node_list))
 
-        for crossing_indicator in ['[', ']', '(', ')']:
+        for crossing_indicator in ['\[', '\]', '\(', '\)']:
             self.__sub_overlays.append(Overlay([['-', crossing_indicator]], [Edge(Node(1, 0.5, fusable = False), Node(1.5, 0.5, fusable = False))]))
             self.__sub_overlays.append(Overlay([[crossing_indicator, '-']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 0.5, fusable = False))]))
 
-        self.__sub_overlays.append(Overlay([['~'], ['|']], [Edge(Node(0.5, 1, fusable = False), Node(0.5, 0.5, fusable = False))]))
-        self.__sub_overlays.append(Overlay([['|'], ['~']], [Edge(Node(0.5, 1, fusable = False), Node(0.5, 1.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\~'], ['\|']], [Edge(Node(0.5, 1, fusable = False), Node(0.5, 0.5, fusable = False))]))
+        self.__sub_overlays.append(Overlay([['\|'], ['\~']], [Edge(Node(0.5, 1, fusable = False), Node(0.5, 1.5, fusable = False))]))
         return
 
     def cycle_len(self, cycle):
