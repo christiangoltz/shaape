@@ -52,8 +52,8 @@ class OverlayParser(Parser):
 
         self.__sub_overlays.append(Overlay([['\|'], ['v']], [Edge(Node(0.5, 1), Node(0.5, 1.5))]))
         self.__sub_overlays.append(Overlay([['\^'], ['\|']], [Edge(Node(0.5, 0.5), Node(0.5, 1))]))
-        self.__sub_overlays.append(Overlay([['-', '>']], [Edge(Node(1, 0.5), Node(1.5, 0.5))]))
-        self.__sub_overlays.append(Overlay([['<', '-']], [Edge(Node(1, 0.5), Node(0.5, 0.5))]))
+        # self.__sub_overlays.append(Overlay([['-', '>']], [Edge(Node(1, 0.5), Node(1.5, 0.5))]))
+        # self.__sub_overlays.append(Overlay([['<', '-']], [Edge(Node(1, 0.5), Node(0.5, 0.5))]))
 
         self.__sub_overlays.append(Overlay([['\+'], ['v']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))
         self.__sub_overlays.append(Overlay([['\^'], ['\+']], [Edge(Node(0.5, 0.5), Node(0.5, 1.5))]))

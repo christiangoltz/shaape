@@ -12,3 +12,5 @@ class DownArrow(Arrow):
     def direction(self):
         return Node(0, 1)
 
+    def connector(self):
+        return Node(self.position()[0], self.position()[1])

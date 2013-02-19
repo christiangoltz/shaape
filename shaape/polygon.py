@@ -10,7 +10,7 @@ class Polygon(Drawable, Named, Scalable):
     def __init__(self, node_list):
         Drawable.__init__(self)
         Named.__init__(self)
-        self.__node_list = node_list
+        self.__node_list = node_list 
         cycle_graph = nx.Graph()
         if node_list :
             for n in range(1, len(node_list)):

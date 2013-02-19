@@ -44,7 +44,7 @@ class ArrowParser(Parser):
                     nearest_node = min(nodes_in_front, key=lambda node: (node - connector.position()).length())
                     diff = nearest_node - connector
                     if diff.length() <= 0.5:
-                        connector = Node(*(arrow.position()))
+                        connector = Node(*(arrow.connector()))
                         path = [connector, connector + diff]
                         for obj in drawable_objects:
                             if isinstance(obj, OpenGraph):

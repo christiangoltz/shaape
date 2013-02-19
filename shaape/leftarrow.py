@@ -11,3 +11,6 @@ class LeftArrow(Arrow):
 
     def direction(self):
         return Node(-1, 0)
+
+    def connector(self):
+        return Node(self.position()[0] + 0.5, self.position()[1])

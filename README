@@ -368,97 +368,28 @@ Text may contain:
   - a list with three floats from 0.0 to 1.0, representing RGB 
    (e.g. [0.5, 0.5, 0,.5])
 
-==== Advanced Example
+===== Advanced Examples
+link:shaape/tests/input/example_1.shaape[source]
 
-----
-      ^  ^         v           |        in>---+-----+-----> out1
-      |  |  |  |   |           +              |     |
-   >--[--[--|--|---|          /|\             |     *----->'out 2'
-      |  |  |  |   |lower    +'c'+            |
-      +--+--(--(---|         |   |            |    +------>'3'
-            |  |   |        'd' 'e'           |   /
-            |  +---~--->                      +--+-------->'v'    
-            |      |                 
-            +------~--->
-         upper     |
-                   v
-                                                              
- +-->->->->-+        +---------------------------------------+                                                         
- |          |        | +------------+ stacked +------------+ |                 
- ^ arrowbox v        | | inner1     |         | inner2     | |                 
- |          | +--+   | | +-------++ +--**     | +--------+ | |                  
- ^          v |  |   | | |inner3  | |    **-->+ |inner4  | | |                  
- |          | *  |   | | |        | |         | |        | | |                  
- +--<-<-<-<-+ *  *   | | |        +-------------+        | | |                 
-              *  *   | | +--------+ |         | +--------+ | | 
-        +--***   *   | +------------+         +------------+ |                         
-        | flat   *   +---------------------------------------+              
-        +----****                                                                      
-   /\               *********               +-----+     +-----+       
-  /  \    +------+ + top     +   ********   |     |\    +--+--+                                
- /flat\  /      /  |*********|  * shape3 *  |     +-+   +--+--+                     
- \    / /shape1/   | shape2  |  *        *  |overlap|                                       
-  \  / +------+    +         +   ********   +-------+                    
-   \/               *********                                       
-options:
-- ".*": {fill:[[0.6, 0.8, 0.8], flat], frame:[[0.2, 0.5, 0.4, 1], solid, 2], text:[[0.1, 0.3, 0.2]]}
-- "_line_": {fill:[[0.1, 0.1, 0.1], solid, 2]}
-- "_arrow_": {fill:[[0.5, 0.5, 0.5, 1], flat]}
-- "(flat)|(top)": {fill:[[0.1, 0.1, 0.1, 1], no-shadow, flat], frame:[[0.3, 0.8, 0], dotted, 3], text:[[0.9, 0.9, 0.9]]}
-- "arrowbox": {fill:[[0.7, 0.7, 0, 0.5], no-shadow, flat], frame:[[0.3, 0.8, 0], dashed, 3], text:[[0, 0, 0]]}
-- "shape[0-9]": {fill:[[0.2, 0.2, 0.2], gradient], frame:[[0.1, 0.5, 0], dotted, 3]}
-- "stacked": {fill:[[0.15, 0.3, 0.3], flat], text:[[0, 0, 0]]}
-- "inner[34]": {frame:[[0, 0, 0], 1, dotted], text:[[0, 0, 0]]}
-- "inner[12]": {fill:[[0.3, 0.6, 0.6], flat], frame:[[0, 0, 0], dashed, 1], text:[[0, 0, 0,]]}
-- "upper": {fill:[[0.5, 0.0, 0.0, 0.5], 4]}
-- "lower": {fill:[[0.0, 0.5, 0.0, 0.5], 4]}
-----  
+image::shaape/tests/expected_images/example_1.shaape.png[width=200,link="shaape/tests/expected_images/example_1.shaape.png"]
 
-renders:
+link:shaape/tests/input/example_2.shaape[source]
 
-["shaape"]
----------------------------------------------------------------------
-      ^  ^  b  a   v           |        in>---+-----+-----> out1
-      |  |  |  |   |           +              |     |
-   >--[--[--|--|---|          /|\             |     *----->'out 2'
-      |  |  |  |   |lower    +'c'+            |
-      +--+--(--(---|         |   |            |    +------>'3'
-            |  |   |        'd' 'e'           |   /
-            |  +---~--->                      +--+-------->'v'    
-            |      |                 
-            +------~--->
-                   |
-                   v
-                                                              
- +-->->->->-+        +---------------------------------------+                                                         
- |          |        | +------------+ stacked +------------+ |                 
- ^ arrowbox v        | | inner1     |         | inner2     | |                 
- |          | +--+   | | +-------++ +--**     | +--------+ | |                  
- ^          v |  |   | | |inner3  | |    **-->+ |inner4  | | |                  
- |          | *  |   | | |        | |         | |        | | |                  
- +--<-<-<-<-+ *  *   | | |        +-------------+        | | |                 
-              *  *   | | +--------+ |         | +--------+ | | 
-        +--***   *   | +------------+         +------------+ |                         
-        | flat   *   +---------------------------------------+              
-        +----****                                                                      
-   /\               *********               +-----+     +-----+       
-  /  \    +------+ + top     +   ********   |     |\    +--+--+                                
- /flat\  /      /  |*********|  * shape3 *  |     +-+   +--+--+                     
- \    / /shape1/   | shape2  |  *        *  |overlap|                                       
-  \  / +------+    +         +   ********   +-------+                    
-   \/               *********                                       
-options:
-- ".*": {fill:[[0.6, 0.8, 0.8], flat], frame:[[0.2, 0.5, 0.4, 1], solid, 2], text:[[0.1, 0.3, 0.2]]}
-- "_line_": {fill:[[0.1, 0.1, 0.1], solid, 2]}
-- "_arrow_": {fill:[[0.5, 0.0, 0.0, 1], flat]}
-- "(flat)|(top)": {fill:[[0.1, 0.1, 0.1, 1], no-shadow, flat], frame:[[0.3, 0.8, 0], dotted, 3], text:[[0.9, 0.9, 0.9]]}
-- "arrowbox": {fill:[[0.7, 0.7, 0, 0.5], no-shadow, flat], frame:[[0.3, 0.8, 0], dashed, 3], text:[[0, 0, 0]]}
-- "shape[0-9]": {fill:[[0.2, 0.2, 0.2], gradient], frame:[[0.1, 0.5, 0], dotted, 3]}
-- "stacked": {fill:[[0.15, 0.3, 0.3], flat], text:[[0, 0, 0]]}
-- "inner[34]": {frame:[[0, 0, 0], 1, dotted], text:[[0, 0, 0]]}
-- "inner[12]": {fill:[[0.3, 0.6, 0.6], flat], frame:[[0, 0, 0], dashed, 1], text:[[0, 0, 0,]]}
-- "a": {fill:[[0.5, 0.0, 0.0, 0.5], 4]}
-- "b": {fill:[[0.5, 0.0, 0.5, 0.5], 4]}
-- "lower": {fill:[[0.0, 0.5, 0.0, 0.5], 4]}
----------------------------------------------------------------------
+image::shaape/tests/expected_images/example_2.shaape.png[width=200,link="shaape/tests/expected_images/example_2.shaape.png"]
+
+link:shaape/tests/input/example_3.shaape[source]
+
+image::shaape/tests/expected_images/example_3.shaape.png[width=200,link="shaape/tests/expected_images/example_3.shaape.png"]
+
+link:shaape/tests/input/feature_z_order2.shaape[source]
+
+image::shaape/tests/expected_images/feature_z_order2.shaape.png[width=200,link="shaape/tests/expected_images/feature_z_order2.shaape.png"]
+
+link:shaape/tests/input/feature_gradients.shaape[source]
+
+image::shaape/tests/expected_images/feature_gradients.shaape.png[width=400,link="shaape/tests/expected_images/feature_gradients.shaape.png"]
+
+link:shaape/tests/input/example_5.shaape[source]
+
+image::shaape/tests/expected_images/example_5.shaape.png[width=400,link="shaape/tests/expected_images/example_5.shaape.png"]
 

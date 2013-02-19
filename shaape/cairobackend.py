@@ -8,6 +8,7 @@ from drawingbackend import DrawingBackend
 import networkx as nx
 from translatable import Translatable
 from rotatable import Rotatable
+from node import Node
 
 class CairoBackend(DrawingBackend):
     DEFAULT_MARGIN = (10, 10, 10, 10)
@@ -86,27 +87,15 @@ class CairoBackend(DrawingBackend):
         if drawable.style().fill_type() == 'dashed':
             width = drawable.style().width() * self._scale
             dash_list = [ width * 4, width]
-            if width % 2 == 1:
-                offset = 0.5
-            else:
-                offset = 0
-            self.__ctx.set_dash(dash_list, offset)
+            self.__ctx.set_dash(dash_list)
         elif drawable.style().fill_type() == 'dotted':
             width = drawable.style().width() * self._scale
             dash_list = [width, width]
-            if width % 2 == 1:
-                offset = 0.5
-            else:
-                offset = 0
-            self.__ctx.set_dash(dash_list, offset)
+            self.__ctx.set_dash(dash_list)
         elif drawable.style().fill_type() == 'dash-dotted':
             width = drawable.style().width() * self._scale
             dash_list = [ width * 4, width, width, width]
-            if width % 2 == 1:
-                offset = 0.5
-            else:
-                offset = 0
-            self.__ctx.set_dash(dash_list, offset)
+            self.__ctx.set_dash(dash_list)
         else:
             self.__ctx.set_dash([])
 
@@ -158,11 +147,7 @@ class CairoBackend(DrawingBackend):
         self.apply_fill(polygon)
         self.apply_transform(polygon)
         nodes = polygon.nodes()
-        if len(nodes) > 1 and nodes[0] != nodes[-1]:
-            nodes = nodes + [nodes[0]]
-        nodes = [nodes[-2]] + nodes
         self.apply_path(nodes)
-                
         self.__ctx.fill()
         self.__ctx.restore()
         return
@@ -173,9 +158,6 @@ class CairoBackend(DrawingBackend):
         self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
         self.apply_transform(polygon)
         nodes = polygon.nodes()
-        if len(nodes) > 1 and nodes[0] != nodes[-1]:
-            nodes = nodes + [nodes[0]]
-        nodes = [nodes[-2]] + nodes
         self.apply_path(nodes)
         self.__ctx.fill()
         self.__ctx.restore()
@@ -200,33 +182,53 @@ class CairoBackend(DrawingBackend):
         self.__ctx.restore()
         return
 
-    def _transform_to_sharp_space(self, node):
-        # return node
+    def _transform_to_sharp_space(self, direction, node):
         if self.__ctx.get_line_width() % 2 == 1:
-            return (node[0] + 0.5, node[1] + 0.5)
+            result = Node(node[0], node[1])
+            if direction[0] == 0:
+                result.set_position(result[0] + 0.5, result[1])
+            if direction[1] == 0:
+                result.set_position(result[0], result[1] + 0.5)
+            return result
         else:
             return node
 
 
     def apply_path(self, nodes):
-        if nodes[0].style() == 'curve':
+        cycle = (nodes[0] == nodes[-1])
+        if cycle and nodes[0].style() == 'curve':
             line_end = nodes[1] + ((nodes[0] - nodes[1]) * 0.5)
         else: 
             line_end = nodes[0]
-        self.__ctx.move_to(*self._transform_to_sharp_space(line_end))
-        for i in range(1, len(nodes) - 1):
+        self.__ctx.move_to(*self._transform_to_sharp_space(nodes[1] - nodes[0], line_end))
+        for i in range(1, len(nodes)):
             if nodes[i].style() == 'curve':
+                if i == len(nodes) - 1:
+                    if cycle == True:
+                        next_i = 1
+                    else:
+                        next_i = i
+                else:
+                    next_i = i + 1
+                if i == len(nodes) - 1:
+                    direction = nodes[next_i] - nodes[i]
+                else:
+                    direction = Node(0, 0)
                 if i > 0 and nodes[i - 1].style() == 'miter':
                     temp_end = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.5)
-                    self.__ctx.line_to(*self._transform_to_sharp_space(temp_end))
-                line_end = nodes[i] + ((nodes[i + 1] - nodes[i]) * 0.5)
-                cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.9)
-                cp2 = nodes[i + 1] + ((nodes[i] - nodes[i + 1]) * 0.9)
-                cp1 = self._transform_to_sharp_space(cp1)
-                cp2 = self._transform_to_sharp_space(cp2)
-                self.__ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], *self._transform_to_sharp_space(line_end))
+                    self.__ctx.line_to(*self._transform_to_sharp_space(Node(0, 0), temp_end))
+                line_end = nodes[i] + ((nodes[next_i] - nodes[i]) * 0.5)
+                cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.8)
+                cp2 = nodes[next_i] + ((nodes[i] - nodes[next_i]) * 0.8)
+                cp1 = self._transform_to_sharp_space(direction, cp1)
+                cp2 = self._transform_to_sharp_space(direction, cp2)
+                self.__ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], *self._transform_to_sharp_space(direction, line_end))
             else:
-                self.__ctx.line_to(*self._transform_to_sharp_space(nodes[i]))
+                if i == len(nodes) - 1:
+                    direction = nodes[i] - nodes[i - 1]
+                else:
+                    direction = Node(0, 0)
+                self.__ctx.line_to(*self._transform_to_sharp_space(direction, nodes[i]))
                 line_end = nodes[i]
         return
 
@@ -236,12 +238,8 @@ class CairoBackend(DrawingBackend):
         paths = open_graph.paths()
         if len(paths) > 0:
             for path in paths:
-                if path[0] == path[-1]:
-                    nodes = [path[-2]] + path 
-                else:
-                    nodes = [path[0]] + path + [path[-1]]
                 self.apply_line(open_graph)
-                self.apply_path(nodes)
+                self.apply_path(path)
                 self.__ctx.set_operator(cairo.OPERATOR_CLEAR)
                 self.__ctx.set_dash([])
                 self.__ctx.stroke_preserve()

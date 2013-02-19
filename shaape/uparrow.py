@@ -11,3 +11,6 @@ class UpArrow(Arrow):
 
     def tip(self):
         return Node(*(self.position())) + self.nodes()[1]
+
+    def connector(self):
+        return Node(self.position()[0], self.position()[1])
