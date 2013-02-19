@@ -34,7 +34,9 @@ class Shaape:
         self.__source = source
         self.__original_source = copy.copy(source)
         self.__outfile = output_file
-        if not enable_hashing or not hash_check(source, output_file + ".md5"):
+        self.__enable_hashing = enable_hashing
+        self.__additional_source = str(scale) + str(width) + str(height)
+        if not enable_hashing or not hash_check(source + [self.__additional_source], output_file + ".md5"):
             self.register_parser(YamlParser())
             self.register_parser(BackgroundParser())
             self.register_parser(TextParser())
@@ -78,6 +80,8 @@ class Shaape:
 
         for backend in self.__backends:
             backend.run(objects, self.__outfile)
+        if self.__enable_hashing:
+            hash_update(self.__source + [self.__additional_source], self.__outfile + ".md5")
 
     def parsers(self):
         return self.__parsers
@@ -117,8 +121,6 @@ def run(arguments = None):
         args.outfile = args.infile + "." + args.output_type
     shaape = Shaape(args.infile, args.outfile, enable_hashing = args.do_hash, output_type = args.output_type, scale = args.scale, width = args.width, height = args.height)
     shaape.run()
-    if args.do_hash:
-        hash_update(shaape.original_source(), args.outfile + ".md5")
     print(" ")
 
 if __name__ == "__main__":

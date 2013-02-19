@@ -24,12 +24,12 @@ class TestDrawingBackend(unittest.TestCase):
         assert self.__backend.scale() == DrawingBackend.DEFAULT_SCALE
         
     def test_canvas_size(self):
-        assert self.__backend.canvas_size() == DrawingBackend.DEFAULT_CANVAS_SIZE
+        assert self.__backend.canvas_size() == [None, None]
         self.__backend.set_canvas_size(40, 50) 
-        assert self.__backend.canvas_size() == (40, 50)
+        assert self.__backend.canvas_size() == [40, 50], self.__backend.canvas_size()
 
     def test_run(self):
-        background = Background((400, 300)) 
+        background = Background((7, 3)) 
         polygon = TestUtils.generate_test_polygon(seed = 0, points = 12, radius_range = (1, 10))
         polygon_copy = copy.deepcopy(polygon)
         objects = [background, polygon, Translatable()]
@@ -37,9 +37,6 @@ class TestDrawingBackend(unittest.TestCase):
         self.__backend.create_canvas = MagicMock()
         self.__backend.export_to_file = MagicMock()
         self.__backend.run(objects, "testname")
-        unit = self.__backend.unit_size()
-        assert self.__backend.canvas_size() == (400 * unit[0], 300 * unit[1])
-        assert polygon.nodes() == map(lambda point: Node(point[0] * unit[0], point[1] * unit[1]), polygon_copy.nodes())
         self.__backend.draw_objects.assert_called(objects)
         self.__backend.create_canvas.assert_called(objects)
         self.__backend.export_to_file.assert_called_with("testname")

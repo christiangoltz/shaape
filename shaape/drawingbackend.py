@@ -8,7 +8,7 @@ from text import Text
 
 class DrawingBackend(object):
 
-    DEFAULT_SCALE = 1.2
+    DEFAULT_SCALE = 1
     DEFAULT_PIXELS_PER_UNIT = 20
     DEFAULT_SHADOW_TRANSLATION = (2, 2)
 
@@ -27,7 +27,7 @@ class DrawingBackend(object):
     def scale(self):
         return self._scale
 
-    def shadow_translation(self):
+    def shadow_translation(self): 
         return (DrawingBackend.DEFAULT_SHADOW_TRANSLATION[0] * self.scale(), DrawingBackend.DEFAULT_SHADOW_TRANSLATION[1] * self.scale())
 
     def set_canvas_size(self, width, height):

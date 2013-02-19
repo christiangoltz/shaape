@@ -60,6 +60,10 @@ class CairoBackend(DrawingBackend):
         return self.__surfaces
 
     def set_image_size(self, width, height):
+        if not width:
+            width = 1
+        if not height:
+            height = 1
         self.__image_size = (width, height)
 
     def image_size(self):
@@ -76,22 +80,33 @@ class CairoBackend(DrawingBackend):
         self.push_surface()
         self.__ctx.set_source_rgb(1, 1, 1)
         self.__ctx.rectangle(0.0, 0.0, self.__image_size[0] + self.__margin[0] + self.__margin[1], self.__image_size[1] + self.__margin[2] + self.__margin[3])
-        self.__ctx.translate(self.__margin[0], self.__margin[2])
         return
     
     def apply_dash(self, drawable):
         if drawable.style().fill_type() == 'dashed':
             width = drawable.style().width() * self._scale
             dash_list = [ width * 4, width]
-            self.__ctx.set_dash(dash_list)
+            if width % 2 == 1:
+                offset = 0.5
+            else:
+                offset = 0
+            self.__ctx.set_dash(dash_list, offset)
         elif drawable.style().fill_type() == 'dotted':
             width = drawable.style().width() * self._scale
-            dash_list = [ width, width]
-            self.__ctx.set_dash(dash_list)
+            dash_list = [width, width]
+            if width % 2 == 1:
+                offset = 0.5
+            else:
+                offset = 0
+            self.__ctx.set_dash(dash_list, offset)
         elif drawable.style().fill_type() == 'dash-dotted':
             width = drawable.style().width() * self._scale
             dash_list = [ width * 4, width, width, width]
-            self.__ctx.set_dash(dash_list)
+            if width % 2 == 1:
+                offset = 0.5
+            else:
+                offset = 0
+            self.__ctx.set_dash(dash_list, offset)
         else:
             self.__ctx.set_dash([])
 
@@ -186,6 +201,7 @@ class CairoBackend(DrawingBackend):
         return
 
     def _transform_to_sharp_space(self, node):
+        # return node
         if self.__ctx.get_line_width() % 2 == 1:
             return (node[0] + 0.5, node[1] + 0.5)
         else:
@@ -259,11 +275,12 @@ class CairoBackend(DrawingBackend):
 
     def export_to_file(self, filename):
         path = os.path.dirname(filename)
-        try:
-            os.makedirs(path)
-        except OSError as exception:
-            if exception.errno != errno.EEXIST:
-                raise
+        if path != '':
+            try:
+                os.makedirs(path)
+            except OSError as exception:
+                if exception.errno != errno.EEXIST:
+                    raise
         self.__surfaces[-1].write_to_png(filename)
         return
 
