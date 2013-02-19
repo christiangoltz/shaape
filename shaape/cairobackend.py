@@ -12,8 +12,8 @@ from rotatable import Rotatable
 class CairoBackend(DrawingBackend):
     DEFAULT_MARGIN = (10, 10, 10, 10)
     SHADOW_OPAQUENESS = 0.4
-    def __init__(self):
-        super(CairoBackend, self).__init__()
+    def __init__(self, image_scale = 1.0, image_width = None, image_height = None):
+        super(CairoBackend, self).__init__(image_scale, image_width, image_height)
         self.set_margin(*(CairoBackend.DEFAULT_MARGIN))
         self.set_image_size(0, 0)
         self.__surfaces = []
@@ -22,7 +22,7 @@ class CairoBackend(DrawingBackend):
         return
 
     def blur_surface(self):
-        blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0] + self.__margin[0] + self.__margin[1])), int(math.ceil(self.__image_size[1] + self.__margin[2] + self.__margin[3])))
+        blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0])), int(math.ceil(self.__image_size[1])))
         top_surface = self.__surfaces[-1]
         width = top_surface.get_width()
         height = top_surface.get_height()
@@ -40,7 +40,7 @@ class CairoBackend(DrawingBackend):
         self.__ctx.paint()
 
     def new_surface(self, name = None):
-        return cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size()[0] + self.margin()[0] + self.margin()[1])), int(math.ceil(self.image_size()[1] + self.margin()[2] + self.margin()[3])))
+        return cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size()[0])), int(math.ceil(self.image_size()[1])))
 
     def push_surface(self):
         surface = self.new_surface()
@@ -98,7 +98,7 @@ class CairoBackend(DrawingBackend):
     def apply_line(self, drawable, opaqueness = 1.0, shadow = False):
         self.__ctx.set_line_cap(cairo.LINE_CAP_BUTT)
         self.__ctx.set_line_join (cairo.LINE_JOIN_ROUND)
-        width =  math.floor(drawable.style().width() * self._scale)
+        width =  max(1, math.floor(drawable.style().width() * self._scale))
         color = drawable.style().color()[0]
         if len(color) == 3:
             adapted_color = tuple(color[:3]) + tuple([opaqueness])

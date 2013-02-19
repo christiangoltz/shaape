@@ -9,13 +9,19 @@ from text import Text
 class DrawingBackend(object):
 
     DEFAULT_SCALE = 1.2
-    DEFAULT_CANVAS_SIZE = (0, 0)
+    DEFAULT_PIXELS_PER_UNIT = 20
     DEFAULT_SHADOW_TRANSLATION = (2, 2)
 
-    def __init__(self):
-        self._canvas_size = DrawingBackend.DEFAULT_CANVAS_SIZE
-        self._scale = DrawingBackend.DEFAULT_SCALE
-        self.__pixels_per_unit = (10 * self._scale, 20 * self._scale)
+    def __init__(self, image_scale = DEFAULT_SCALE, image_width = None, image_height = None):
+        self.__user_canvas_size = [image_width, image_height] 
+        self._canvas_size = [image_width, image_height]
+        if image_width:
+            self._canvas_size[0] = self._canvas_size[0] * image_scale
+        if image_height:
+            self._canvas_size[1] = self._canvas_size[1] * image_scale
+        self._scale = image_scale
+        self.__aspect_ratio = 0.5
+        self.__pixels_per_unit = (self.DEFAULT_PIXELS_PER_UNIT * self._scale * self.__aspect_ratio, self.DEFAULT_PIXELS_PER_UNIT * self._scale)
         return
 
     def scale(self):
@@ -25,7 +31,10 @@ class DrawingBackend(object):
         return (DrawingBackend.DEFAULT_SHADOW_TRANSLATION[0] * self.scale(), DrawingBackend.DEFAULT_SHADOW_TRANSLATION[1] * self.scale())
 
     def set_canvas_size(self, width, height):
-        self._canvas_size = (width, height)
+        if not self.__user_canvas_size[0]:
+            self._canvas_size[0] = width * self._scale
+        if not self.__user_canvas_size[1]:
+            self._canvas_size[1] = height * self._scale
 
     def canvas_size(self):
         return self._canvas_size
@@ -40,13 +49,26 @@ class DrawingBackend(object):
         drawable_objects = sorted(sortable_objects, key=lambda x: x.min()) + unsortable_objects
 
         for drawable_object in drawable_objects:
-            if isinstance(drawable_object, Scalable):
-                drawable_object.scale(self.__pixels_per_unit)
-
-        for drawable_object in drawable_objects:
             if isinstance(drawable_object, Background):
-                self._canvas_size = drawable_object.size()
+                if not self.__user_canvas_size[0]:
+                    if self.__user_canvas_size[1]:
+                        scale = self.__user_canvas_size[1] / drawable_object.size()[1] * self.__aspect_ratio
+                    else:
+                        scale = self.__pixels_per_unit[0]
+                    self._canvas_size[0] = drawable_object.size()[0] * scale
+                if not self.__user_canvas_size[1]:
+                    if self.__user_canvas_size[0]:
+                        scale = self.__user_canvas_size[0] / drawable_object.size()[0] / self.__aspect_ratio
+                    else:
+                        scale = self.__pixels_per_unit[1]
+                    self._canvas_size[1] = drawable_object.size()[1] * scale
+                self.__global_scale = [self._canvas_size[0] / drawable_object.size()[0], self._canvas_size[1] / drawable_object.size()[1]]
+                self._scale = self.__global_scale[0] / 10
         
+        for drawable_object in drawable_objects:
+            if isinstance(drawable_object, Scalable):
+                drawable_object.scale(self.__global_scale)
+
         self.create_canvas()
         self.draw_objects(drawable_objects)
         self.export_to_file(filename)
