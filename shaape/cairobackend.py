@@ -136,6 +136,7 @@ class CairoBackend(DrawingBackend):
                 color = map(lambda x: (1 - color[3]) * x, color[:3]) + [color[3]]
             adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
             self.__ctx.set_source_rgba(*adapted_color)
+        self.__ctx.set_line_width(1)
     
     def draw_polygon(self, polygon):
         self.__ctx.save()
