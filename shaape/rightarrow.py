@@ -4,8 +4,7 @@ from polygon import Polygon
 
 class RightArrow(Arrow):
     def __init__(self, position = (0, 0)):
-        Arrow.__init__(self, position)
-        Polygon.__init__(self, [Node(-0.5, 0.2), Node(0.5, 0), Node(-0.5, -0.2)])
+        Arrow.__init__(self, position, [Node(-0.5, 0.2), Node(0.5, 0), Node(-0.5, -0.2)])
 
     def direction(self):
         return Node(1, 0)

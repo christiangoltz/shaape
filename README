@@ -62,7 +62,7 @@ Dependencies
 Download
 --------
 .Git
-`$ git clone python local inclusion` clones into shaape
+`$ git clone https://github.com/christiangoltz/shaape.git` clones into shaape
 
 .PyPi
 `$ easy_install shaape` downloads and installs shaape
@@ -275,6 +275,7 @@ renders:
  |              |
  +--------------+
 ---------------------------------------------------------------------
+
 Styles
 ~~~~~~
 
@@ -283,23 +284,23 @@ there may be some use cases when you need it.
 
 A style defines how an object is drawn. Styles can be defined in a special
 area below the diagram. This area starts with the identifier 'options:'.
-On the next line the style description starts. The syntax for the style
+On the next line the style description starts. The general syntax for the style
 description is http://www.yaml.org/spec/1.2/spec.html[YAML].
 
 ==== Shaape Identification
 To apply a style to an element in the drawing, you need to give it a name.
-This is possible for all polygons by simply writing some text as a name
-inside it. As most polygons naturally contain text, this text should be
-'abused' as it's name.
+Polygons are named by writing the name into the polygon. Lines are named by
+writing the name next to them:
 
-If a polygon can contain as many text as you want it to. The polygons name
-is thus defined as a list of all the single words found inside it.
-
-If you want the polygon to have a name consisting of more than one word,
-then you have to quote the words.
+---------------------------------------------------------------------
+                   +---->
+  +------+        /         
+  | box1 |  -----+ 
+  +------+    line1    
+---------------------------------------------------------------------
 
 ==== Style definition
-The actual style definition always is a yaml list element consisting itself
+The actual style definition is a yaml list element consisting itself
 of a dictionary with one element. The key of this element represents the names
 of the shapes that it should be applied to.
 The key should always be quoted. It is interpreted as a regular expression and
@@ -307,6 +308,7 @@ matched against the names of all polygons. Polygons with matching names get
 this style applied.
 
 ----
+options:
  - "boxname[0-9]": {fill: [red, flat], frame: [blue, dashed], no-shadow}
 ----
 ==== Multiple style application & Style order
@@ -316,15 +318,16 @@ can use a default style for some attributes and change specific attributes for
 some polygons:
 
 ----
+options:
  - ".*": {fill: [red, flat], frame: [blue, dashed], no-shadow}
  - "boxname[0-9]": {fill: [blue]}
 ----
 
 ==== Default Styles
-The global default style for all elements can be set with ".*" as a style key.
-As arrows and lines don't have any associated identifiers, they need a special
-name for their default style. To set the default style for arrows, 
-use "_arrow_" as key and to set the default style for lines, use "_line_".
+Every drawn element matches the regular expression ".*". Thus you can use this
+expression for the default style.
+To set the default style for arrows, use "_arrow_" as key and to set the
+default style for lines, use "_line_".
 
 ==== Possible style attributes
 The style definition itself contains a yaml dictionary, that may have 3 keys:
@@ -371,13 +374,13 @@ Text may contain:
       ^  ^         v           |        in>---+-----+-----> out1
       |  |  |  |   |           +              |     |
    >--[--[--|--|---|          /|\             |     *----->'out 2'
-      |  |  |  |   |         +'c'+            |
+      |  |  |  |   |lower    +'c'+            |
       +--+--(--(---|         |   |            |    +------>'3'
             |  |   |        'd' 'e'           |   /
             |  +---~--->                      +--+-------->'v'    
             |      |                 
             +------~--->
-                   |
+         upper     |
                    v
                                                               
  +-->->->->-+        +---------------------------------------+                                                         
@@ -407,16 +410,18 @@ options:
 - "stacked": {fill:[[0.15, 0.3, 0.3], flat], text:[[0, 0, 0]]}
 - "inner[34]": {frame:[[0, 0, 0], 1, dotted], text:[[0, 0, 0]]}
 - "inner[12]": {fill:[[0.3, 0.6, 0.6], flat], frame:[[0, 0, 0], dashed, 1], text:[[0, 0, 0,]]}
+- "upper": {fill:[[0.5, 0.0, 0.0, 0.5], 4]}
+- "lower": {fill:[[0.0, 0.5, 0.0, 0.5], 4]}
 ----  
 
 renders:
 
 ["shaape"]
 ---------------------------------------------------------------------
-      ^  ^         v           |        in>---+-----+-----> out1
+      ^  ^  b  a   v           |        in>---+-----+-----> out1
       |  |  |  |   |           +              |     |
    >--[--[--|--|---|          /|\             |     *----->'out 2'
-      |  |  |  |   |         +'c'+            |
+      |  |  |  |   |lower    +'c'+            |
       +--+--(--(---|         |   |            |    +------>'3'
             |  |   |        'd' 'e'           |   /
             |  +---~--->                      +--+-------->'v'    
@@ -445,12 +450,15 @@ renders:
 options:
 - ".*": {fill:[[0.6, 0.8, 0.8], flat], frame:[[0.2, 0.5, 0.4, 1], solid, 2], text:[[0.1, 0.3, 0.2]]}
 - "_line_": {fill:[[0.1, 0.1, 0.1], solid, 2]}
-- "_arrow_": {fill:[[0.5, 0.5, 0.5, 1], flat]}
+- "_arrow_": {fill:[[0.5, 0.0, 0.0, 1], flat]}
 - "(flat)|(top)": {fill:[[0.1, 0.1, 0.1, 1], no-shadow, flat], frame:[[0.3, 0.8, 0], dotted, 3], text:[[0.9, 0.9, 0.9]]}
 - "arrowbox": {fill:[[0.7, 0.7, 0, 0.5], no-shadow, flat], frame:[[0.3, 0.8, 0], dashed, 3], text:[[0, 0, 0]]}
 - "shape[0-9]": {fill:[[0.2, 0.2, 0.2], gradient], frame:[[0.1, 0.5, 0], dotted, 3]}
 - "stacked": {fill:[[0.15, 0.3, 0.3], flat], text:[[0, 0, 0]]}
 - "inner[34]": {frame:[[0, 0, 0], 1, dotted], text:[[0, 0, 0]]}
 - "inner[12]": {fill:[[0.3, 0.6, 0.6], flat], frame:[[0, 0, 0], dashed, 1], text:[[0, 0, 0,]]}
+- "a": {fill:[[0.5, 0.0, 0.0, 0.5], 4]}
+- "b": {fill:[[0.5, 0.0, 0.5, 0.5], 4]}
+- "lower": {fill:[[0.0, 0.5, 0.0, 0.5], 4]}
 ---------------------------------------------------------------------
 
