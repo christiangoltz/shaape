@@ -1,10 +1,6 @@
 README
 ======
 
-Copyright
----------
-include::LICENSE[]
-
 About Shaape
 ------------
 Shaape processes ascii drawings of diagrams and converts them to pixel or
@@ -539,6 +535,7 @@ Text may contain:
 ----
 
 ===== Advanced Examples
+
 image:shaape/tests/expected_images/example_1.shaape.png[]
 ----
 include::shaape/tests/input/example_1.shaape[]
@@ -568,4 +565,8 @@ image:shaape/tests/expected_images/example_5.shaape.png[]
 ----
 include::shaape/tests/input/example_5.shaape[]
 ----
+
+Copyright
+---------
+include::LICENSE[]
 
