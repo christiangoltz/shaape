@@ -10,6 +10,9 @@ class Node(object):
         self.__fusable = fusable
         return
 
+    def set_position(self, x, y):
+        self.m_position = (x, y)
+
     def position(self):
         return self.m_position
 

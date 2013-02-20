@@ -77,7 +77,7 @@ class Style(object):
         return dict(Style.DEFAULT_STYLE.items() + self.__options.items())['type']
 
     def width(self):
-        return  dict(Style.DEFAULT_STYLE.items() + self.__options.items())['width']
+        return dict(Style.DEFAULT_STYLE.items() + self.__options.items())['width']
 
     def add_color(self, color):
         if len(color) == 3 or len(color) == 4:

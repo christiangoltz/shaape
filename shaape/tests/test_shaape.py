@@ -1,5 +1,5 @@
-from shaape.shaape import Shaape
-from shaape.shaape import main as shaape_main
+from shaape.run import Shaape
+from shaape.run import run as shaape_main
 from shaape.overlayparser import OverlayParser
 from shaape.cairobackend import CairoBackend
 import nose

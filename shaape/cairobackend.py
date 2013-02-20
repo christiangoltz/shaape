@@ -8,12 +8,13 @@ from drawingbackend import DrawingBackend
 import networkx as nx
 from translatable import Translatable
 from rotatable import Rotatable
+from node import Node
 
 class CairoBackend(DrawingBackend):
     DEFAULT_MARGIN = (10, 10, 10, 10)
     SHADOW_OPAQUENESS = 0.4
-    def __init__(self):
-        super(CairoBackend, self).__init__()
+    def __init__(self, image_scale = 1.0, image_width = None, image_height = None):
+        super(CairoBackend, self).__init__(image_scale, image_width, image_height)
         self.set_margin(*(CairoBackend.DEFAULT_MARGIN))
         self.set_image_size(0, 0)
         self.__surfaces = []
@@ -22,7 +23,7 @@ class CairoBackend(DrawingBackend):
         return
 
     def blur_surface(self):
-        blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0] + self.__margin[0] + self.__margin[1])), int(math.ceil(self.__image_size[1] + self.__margin[2] + self.__margin[3])))
+        blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0])), int(math.ceil(self.__image_size[1])))
         top_surface = self.__surfaces[-1]
         width = top_surface.get_width()
         height = top_surface.get_height()
@@ -40,7 +41,7 @@ class CairoBackend(DrawingBackend):
         self.__ctx.paint()
 
     def new_surface(self, name = None):
-        return cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size()[0] + self.margin()[0] + self.margin()[1])), int(math.ceil(self.image_size()[1] + self.margin()[2] + self.margin()[3])))
+        return cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size()[0])), int(math.ceil(self.image_size()[1])))
 
     def push_surface(self):
         surface = self.new_surface()
@@ -60,6 +61,10 @@ class CairoBackend(DrawingBackend):
         return self.__surfaces
 
     def set_image_size(self, width, height):
+        if not width:
+            width = 1
+        if not height:
+            height = 1
         self.__image_size = (width, height)
 
     def image_size(self):
@@ -76,7 +81,6 @@ class CairoBackend(DrawingBackend):
         self.push_surface()
         self.__ctx.set_source_rgb(1, 1, 1)
         self.__ctx.rectangle(0.0, 0.0, self.__image_size[0] + self.__margin[0] + self.__margin[1], self.__image_size[1] + self.__margin[2] + self.__margin[3])
-        self.__ctx.translate(self.__margin[0], self.__margin[2])
         return
     
     def apply_dash(self, drawable):
@@ -86,7 +90,7 @@ class CairoBackend(DrawingBackend):
             self.__ctx.set_dash(dash_list)
         elif drawable.style().fill_type() == 'dotted':
             width = drawable.style().width() * self._scale
-            dash_list = [ width, width]
+            dash_list = [width, width]
             self.__ctx.set_dash(dash_list)
         elif drawable.style().fill_type() == 'dash-dotted':
             width = drawable.style().width() * self._scale
@@ -98,7 +102,7 @@ class CairoBackend(DrawingBackend):
     def apply_line(self, drawable, opaqueness = 1.0, shadow = False):
         self.__ctx.set_line_cap(cairo.LINE_CAP_BUTT)
         self.__ctx.set_line_join (cairo.LINE_JOIN_ROUND)
-        width =  math.floor(drawable.style().width() * self._scale)
+        width =  max(1, math.floor(drawable.style().width() * self._scale))
         color = drawable.style().color()[0]
         if len(color) == 3:
             adapted_color = tuple(color[:3]) + tuple([opaqueness])
@@ -136,17 +140,14 @@ class CairoBackend(DrawingBackend):
                 color = map(lambda x: (1 - color[3]) * x, color[:3]) + [color[3]]
             adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
             self.__ctx.set_source_rgba(*adapted_color)
+        self.__ctx.set_line_width(1)
     
     def draw_polygon(self, polygon):
         self.__ctx.save()
         self.apply_fill(polygon)
         self.apply_transform(polygon)
         nodes = polygon.nodes()
-        if len(nodes) > 1 and nodes[0] != nodes[-1]:
-            nodes = nodes + [nodes[0]]
-        nodes = [nodes[-2]] + nodes
         self.apply_path(nodes)
-                
         self.__ctx.fill()
         self.__ctx.restore()
         return
@@ -157,9 +158,6 @@ class CairoBackend(DrawingBackend):
         self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
         self.apply_transform(polygon)
         nodes = polygon.nodes()
-        if len(nodes) > 1 and nodes[0] != nodes[-1]:
-            nodes = nodes + [nodes[0]]
-        nodes = [nodes[-2]] + nodes
         self.apply_path(nodes)
         self.__ctx.fill()
         self.__ctx.restore()
@@ -184,32 +182,53 @@ class CairoBackend(DrawingBackend):
         self.__ctx.restore()
         return
 
-    def _transform_to_sharp_space(self, node):
+    def _transform_to_sharp_space(self, direction, node):
         if self.__ctx.get_line_width() % 2 == 1:
-            return (node[0] + 0.5, node[1] + 0.5)
+            result = Node(node[0], node[1])
+            if direction[0] == 0:
+                result.set_position(result[0] + 0.5, result[1])
+            if direction[1] == 0:
+                result.set_position(result[0], result[1] + 0.5)
+            return result
         else:
             return node
 
 
     def apply_path(self, nodes):
-        if nodes[0].style() == 'curve':
+        cycle = (nodes[0] == nodes[-1])
+        if cycle and nodes[0].style() == 'curve':
             line_end = nodes[1] + ((nodes[0] - nodes[1]) * 0.5)
         else: 
             line_end = nodes[0]
-        self.__ctx.move_to(*self._transform_to_sharp_space(line_end))
-        for i in range(1, len(nodes) - 1):
+        self.__ctx.move_to(*self._transform_to_sharp_space(nodes[1] - nodes[0], line_end))
+        for i in range(1, len(nodes)):
             if nodes[i].style() == 'curve':
+                if i == len(nodes) - 1:
+                    if cycle == True:
+                        next_i = 1
+                    else:
+                        next_i = i
+                else:
+                    next_i = i + 1
+                if i == len(nodes) - 1:
+                    direction = nodes[next_i] - nodes[i]
+                else:
+                    direction = Node(0, 0)
                 if i > 0 and nodes[i - 1].style() == 'miter':
                     temp_end = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.5)
-                    self.__ctx.line_to(*self._transform_to_sharp_space(temp_end))
-                line_end = nodes[i] + ((nodes[i + 1] - nodes[i]) * 0.5)
-                cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.9)
-                cp2 = nodes[i + 1] + ((nodes[i] - nodes[i + 1]) * 0.9)
-                cp1 = self._transform_to_sharp_space(cp1)
-                cp2 = self._transform_to_sharp_space(cp2)
-                self.__ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], *self._transform_to_sharp_space(line_end))
+                    self.__ctx.line_to(*self._transform_to_sharp_space(Node(0, 0), temp_end))
+                line_end = nodes[i] + ((nodes[next_i] - nodes[i]) * 0.5)
+                cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.8)
+                cp2 = nodes[next_i] + ((nodes[i] - nodes[next_i]) * 0.8)
+                cp1 = self._transform_to_sharp_space(direction, cp1)
+                cp2 = self._transform_to_sharp_space(direction, cp2)
+                self.__ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], *self._transform_to_sharp_space(direction, line_end))
             else:
-                self.__ctx.line_to(*self._transform_to_sharp_space(nodes[i]))
+                if i == len(nodes) - 1:
+                    direction = nodes[i] - nodes[i - 1]
+                else:
+                    direction = Node(0, 0)
+                self.__ctx.line_to(*self._transform_to_sharp_space(direction, nodes[i]))
                 line_end = nodes[i]
         return
 
@@ -219,12 +238,8 @@ class CairoBackend(DrawingBackend):
         paths = open_graph.paths()
         if len(paths) > 0:
             for path in paths:
-                if path[0] == path[-1]:
-                    nodes = [path[-2]] + path 
-                else:
-                    nodes = [path[0]] + path + [path[-1]]
                 self.apply_line(open_graph)
-                self.apply_path(nodes)
+                self.apply_path(path)
                 self.__ctx.set_operator(cairo.OPERATOR_CLEAR)
                 self.__ctx.set_dash([])
                 self.__ctx.stroke_preserve()
@@ -258,11 +273,12 @@ class CairoBackend(DrawingBackend):
 
     def export_to_file(self, filename):
         path = os.path.dirname(filename)
-        try:
-            os.makedirs(path)
-        except OSError as exception:
-            if exception.errno != errno.EEXIST:
-                raise
+        if path != '':
+            try:
+                os.makedirs(path)
+            except OSError as exception:
+                if exception.errno != errno.EEXIST:
+                    raise
         self.__surfaces[-1].write_to_png(filename)
         return
 

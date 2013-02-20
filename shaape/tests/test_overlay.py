@@ -11,7 +11,7 @@ class TestOverlay(unittest.TestCase):
         assert overlay != None
 
     def test_substitutes(self):
-        overlay = Overlay([[None, '/'],['+', None]], [Edge(Node(1, 1), Node(0.5, 1.5, fusable = False))])
+        overlay = Overlay([[None, '/'],['\+', None]], [Edge(Node(1, 1), Node(0.5, 1.5, fusable = False))])
         graph = overlay.substitutes(["  / "," +  "])
         assert len(graph.edges()) == 1
 

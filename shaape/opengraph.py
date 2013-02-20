@@ -1,4 +1,5 @@
 from drawable import Drawable
+from edge import Edge
 from scalable import Scalable
 from operator import itemgetter
 from named import Named
@@ -60,6 +61,12 @@ class OpenGraph(Drawable, Scalable, Named):
 
     def has_node(self, node):
         return self.__graph.has_node(node)
+
+    def intersects(self, obj):
+        for edge in self.edges():
+            if line_segments_intersect(edge, obj):
+                return True
+        return False
     
     def __generate_paths(self):
         self.__paths = []
@@ -67,7 +74,11 @@ class OpenGraph(Drawable, Scalable, Named):
         paths = []
         if not graph.nodes():
             return
-        path = [graph.nodes()[0]]
+        start_nodes = [n for n in graph.nodes() if (n.style() != 'curve' or (nx.degree(graph, n) == 1)) ]
+        if start_nodes:
+            path = [start_nodes[0]]
+        else:
+            path = [graph.nodes()[0]]
 
         while path:
             neighbors = nx.neighbors(graph, path[-1])
