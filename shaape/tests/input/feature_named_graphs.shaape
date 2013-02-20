@@ -1,0 +1,10 @@
+         graph1   +------+-----+
+       +------>  /graph2 |     |
+      /    <----+        |     |
+ >---+-------->          +-----+
+       graph3
+
+options:
+- "graph1": {fill:[green, dotted]}
+- "graph3": {fill:[3]}
+- "graph2": {fill:[solid, red, 2]}

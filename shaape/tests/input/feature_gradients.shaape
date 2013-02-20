@@ -1,0 +1,13 @@
++-----+ +-----+ +-----+ +-----+ +-----+ +-----+ +-----+ 
+|  1  | |  2  | |  3  | |  4  | |  5  | |  6  | |  7  | 
+|     | |     | |     | |     | |     | |     | |     | 
++-----+ +-----+ +-----+ +-----+ +-----+ +-----+ +-----+ 
+ 
+options:
+- "1" : { fill: [red] }
+- "2" : { fill: [red, green] }
+- "3" : { fill: [red, green, blue] }
+- "4" : { fill: [red, green, blue, red] }
+- "5" : { fill: [red, green, blue, red, green] }
+- "6" : { fill: [red, green, blue, red, green, blue] }
+- "7" : { fill: [red, green, blue, red, green, blue, red] }

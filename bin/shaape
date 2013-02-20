@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+
+import shaape.run
+
+if __name__ == "__main__":
+    shaape.run.run()
