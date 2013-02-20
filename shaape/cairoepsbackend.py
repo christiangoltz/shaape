@@ -5,8 +5,8 @@ import os
 import errno
 
 class CairoEpsBackend(CairoBackend):
-    def __init__(self):
-        super(CairoEpsBackend, self).__init__()
+    def __init__(self, image_scale = 1.0, image_width = None, image_height = None):
+        super(CairoEpsBackend, self).__init__(image_scale, image_width, image_height)
         return
 
     def blur_surface(self):

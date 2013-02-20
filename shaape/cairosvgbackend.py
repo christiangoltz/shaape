@@ -5,8 +5,8 @@ import os
 import errno
 
 class CairoSvgBackend(CairoBackend):
-    def __init__(self):
-        super(CairoSvgBackend, self).__init__()
+    def __init__(self, image_scale = 1.0, image_width = None, image_height = None):
+        super(CairoSvgBackend, self).__init__(image_scale, image_width, image_height)
         return
 
     def blur_surface(self):

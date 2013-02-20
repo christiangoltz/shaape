@@ -1,0 +1,19 @@
+Shaape ChangeLog
+================
+
+Version 1.0 (2013-02-21)
+------------------------
+.Featues
+- basic styles for fills, frames and text using YaML
+- round corners
+- z-order parsing
+- svg, pdf, eps output
+- blurred shadows for png output
+- unit tests (about 95% coverage)
+- hash sum checking
+- planar graph cycle search for faster input processing
+- README, with a lot of examples and complete syntax description
+
+Version 0.1 (2012-11)
+----------------------
+Initial proof of concept release, basic shape and text rendering.

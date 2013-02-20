@@ -24,17 +24,138 @@ Why to use Shaape
 What is supported
 ~~~~~~~~~~~~~~~~~
 - arbitrary shapes (e.g. polygons, paths, planar graphs)
++
+["shaape",scaling="0.7"]
+----
++-+  +-+   /\
+ \ \/  |  +  +-
+  \    |  |
+   +---+ -+
+----
 - arrows (that even can snap to target points)
++
+["shaape",scaling="0.7"]
+----    
+        +-->
+       /     /\
+  >---+---->+  +
+             \/
+----
 - extensive styles:
-   - color
-   - gradients
-   - shadows
-   - transparency
-   - line types: solid, dotted, dashed, dash-dotted
+  * color
++
+["shaape",scaling="0.7"]
+----    
+ +---+ +---+ +---+
+ | a | | b | | c |
+ +---+ +---+ +---+
+options:
+- ".*" : {text : [[0,0,0,0]]}
+- "a" : {fill : [[1,0,0,1]]}
+- "b" : {fill : [[0,1,0,1]]}
+- "c" : {fill : [[0,0,1,1]]}
+----
+  * gradients
++
+["shaape",scaling="0.7"]
+----    
+ +---+ 
+ | a |
+ +---+
+options:
+- ".*" : {text : [[0,0,0,0]]}
+- "a" : {fill : [[1,0,0,1], [0.2,0.5,0.7,1]]}
+----
+  * shadows
++
+["shaape",scaling="0.7"]
+----    
+ +---+ +---+ 
+ | a | | b | 
+ +---+ +---+ 
+options:
+- ".*" : {text : [[0,0,0,0]]}
+- "a" : {fill : [shadow]}
+- "b" : {fill : [no-shadow]}
+----
+  * transparency
++
+["shaape",scaling="0.7"]
+----    
+ +---+ 
+ | a |
+ +---+
+options:
+- ".*" : {text : [[0,0,0,0]]}
+- "a" : {fill : [[1,0,0,0.5]]}
+----
+  * line types: solid, dotted, dashed, dash-dotted
++
+["shaape",scaling="0.7"]
+----    
+a------
+b------
+c------
+d------
+options:
+- ".*" : {text : [[0,0,0,0]], fill: [3]}
+- "a" : {fill : [solid]}
+- "b" : {fill : [dotted]}
+- "c" : {fill : [dashed]}
+- "d" : {fill : [dash-dotted]}
+----
 - monospaced text in the whole drawing
++
+["shaape",scaling="0.7"]
+----    
+ +-----+ 
+ | abc |
+ +-----+
+----
+- all objects can be stacked or crossing, z-order is automatically determined
++
+["shaape",scaling="0.5"]
+----    
+   +--+
+   |  |
+ +-|--|---+ 
+ | |  |   |
+ +-|--|---+
+   |  |
+   +--+
+----
 - corners can be either miter or round (the '*' character)
++
+["shaape",scaling="0.7"]
+----    
+ *---+ 
+ |   |  ***   *
+ +---* *   ***
+----
 - renders to png, svg, eps(experimental), pdf(experimental)
++
+["shaape",scaling="0.6"]
+----    
++-------+   +-------+   +-------+   +-------+
+|       |\  |       |\  |       |\  |       |\ 
+|       +-+ |       +-+ |       +-+ |       +-+
+|   PNG   | |   SVG   | |   EPS   | |   PDF   |
+|         | |         | |         | |         |
+|         | |         | |     exp.| |     exp.|
++---------+ +---------+ +---------+ +---------+
+----
 - md5sum generation/checking to prevent image generation on unchanged sources
++
+["shaape",scaling="0.7"]
+----     
+            '[changed]'
+            +----------> regenerate >----+
+           /                              \
+source >--+                                +---> result
+           \                              /
+            +---> use old image >--------+
+            '[unchanged]'
+----
 
 What will be supported
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -55,9 +176,9 @@ Dependencies
 - setuptools
 
 - additionally for development:
- - nose
- - coverage
- - mock
+ * nose
+ * coverage
+ * mock
 
 Download
 --------
@@ -332,64 +453,119 @@ default style for lines, use "_line_".
 ==== Possible style attributes
 The style definition itself contains a yaml dictionary, that may have 3 keys:
 
-fill:: defines style properties for filling a polygon, arrow or line
-frame:: defines the style properties for the frame of a polygon or arrow
-text:: defines the style properties for text
++fill+:: defines style properties for filling a polygon, arrow or line
++frame+:: defines the style properties for the frame of a polygon or arrow
++text+:: defines the style properties for text
 
 ===== Fill
 Fill may contain:
 
-* shadow / no-shadow: selects wether the object drops a shadow 
+* +shadow+ / +no-shadow+: selects wether the object drops a shadow 
                       (default is shadow)
-* solid / dashed / dotted / dash-dotted: selects the line style (only applied
-                                         to lines, default is solid)
++
+.Example: All shapes without shadow
+----
+- ".*" : {fill : [no-shadow]}
+----
+* +solid+ / +dashed+ / +dotted+ / +dash-dotted+: selects the line style (only 
+                                                 applied to lines, default is
+                                                 solid)
++
+.Example: All lines dotted
+----
+- "_line_" : {fill : [dotted]}
+----
 * multiple color definitions, where a color is:
-  - red / green / blue
-  - a list with three floats from 0.0 to 1.0, representing RGB 
-   (e.g. [0.5, 0.5, 0,.5])
-  - a list with four floats from 0.0 to 1.0, representing RGBA
+  - +red+ / +green+ / +blue+
+  - a list with three floats from +0.0+ to +1.0+, representing RGB 
+   (e.g. +[0.5, 0.5, 0.5]+)
+  - a list with four floats from +0.0+ to +1.0+, representing RGBA
     NOTE: If you provide more than one color, then the polygon will use a
           gradient for it's fill.
++
+.Example: Yellow flat fill color
+----
+- ".*" : {fill : [[1, 1, 0]]}
+----
++
+.Example: Gradient from red to green
+----
+- ".*" : {fill : [red, [0, 1, 0]]}
+----
+
+* a number defining the width of the line, if the fill applies to a line
++
+.Example: Apply width 3.5 to all lines
+----
+- "_line_" : {fill : [3.5]}
+----
 
 ===== Frame
 Frame may contain:
 
-* solid / dashed / dotted / dash-dotted: selects the line style 
+* +solid+ / +dashed+ / +dotted+ / +dash-dotted+: selects the line style 
++
+.Example: All frames dotted
+----
+- ".*" : {frame : [dotted]}
+----
 * a color definition, where a color is:
-  - red / green / blue
-  - a list with three floats from 0.0 to 1.0, representing RGB 
-   (e.g. [0.5, 0.5, 0,.5])
+  - +red+ / +green+ / +blue+
+  - a list with three floats from +0.0+ to +1.0+, representing RGB 
+   (e.g. +[0.5, 0.5, 0.5]+)
++
+.Example: All frames blue
+----
+- ".*" : {frame : [blue]}
+----
+* a number defining the width of the frame line, if the fill applies to a polygon
++
+.Example: Apply width 3.5 to all frames
+----
+- ".*" : {frame : [3.5]}
+----
 
 ===== Text
 Text may contain:
 
 * a color definition, where a color is:
-  - red / green / blue
-  - a list with three floats from 0.0 to 1.0, representing RGB 
-   (e.g. [0.5, 0.5, 0,.5])
+  - +red+ / +green+ / +blue+
+  - a list with three floats from +0.0+ to +1.0+, representing RGB 
+   (e.g. +[0.5, 0.5, 0.5]+)
++
+.Example: All text red
+----
+- ".*" : {text : [red]}
+----
 
 ===== Advanced Examples
-link:shaape/tests/input/example_1.shaape[source]
+image:shaape/tests/expected_images/example_1.shaape.png[]
+----
+include::shaape/tests/input/example_1.shaape[]
+----
 
-image::shaape/tests/expected_images/example_1.shaape.png[width=200,link="shaape/tests/expected_images/example_1.shaape.png"]
+image:shaape/tests/expected_images/example_2.shaape.png[]
+----
+include::shaape/tests/input/example_2.shaape[]
+----
 
-link:shaape/tests/input/example_2.shaape[source]
+image:shaape/tests/expected_images/example_3.shaape.png[]
+----
+include::shaape/tests/input/example_3.shaape[]
+----
 
-image::shaape/tests/expected_images/example_2.shaape.png[width=200,link="shaape/tests/expected_images/example_2.shaape.png"]
+image:shaape/tests/expected_images/feature_z_order2.shaape.png[]
+----
+include::shaape/tests/input/feature_z_order2.shaape[]
+----
 
-link:shaape/tests/input/example_3.shaape[source]
+image:shaape/tests/expected_images/feature_gradients.shaape.png[]
+----
+include::shaape/tests/input/feature_gradients.shaape[]
+----
 
-image::shaape/tests/expected_images/example_3.shaape.png[width=200,link="shaape/tests/expected_images/example_3.shaape.png"]
-
-link:shaape/tests/input/feature_z_order2.shaape[source]
-
-image::shaape/tests/expected_images/feature_z_order2.shaape.png[width=200,link="shaape/tests/expected_images/feature_z_order2.shaape.png"]
-
-link:shaape/tests/input/feature_gradients.shaape[source]
-
-image::shaape/tests/expected_images/feature_gradients.shaape.png[width=400,link="shaape/tests/expected_images/feature_gradients.shaape.png"]
-
-link:shaape/tests/input/example_5.shaape[source]
-
-image::shaape/tests/expected_images/example_5.shaape.png[width=400,link="shaape/tests/expected_images/example_5.shaape.png"]
+image:shaape/tests/expected_images/example_5.shaape.png[]
+----
+include::shaape/tests/input/example_5.shaape[]
+----
 
