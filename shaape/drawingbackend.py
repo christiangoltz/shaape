@@ -73,19 +73,22 @@ class DrawingBackend(object):
         self.draw_objects(drawable_objects)
         self.export_to_file(filename)
 
-    def draw_polygon_shadow(self):
+    def draw_polygon_shadow(self, obj):
         raise NotImplementedError
 
-    def draw_polygon(self):
+    def draw_polygon(self, obj):
         raise NotImplementedError
 
-    def draw_open_graph(self):
+    def draw_open_graph(self, obj):
         raise NotImplementedError
 
-    def draw_open_graph_shadow(self):
+    def draw_open_graph_shadow(self, obj):
         raise NotImplementedError
 
-    def draw_text(self):
+    def draw_text(self, obj):
+        raise NotImplementedError
+
+    def draw_text_shadow(self,obj):
         raise NotImplementedError
 
     def push_surface(self):
@@ -94,7 +97,7 @@ class DrawingBackend(object):
     def pop_surface(self):
         raise NotImplementedError
 
-    def translate(self):
+    def translate(self, x, y):
         raise NotImplementedError
 
     def blur_surface(self):
@@ -125,6 +128,9 @@ class DrawingBackend(object):
             for drawable_object in graphs:
                 if drawable_object.style().shadow() == 'on':
                     self.draw_open_graph_shadow(drawable_object)
+            for drawable_object in text:
+                if drawable_object.style().shadow() == 'on':
+                    self.draw_text_shadow(drawable_object)
             self.blur_surface()
             self.pop_surface()
             self.push_surface()

@@ -61,6 +61,7 @@ class TestDrawingBackend(unittest.TestCase):
         self.__backend.draw_open_graph_shadow = MagicMock()
         self.__backend.draw_open_graph = MagicMock()
         self.__backend.draw_text = MagicMock()
+        self.__backend.draw_text_shadow = MagicMock()
         self.__backend.translate = MagicMock()
         self.__backend.blur_surface = MagicMock()
         self.__backend.draw_objects(objects)
@@ -90,12 +91,13 @@ class TestDrawingBackend(unittest.TestCase):
         assert self.__backend.blur_surface.call_count == 2
          
     def test_abstracts(self):
-        assert_raises(NotImplementedError,  self.__backend.draw_polygon_shadow)
-        assert_raises(NotImplementedError,  self.__backend.draw_polygon)
-        assert_raises(NotImplementedError,  self.__backend.draw_open_graph_shadow)
-        assert_raises(NotImplementedError,  self.__backend.draw_open_graph)
-        assert_raises(NotImplementedError,  self.__backend.draw_text)
+        assert_raises(NotImplementedError,  self.__backend.draw_polygon_shadow, None)
+        assert_raises(NotImplementedError,  self.__backend.draw_polygon, None)
+        assert_raises(NotImplementedError,  self.__backend.draw_open_graph_shadow, None)
+        assert_raises(NotImplementedError,  self.__backend.draw_open_graph, None)
+        assert_raises(NotImplementedError,  self.__backend.draw_text, None)
+        assert_raises(NotImplementedError,  self.__backend.draw_text_shadow, None)
         assert_raises(NotImplementedError,  self.__backend.push_surface)
         assert_raises(NotImplementedError,  self.__backend.pop_surface)
-        assert_raises(NotImplementedError,  self.__backend.translate)
+        assert_raises(NotImplementedError,  self.__backend.translate, None, None)
         assert_raises(NotImplementedError,  self.__backend.blur_surface)

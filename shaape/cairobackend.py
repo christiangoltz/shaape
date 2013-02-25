@@ -105,11 +105,10 @@ class CairoBackend(DrawingBackend):
         width =  max(1, math.floor(drawable.style().width() * self._scale))
         color = drawable.style().color()[0]
         if len(color) == 3:
-            adapted_color = tuple(color[:3]) + tuple([opaqueness])
-        else:
-            adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
+            color = tuple(color) + tuple([1])
         if shadow:
-            adapted_color = map(lambda x: (1 - adapted_color[3]) * x, adapted_color[:3]) + [adapted_color[3]]
+            color = map(lambda x: (1 - color[3]) * x, color[:3]) + [color[3]]
+        adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
         self.__ctx.set_source_rgba(*adapted_color)
         self.apply_dash(drawable)
         self.__ctx.set_line_width(width)
@@ -255,6 +254,21 @@ class CairoBackend(DrawingBackend):
         xbearing, ybearing, width, height, xadvance, yadvance = self.__ctx.text_extents(text)
         self.__ctx.save()
         self.apply_line(text_obj)
+        self.__ctx.set_font_size(text_obj.font_size() / 0.7)
+        fascent, fdescent, fheight, fxadvance, fyadvance = self.__ctx.font_extents()
+        for cx, letter in enumerate(text):
+            xbearing, ybearing, width, height, xadvance, yadvance = (self.__ctx.text_extents(letter))
+            self.__ctx.move_to(text_obj.position()[0] + cx * (text_obj.font_size()), text_obj.position()[1] + text_obj.font_size() - fdescent + fheight / 2)
+            self.__ctx.show_text(letter)
+        self.__ctx.restore()
+        return
+
+    def draw_text_shadow(self, text_obj):
+        text = text_obj.text()
+        self.__ctx.select_font_face("monospace", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+        xbearing, ybearing, width, height, xadvance, yadvance = self.__ctx.text_extents(text)
+        self.__ctx.save()
+        self.apply_line(text_obj, opaqueness = self.SHADOW_OPAQUENESS, shadow = True)
         self.__ctx.set_font_size(text_obj.font_size() / 0.7)
         fascent, fdescent, fheight, fxadvance, fyadvance = self.__ctx.font_extents()
         for cx, letter in enumerate(text):
