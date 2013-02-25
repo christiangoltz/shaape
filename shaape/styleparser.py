@@ -23,7 +23,7 @@ class StyleParser(Parser):
             'frame' : Style([], 'frame', [[0, 0, 0], 'solid', 1]),
             'line' : Style([], 'fill', [[0, 0, 0, 1], 'solid', 1]),
             'arrow' : Style([], 'fill', [[0, 0, 0]]),
-            'text' : Style([], 'text', [[0, 0, 0]])}
+            'text' : Style([], 'text', [[0, 0, 0], 'no-shadow'])}
 
         for obj in objects:
             if isinstance(obj, Drawable):
