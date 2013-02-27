@@ -19,13 +19,14 @@ import hashlib
 import argparse
 import sys
 import os
+import codecs
 
 class Shaape:
     def __init__(self, source = '-', output_file = "", enable_hashing = False, output_type = "png", scale = 1.0, width = None, height = None):
         if source == '-':
-            source = sys.stdin.readlines()
+            source = codecs.getreader('utf-8')(sys.stdin).readlines()
         else:
-            file_data = open(source, 'r')
+            file_data = codecs.getreader('utf-8')(open(source, 'r'))
             source = list(file_data)
 
             
@@ -93,7 +94,7 @@ def hash_check(content, hashfile):
     if not os.path.isfile(hashfile):
         return False
     m = hashlib.md5()
-    m.update(''.join(content))
+    m.update(''.join(content).encode('utf-8'))
     hash_data = open(hashfile, 'r')
     data = hash_data.readline()
     hash_data.close()
@@ -101,7 +102,7 @@ def hash_check(content, hashfile):
 
 def hash_update(content, hashfile):
     m = hashlib.md5()
-    m.update(''.join(content))
+    m.update(''.join(content).encode('utf-8'))
     hash_data = open(hashfile, 'w')
     hash_data.write(m.hexdigest())
     hash_data.close()

@@ -38,7 +38,7 @@ class StyleParser(Parser):
                     obj.set_style(default_style['text'])
 
         for style in styles:
-            name_pattern = re.compile(style.name_pattern())
+            name_pattern = re.compile(style.name_pattern(), re.UNICODE)
             for obj in named_drawables:
                 for name in obj.names():
                     if name_pattern.match(name):
