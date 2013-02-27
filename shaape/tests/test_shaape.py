@@ -15,10 +15,6 @@ class TestShaape(unittest.TestCase):
     def test_init(self):
         shaape = Shaape(TestUtils.EMPTY_INPUT)
         assert shaape != None
-        sys.stdin = MagicMock()
-        sys.stdin.read = MagicMock(returns = "")
-        shaape = Shaape()
-        assert shaape != None
 
     def test_register_parser(self):
         shaape = Shaape(TestUtils.EMPTY_INPUT)
