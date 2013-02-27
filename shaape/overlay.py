@@ -19,7 +19,7 @@ class Overlay:
                 matched = True
                 while True == matched and ov_y < len(self.__overlay):
                     if None != self.__overlay[ov_y][ov_x]:
-                        if not re.match(str(self.__overlay[ov_y][ov_x]), str(data[orig_y][orig_x])):
+                        if not re.match(str(self.__overlay[ov_y][ov_x]), str(data[orig_y][orig_x]), re.UNICODE):
                             matched = False
                     if ov_x < len(self.__overlay[ov_y]) - 1:
                         ov_x = ov_x + 1

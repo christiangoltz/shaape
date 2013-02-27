@@ -9,8 +9,8 @@ class TextParser(Parser):
         return
 
     def run(self, raw_data, objects):
-        quoted_string_pattern = re.compile('\'([^\']+)\'')
-        unquoted_string_pattern = re.compile('(([\w]{2,})|([^\Wv]))')
+        quoted_string_pattern = re.compile('\'([^\']+)\'', re.UNICODE)
+        unquoted_string_pattern = re.compile('(([\w]{2,})|([^\Wv]))', re.UNICODE)
         line_number = 0
         for line in raw_data:
             matches = quoted_string_pattern.finditer(line)
