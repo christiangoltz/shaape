@@ -166,6 +166,8 @@ Dependencies
 ------------
 - NetworkX python graph package
 - pycairo
+- pango
+- pangocairo
 - scipy
 - pyyaml
 - networkx
@@ -524,14 +526,15 @@ Frame may contain:
 ===== Text
 Text may contain:
 
+* a font family description in the pango.FontDescription format(see http://www.pygtk.org/docs/pygtk/class-pangofontdescription.html#constructor-pangofontdescription[pygtk])
 * a color definition, where a color is:
   - +red+ / +green+ / +blue+
   - a list with three floats from +0.0+ to +1.0+, representing RGB 
-   (e.g. +[0.5, 0.5, 0.5]+)
-+
-.Example: All text red
+* +shadow+ / +no-shadow+: selects wether the object drops a shadow (default is no-shadow)
+
+.Example: All text red, italic, Courier, size 9 with shadows
 ----
-- ".*" : {text : [red]}
+- ".*" : {text : ["Courier italic 9", red, shadow]}
 ----
 
 ===== Advanced Examples

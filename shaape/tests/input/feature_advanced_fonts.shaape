@@ -1,0 +1,13 @@
+
+ +-----------+
+ |||||||||||||
+ |-abcabcabc-|
+ |-efdefdegd-|
+ |-ghighijkl-|
+ |||||||||||||
+ +-----------+
+
+options:
+- "abc" : {text : ["Sans bold 15", red, shadow]}
+- "efd" : {text : ["Courier New italic 9", blue]}
+- "ghi" : {text : ["Monospace 8", green]}

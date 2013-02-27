@@ -18,5 +18,7 @@ setup(name='shaape',
           'scipy',
           'numpy',
           'PIL',
-          'yaml']
+          'yaml',
+          'pango',
+          'pangocairo']
      )

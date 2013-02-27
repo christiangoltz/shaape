@@ -23,13 +23,14 @@ class Text(Drawable, Translatable, Scalable, Named):
     def scale(self, scale):
         Translatable.scale(self, scale)
         self.__font_size = self.__font_size * scale[0]
+        self.__scaled_direction = (self.__scaled_direction[0] * scale[0], self.__scaled_direction[1] * scale[1])
         return
     
     def min(self):
         return self.position()
 
     def max(self):
-        return self.position()
+        return tuple(np.array(self.position()) + np.array(self.__scaled_direction) * len(self.__text))
 
     def anchor(self):
         return np.array(self.position()) + np.array([0.5, 0.5])
