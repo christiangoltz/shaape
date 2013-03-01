@@ -24,10 +24,9 @@ class NameParser(Parser):
                 polygon = max(polygons_containing_this_text,key = lambda p: p.z_order())
                 text.set_z_order(polygon.z_order() + 1)
                 polygon.add_name(text.text())
-
-            for graph in graphs:
-                for edge in graph.edges():
-                    if line_segments_distance((edge[0].position(), edge[1].position()), (text.letter_position(0), text.letter_position(len(text.text()) - 1))) <= 1:
-                        graph.add_name(text.text())
-
+            else:
+                for graph in graphs:
+                    for edge in graph.edges():
+                        if line_segments_distance((edge[0].position(), edge[1].position()), (text.letter_position(0), text.letter_position(len(text.text()) - 1))) <= 1:
+                            graph.add_name(text.text())
         return
