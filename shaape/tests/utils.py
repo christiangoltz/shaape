@@ -35,7 +35,7 @@ class TestUtils(object):
     TEXT_EXPECTED_IMAGE = 'shaape/tests/expected_images/text.png'
     
     @staticmethod
-    def images_equal(image1, image2, acceptable_rms = 10):
+    def images_equal(image1, image2, acceptable_rms = 1):
         try:
             img1 = Image.open(image1)
             img2 = Image.open(image2)
