@@ -57,9 +57,11 @@ class StyleParser(Parser):
         arrows = filter(lambda x: isinstance(x, Arrow), objects)
         for arrow in arrows:
             for obj in arrow.pointed_objects():
-                arrow.set_style(obj.style())
+                if obj.style().priority() > arrow.style().priority():
+                    arrow.set_style(obj.style())
             for obj in arrow.connected_objects():
-                arrow.set_style(obj.style())
+                if obj.style().priority() > arrow.style().priority():
+                    arrow.set_style(obj.style())
 
         self._parsed_data = raw_data
         self._objects = objects
