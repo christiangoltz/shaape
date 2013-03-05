@@ -162,10 +162,18 @@ def vector_length(v):
 def vector_length_squared(v):
     return v.dot(v)
 
+def point_point_distance(p1, p2):
+    p1 = np.array(p1)
+    p2 = np.array(p2)
+    if p1 == p2:
+        return 0
+    else:
+       return vector_length(p2 - p1)
+
 def line_segment_point_distance(point, seg):
     seg_start = np.array(seg[0])
     seg_end = np.array(seg[1])
-    point = np.array(point)
+    point = np.array(tuple(point))
     seg_dir = seg_end - seg_start
     seg_length = vector_length_squared(seg_dir)
     if seg_length == 0:

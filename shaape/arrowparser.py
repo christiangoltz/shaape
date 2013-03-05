@@ -38,15 +38,24 @@ class ArrowParser(Parser):
             pass
         if graph != None:
             for arrow in arrows:
-                connector = Node(*(arrow.tip()))
-                nodes_in_front = [node for node in graph.nodes() if (node == connector) or angle(arrow.direction(), node - connector) <= 90]
+                for obj in drawable_objects:
+                    connector = Node(*(arrow.connector()))
+                    if isinstance(obj, OpenGraph):
+                        if obj.has_node(connector):
+                            arrow.add_connected_object(obj)
+                    elif isinstance(obj, Polygon):
+                        if obj.frame().has_node(connector):
+                            arrow.add_connected_object(obj.frame())
+            for arrow in arrows:
+                tip = Node(*(arrow.tip()))
+                nodes_in_front = [node for node in graph.nodes() if (node == tip) or angle(arrow.direction(), node - tip) <= 90]
                 if nodes_in_front:
-                    nearest_node = min(nodes_in_front, key=lambda node: (node - connector.position()).length())
-                    diff = nearest_node - connector
+                    nearest_node = min(nodes_in_front, key=lambda node: (node - tip.position()).length())
+                    diff = nearest_node - tip
                     if diff.length() <= 0.5:
                         connector = Node(*(arrow.connector()))
                         path = [connector, connector + diff]
-                        for obj in drawable_objects:
+                        for obj in arrow.connected_objects():
                             if isinstance(obj, OpenGraph):
                                 if obj.has_node(connector):
                                     obj.add_path(path)
@@ -56,6 +65,17 @@ class ArrowParser(Parser):
                             else:
                                 pass
                         arrow.translate(diff)
+                tip = Node(*(arrow.tip()))
+                for obj in drawable_objects:
+                    if isinstance(obj, OpenGraph):
+                        if obj.has_node(tip):
+                            arrow.add_pointed_object(obj)
+                    elif isinstance(obj, Polygon):
+                        if obj.frame().has_node(tip):
+                            arrow.add_pointed_object(obj.frame())
+                    else:
+                        pass
+
         self._objects = drawable_objects + arrows
         drawable_objects += arrows
         self._parsed_data = raw_data

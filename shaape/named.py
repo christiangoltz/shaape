@@ -11,3 +11,6 @@ class Named(object):
     def add_name(self, name):
         self.__names.add(name)
         return
+
+    def add_names(self, names):
+        self.__names = self.__names.union(names)
