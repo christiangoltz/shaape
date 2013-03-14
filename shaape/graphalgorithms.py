@@ -91,7 +91,6 @@ def is_chord_free(_graph, _cycle):
     return True
 
 def planar_cycles(undirected_graph):
-
     def next_neighbor(_path):
         if len(_path) == 0:
             return graph.edges()[0][0]
@@ -133,7 +132,7 @@ def planar_cycles(undirected_graph):
                 start = path[::-1].index(node)
                 start = len(path) - 1 - start
                 cycle = path[start:]
-                if not contains_cycle(cycles, cycle) and is_chord_free(graph, cycle):
+                if not contains_cycle(cycles, cycle):
                     cycles.append(cycle)
                 graph.remove_edge(path[-1], node)
                 path = path[:start]    
@@ -144,10 +143,14 @@ def planar_cycles(undirected_graph):
         else:
             path.pop()
             
+    circle_graph = nx.Graph()
+    chord_free_cycles = []
     for c in cycles:
-        c.append(c[0])
-    
-    return cycles
+        circle_graph.add_cycle(c)
+    for c in cycles:
+         if is_chord_free(circle_graph, c):
+            chord_free_cycles.append(c + [c[0]])
+    return chord_free_cycles
 
   
 def ccw(a, b, c):
