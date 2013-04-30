@@ -4,9 +4,10 @@ from edge import Edge
 from node import Node
 
 class Overlay:
-    def __init__(self, array = [], edges = []):
+    def __init__(self, array = [], edges = [], options = []):
         self.__overlay = array
         self.__substitutes = edges
+        self.__options = options
 
     def substitutes(self, data):
         graph = nx.Graph()
@@ -50,8 +51,8 @@ class Overlay:
                                 below_start = edge.below().start() + (data_x, data_y)
                                 below_end = edge.below().end() + (data_x, data_y)
                                 _below = Edge(below_start, below_end)
-                            graph.add_edge(start, end, above = _above, below = _below, z_order = edge.z_order())
+                            graph.add_edge(start, end, above = _above, below = _below, z_order = edge.z_order(), options = self.__options)
                         elif isinstance(obj, Node):
                             start = obj + (data_x, data_y)
-                            graph.add_node(start)
+                            graph.add_node(start, options = self.__options)
         return graph
