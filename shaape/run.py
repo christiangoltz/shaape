@@ -109,7 +109,7 @@ def hash_update(content, hashfile):
 
 def run(arguments = None):
     parser = argparse.ArgumentParser(description=' - Asciiart to image processing')
-    parser.add_argument('infile', type=str, help='input file, can be - if the input comes from stdin')
+    parser.add_argument('infile', type=str, help='input file, use - for stdin')
     parser.add_argument('-o', '--outfile', type=str, help='output file, will be infile.png if not specified')
     parser.add_argument('--hash', action='store_true', help='only update the image if the hash sum of t: png svg pdf epshe input changed', dest='do_hash')
     parser.add_argument('-t', '--type', choices=['png','svg','pdf','eps'], help='image type to generate', dest='output_type', default = 'png')
