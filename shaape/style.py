@@ -2,7 +2,7 @@ import copy
 from font import Font
 
 class Style(object):
-    COLORS = { 'red' : [1, 0, 0], 'green' : [0, 1, 0], 'blue' : [0, 0, 1] }
+    COLORS = { 'red' : [1, 0, 0], 'green' : [0, 1, 0], 'blue' : [0, 0, 1], 'empty' : [0, 0, 0, 0] }
     DEFAULT_STYLE = { 'color' : [[0, 0, 0, 1]], 'type' : 'solid', 'shadow' : 'on', 'width' : 1, 'font' : Font() }
     KEYWORDS = ['shadow', 'dash-dotted', 'dashed', 'dotted', 'solid', 'no-shadow']
 
@@ -94,6 +94,13 @@ class Style(object):
             if not 'color' in self.__options.keys():
                 self.__options['color'] = []
             self.__options['color'].append(color)
+        else:
+            raise ValueError
+        return
+
+    def set_color(self, color):
+        if len(color) == 3 or len(color) == 4:
+            self.__options['color'] = [color]
         else:
             raise ValueError
         return

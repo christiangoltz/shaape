@@ -7,8 +7,8 @@ from opengraph import OpenGraph
 from graphalgorithms import *
 
 class Polygon(Drawable, Named, Scalable):
-    def __init__(self, node_list):
-        Drawable.__init__(self)
+    def __init__(self, node_list, options = []):
+        Drawable.__init__(self, options)
         Named.__init__(self)
         self.__node_list = node_list 
         cycle_graph = nx.Graph()
@@ -16,7 +16,7 @@ class Polygon(Drawable, Named, Scalable):
             for n in range(1, len(node_list)):
                 cycle_graph.add_edge(node_list[n - 1], node_list[n])
         self.style().set_target_type('fill')
-        self.__frame = OpenGraph(cycle_graph)
+        self.__frame = OpenGraph(cycle_graph, options)
         self.__frame.style().set_target_type('frame')
         return
 

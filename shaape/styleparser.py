@@ -32,8 +32,13 @@ class StyleParser(Parser):
                 elif isinstance(obj, Polygon):
                     obj.set_style(default_style['fill'])
                     obj.frame().set_style(default_style['frame'])
+                    if 'dotted' in obj.options():
+                        obj.style().set_color(Style.COLORS['empty'])
+                        obj.frame().style().set_type('dotted')
                 elif isinstance(obj, OpenGraph):
                     obj.set_style(default_style['line'])
+                    if 'dotted' in obj.options():
+                        obj.style().set_type('dotted')
                 elif isinstance(obj, Text):
                     obj.set_style(default_style['text'])
 
