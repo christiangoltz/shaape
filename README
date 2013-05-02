@@ -426,7 +426,7 @@ this style applied.
 
 ----
 options:
- - "boxname[0-9]": {fill: [red, flat], frame: [blue, dashed], no-shadow}
+ - "boxname[0-9]": {fill: [red], frame: [blue, dashed], no-shadow}
 ----
 ==== Multiple style application & Style order
 If a polygon matches multiple style definitions, then all matching styles are
@@ -436,7 +436,7 @@ some polygons:
 
 ----
 options:
- - ".*": {fill: [red, flat], frame: [blue, dashed], no-shadow}
+ - ".*": {fill: [red], frame: [blue, dashed], no-shadow}
  - "boxname[0-9]": {fill: [blue]}
 ----
 
