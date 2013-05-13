@@ -15,9 +15,6 @@ setup(name='shaape',
       requires=[
           'networkx',
           'cairo',
-          'scipy',
-          'numpy',
-          'PIL',
           'yaml',
           'pango',
           'pangocairo']

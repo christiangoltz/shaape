@@ -3,6 +3,7 @@ import math
 
 _number_types = (int, long, float)
 
+
 class Vector(object):
     def __init__(self, x=0.0, y=0.0):
         self.x, self.y = float(x), float(y)
