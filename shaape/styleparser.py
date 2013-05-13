@@ -35,10 +35,14 @@ class StyleParser(Parser):
                     if 'dotted' in obj.options():
                         obj.style().set_color(Style.COLORS['empty'])
                         obj.frame().style().set_type('dotted')
+                    if 'emph' in obj.options():
+                        obj.set_width(obj.get_width() * 2)
                 elif isinstance(obj, OpenGraph):
                     obj.set_style(default_style['line'])
                     if 'dotted' in obj.options():
                         obj.style().set_type('dotted')
+                    if 'emph' in obj.options():
+                        obj.style().set_width(obj.style().width() * 4)
                 elif isinstance(obj, Text):
                     obj.set_style(default_style['text'])
 

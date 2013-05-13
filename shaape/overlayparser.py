@@ -32,6 +32,7 @@ class OverlayParser(Parser):
         self.__sub_overlays.append(Overlay([['<', '\.']], [Edge(Node(1.5, 0.5), Node(1.0, 0.5))]))
 
         self.__sub_overlays.append(Overlay([['=']], [Edge(Node(0, 0.5), Node(1, 0.5))], options = ['emph']))
+        self.__sub_overlays.append(Overlay([['=','[\|\.]','=']], [Edge(Node(1, 0.5), Node(2, 0.5), below = Edge(Node(1.5, 0), Node(1.5, 1)))], options = ['emph']))
 
         self.__sub_overlays.append(Overlay([['\+']], [Node(0.5, 0.5)]))
         self.__sub_overlays.append(Overlay([['-']], [Edge(Node(0, 0.5), Node(1, 0.5))]))
@@ -43,7 +44,7 @@ class OverlayParser(Parser):
         self.__sub_overlays.append(Overlay([["[^\|]"],['-'],['\|']], [Edge(Node(0.5, 1.5), Node(0.5, 2))]))
         self.__sub_overlays.append(Overlay([['\|'],['-'],["[^\|]"]], [Edge(Node(0.5, 1.5), Node(0.5, 1))]))
         self.__sub_overlays.append(Overlay([['-','[\|\.]','-']], [Edge(Node(1, 0.5), Node(2, 0.5), below = Edge(Node(1.5, 0), Node(1.5, 1)))]))
-        self.__sub_overlays.append(Overlay([['\|'],['[-\.]'],['\|']], [Edge(Node(0.5, 1), Node(0.5, 2), below = Edge(Node(0, 1.5), Node(1, 1.5)))]))
+        self.__sub_overlays.append(Overlay([['\|'],['[-\.=]'],['\|']], [Edge(Node(0.5, 1), Node(0.5, 2), below = Edge(Node(0, 1.5), Node(1, 1.5)))]))
         self.__sub_overlays.append(Overlay([['\+','-']], [Edge(Node(0.5, 0.5, fusable = False), Node(1, 0.5))]))
         self.__sub_overlays.append(Overlay([['-','\+']], [Edge(Node(1, 0.5), Node(1.5, 0.5, fusable = False))]))
         self.__sub_overlays.append(Overlay([['\+'],['\|']], [Edge(Node(0.5, 0.5, fusable = False), Node(0.5, 1))]))
