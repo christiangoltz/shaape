@@ -1,6 +1,6 @@
 import networkx as nx
-import numpy as np
 import math
+import vector
 
 def reduce_path(nodes):
     new_nodes = []
@@ -41,25 +41,19 @@ def has_same_direction(v1, v2):
         return False
 
 def right_angle(v1, v2):
-    x = np.array([v1[0], v1[1]])
-    y = np.array([v2[0], v2[1]])
-    cross = np.cross(x, y)
-    dot = np.dot(x, y)
-    x_length = np.sqrt((x * x).sum())
-    y_length = np.sqrt((y * y).sum())
-    _angle = np.arccos(dot / x_length / y_length)
+    x = vector.Vector(v1[0], v1[1])
+    y = vector.Vector(v2[0], v2[1])
+    dot = vector.dot(x, y)
+    _angle = math.acos(dot / x.length() / y.length())
     if x[0] * y[1] < y[0] * x[1]:
         _angle = 2 * math.pi - _angle
     return _angle
 
 def angle(v1, v2):
-    x = np.array([v1[0], v1[1]])
-    y = np.array([v2[0], v2[1]])
-    cross = np.cross(x, y)
-    dot = np.dot(x, y)
-    x_length = np.sqrt((x * x).sum())
-    y_length = np.sqrt((y * y).sum())
-    _angle = np.arccos(dot / x_length / y_length) / math.pi * 180
+    x = vector.Vector(v1[0], v1[1])
+    y = vector.Vector(v2[0], v2[1])
+    dot = vector.dot(x, y)
+    _angle = math.acos(dot / x.length() / y.length()) / math.pi * 180
     return _angle
 
 def is_chord_free(_graph, _cycle):
@@ -159,37 +153,33 @@ def ccw(a, b, c):
 def line_segments_intersect(seg1, seg2):
     return ccw(seg1[0], seg2[0], seg2[1]) != ccw(seg1[1], seg2[0], seg2[1]) and ccw(seg1[0], seg1[1], seg2[0]) != ccw(seg1[0], seg1[1], seg2[1])
 
-def vector_length(v):
-    return np.sqrt(v.dot(v))
-
-def vector_length_squared(v):
-    return v.dot(v)
-
 def point_point_distance(p1, p2):
-    p1 = np.array(p1)
-    p2 = np.array(p2)
+    p1 = vector.Vector(p1)
+    p2 = vector.Vector(p2)
     if p1 == p2:
         return 0
     else:
-       return vector_length(p2 - p1)
+       return (p2 - p1).length()
 
 def line_segment_point_distance(point, seg):
-    seg_start = np.array(seg[0])
-    seg_end = np.array(seg[1])
-    point = np.array(tuple(point))
-    seg_dir = seg_end - seg_start
-    seg_length = vector_length_squared(seg_dir)
-    if seg_length == 0:
-      return vector_length(point - seg_start)
+    seg_start = vector.Vector(seg[0][0], seg[0][1])
+    seg_end = vector.Vector(seg[1][0], seg[1][1])
+    x, y = point
+    point = vector.Vector(x, y)
 
-    t = np.dot(point - seg_start, seg_dir) / seg_length
+    seg_dir = seg_end - seg_start
+    seg_length = seg_dir.length()**2
+    if seg_length == 0:
+      return (point - seg_start).length()
+
+    t = vector.dot(point - seg_start, seg_dir) / seg_length
     if t < 0:
-      return vector_length(point - seg_start)
+      return (point - seg_start).length()
     elif t > 1:
-      return vector_length(point - seg_end)
+      return (point - seg_end).length()
 
     projection = seg_start + t * seg_dir
-    return vector_length(point - projection)
+    return (point - projection).length()
 
 def line_segments_distance(seg1, seg2):
     if line_segments_intersect(seg1, seg2):

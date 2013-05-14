@@ -2,8 +2,6 @@ import cairo
 import os
 import errno
 import math
-import numpy as np
-from scipy import ndimage
 from drawingbackend import DrawingBackend
 import networkx as nx
 from translatable import Translatable
@@ -28,22 +26,28 @@ class CairoBackend(DrawingBackend):
         return
 
     def blur_surface(self):
-        blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0])), int(math.ceil(self.__image_size[1])))
-        top_surface = self.__surfaces[-1]
-        width = top_surface.get_width()
-        height = top_surface.get_height()
-        src = np.frombuffer(top_surface.get_data(), np.uint8)
-        src.shape = (height, width, 4)
-        dst = np.frombuffer(blurred_surface.get_data(), np.uint8)
-        dst.shape = (height, width, 4)
-        dst[:,:,3] = ndimage.gaussian_filter(src[:,:,3], sigma=3 * self.scale())
-        dst[:,:,0] = ndimage.gaussian_filter(src[:,:,0], sigma=3 * self.scale())
-        dst[:,:,1] = ndimage.gaussian_filter(src[:,:,1], sigma=3 * self.scale())
-        dst[:,:,2] = ndimage.gaussian_filter(src[:,:,2], sigma=3 * self.scale())
-        blurred_image = cairo.ImageSurface.create_for_data(dst, cairo.FORMAT_ARGB32, width, height)
-        self.__ctx.set_source_surface(blurred_image)
-        self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
-        self.__ctx.paint()
+        try:
+            import numpy as np
+            from scipy import ndimage
+
+            blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0])), int(math.ceil(self.__image_size[1])))
+            top_surface = self.__surfaces[-1]
+            width = top_surface.get_width()
+            height = top_surface.get_height()
+            src = np.frombuffer(top_surface.get_data(), np.uint8)
+            src.shape = (height, width, 4)
+            dst = np.frombuffer(blurred_surface.get_data(), np.uint8)
+            dst.shape = (height, width, 4)
+            dst[:,:,3] = ndimage.gaussian_filter(src[:,:,3], sigma=3 * self.scale())
+            dst[:,:,0] = ndimage.gaussian_filter(src[:,:,0], sigma=3 * self.scale())
+            dst[:,:,1] = ndimage.gaussian_filter(src[:,:,1], sigma=3 * self.scale())
+            dst[:,:,2] = ndimage.gaussian_filter(src[:,:,2], sigma=3 * self.scale())
+            blurred_image = cairo.ImageSurface.create_for_data(dst, cairo.FORMAT_ARGB32, width, height)
+            self.__ctx.set_source_surface(blurred_image)
+            self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
+            self.__ctx.paint()
+        except ImportError:
+            pass
 
     def new_surface(self, name = None):
         return cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size()[0])), int(math.ceil(self.image_size()[1])))
