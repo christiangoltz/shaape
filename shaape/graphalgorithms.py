@@ -58,9 +58,9 @@ def angle(v1, v2):
 
 def is_ccw(_cycle):
     ccw_sum = 0
-    for i in range(0, len(_cycle) - 1):
-        y2,x2 = _cycle[i + 1]
-        y1,x1 = _cycle[i]
+    for i in range(0, len(_cycle)):
+        x2,y2 = _cycle[i]
+        x1,y1 = _cycle[i - 1]
         ccw_sum += (x2 - x1) * (y2 + y1)
     return ccw_sum < 0
 
@@ -72,9 +72,9 @@ def is_chord_free(_graph, _cycle):
         for n in neighbors:
             if n != _cycle[i + 1] and n != _cycle[i - 1]:
                 angle_to_neighbor = right_angle(_cycle[i - 1] - _cycle[i], n - _cycle[i]) 
-                if angle_to_neighbor > angle_to_next_node and cycle_is_ccw == False:
+                if angle_to_neighbor > angle_to_next_node and cycle_is_ccw == True:
                     return False
-                if angle_to_neighbor < angle_to_next_node and cycle_is_ccw == True:
+                if angle_to_neighbor < angle_to_next_node and cycle_is_ccw == False:
                     return False
     return True
 
