@@ -34,7 +34,7 @@ class Text(Drawable, Translatable, Scalable, Named):
         return self.position() + self.__scaled_direction * len(self.__text)
 
     def anchor(self):
-        return self.position() * 0.5
+        return self.position() + (0.5, 0.5)
 
     def letter_position(self, index):
         if index < len(self.__text):
