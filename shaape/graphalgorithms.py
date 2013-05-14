@@ -56,31 +56,25 @@ def angle(v1, v2):
     _angle = math.acos(dot / x.length() / y.length()) / math.pi * 180
     return _angle
 
-def is_chord_free(_graph, _cycle):
-    angle_sum = 0
-    nodes = 0
-    for i in range(0, len(_cycle)):
-        current_angle = right_angle(_cycle[i - 1] - _cycle[i - 2], _cycle[i] - _cycle[i - 1])
-        angle_sum = angle_sum + current_angle
-        if current_angle > 0.01:
-            nodes = nodes + 1
-    inner_angle_sum = (nodes - 2) * math.pi
-    if angle_sum - 1 > inner_angle_sum:
-        bigger = True
-    else:
-        bigger = False
+def is_ccw(_cycle):
+    ccw_sum = 0
+    for i in range(0, len(_cycle) - 1):
+        y2,x2 = _cycle[i + 1]
+        y1,x1 = _cycle[i]
+        ccw_sum += (x2 - x1) * (y2 + y1)
+    return ccw_sum < 0
 
-    inner_angle_sum = inner_angle_sum * 180 / math.pi
-    angle_sum = angle_sum * 180 / math.pi
+def is_chord_free(_graph, _cycle):
+    cycle_is_ccw = is_ccw(_cycle)
     for i in range(1, len(_cycle) - 2):
         angle_to_next_node = right_angle(_cycle[i - 1] - _cycle[i], _cycle[i + 1] - _cycle[i]) 
         neighbors = _graph.neighbors(_cycle[i])
         for n in neighbors:
             if n != _cycle[i + 1] and n != _cycle[i - 1]:
                 angle_to_neighbor = right_angle(_cycle[i - 1] - _cycle[i], n - _cycle[i]) 
-                if angle_to_neighbor > angle_to_next_node and bigger == False:
+                if angle_to_neighbor > angle_to_next_node and cycle_is_ccw == False:
                     return False
-                if angle_to_neighbor < angle_to_next_node and bigger == True:
+                if angle_to_neighbor < angle_to_next_node and cycle_is_ccw == True:
                     return False
     return True
 
