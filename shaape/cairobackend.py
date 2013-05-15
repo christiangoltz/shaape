@@ -265,14 +265,21 @@ class CairoBackend(DrawingBackend):
         font = pango.FontDescription(text_obj.style().font().name())
         if not font.get_family() in self.__available_font_names:
             warnings.warn("Couldn't find font family for font name \"" + font.get_family() + "\". Using default font. Available fonts are: " + str(self.__available_font_names), RuntimeWarning)
-        font.set_size(int(font.get_size() * self._scale))
+
+        font_size = font.get_size()
+
+        if font_size == 0:
+            font_size = 10 * pango.SCALE
+
+        font.set_size(int(font_size * self._scale))
         layout.set_font_description(font)
         layout.set_text(text_obj.text())
+
         if shadow == True:
             self.apply_fill(text_obj, opaqueness = self.SHADOW_OPAQUENESS, shadow = True)
         else:
-
             self.apply_fill(text_obj, shadow = False)
+
         self.__ctx.translate(*(text_obj.position()))
             
         letter_width, letter_height = layout.get_pixel_size()
