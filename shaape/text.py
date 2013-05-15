@@ -2,7 +2,8 @@ from drawable import Drawable
 from translatable import Translatable
 from scalable import Scalable
 from named import Named
-import numpy as np
+from vector import Vector
+
 
 class Text(Drawable, Translatable, Scalable, Named):
     def __init__(self, text = "", position = (0, 0)):
@@ -11,7 +12,7 @@ class Text(Drawable, Translatable, Scalable, Named):
         Named.__init__(self)
         self.__text = text
         self.__font_size = 1
-        self.__scaled_direction = np.array([1, 0])
+        self.__scaled_direction = Vector(1, 0)
         return
 
     def text(self):
@@ -23,16 +24,17 @@ class Text(Drawable, Translatable, Scalable, Named):
     def scale(self, scale):
         Translatable.scale(self, scale)
         self.__font_size = self.__font_size * scale[0]
+        self.__scaled_direction *= scale
         return
     
     def min(self):
         return self.position()
 
     def max(self):
-        return self.position()
+        return self.position() + self.__scaled_direction * len(self.__text)
 
     def anchor(self):
-        return np.array(self.position()) + np.array([0.5, 0.5])
+        return self.position() + (0.5, 0.5)
 
     def letter_position(self, index):
         if index < len(self.__text):

@@ -8,8 +8,8 @@ import networkx as nx
 import copy
 
 class OpenGraph(Drawable, Scalable, Named):
-    def __init__(self, graph = nx.Graph()):
-        Drawable.__init__(self)
+    def __init__(self, graph = nx.Graph(), options = []):
+        Drawable.__init__(self, options)
         Named.__init__(self)
         self.style().set_target_type('fill')
         self.add_name('_line_')
@@ -75,6 +75,7 @@ class OpenGraph(Drawable, Scalable, Named):
         if not graph.nodes():
             return
         start_nodes = [n for n in graph.nodes() if (n.style() != 'curve' or (nx.degree(graph, n) == 1)) ]
+        start_nodes = sorted(start_nodes, key = lambda n: nx.degree(graph, n))
         if start_nodes:
             path = [start_nodes[0]]
         else:

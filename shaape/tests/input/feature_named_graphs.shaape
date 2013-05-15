@@ -1,10 +1,14 @@
-         graph1   +------+-----+
-       +------>  /graph2 |     |
-      /    <----+        |     |
- >---+-------->          +-----+
-       graph3
-
+                       ^
+       v          +>   +
+       + graph1   +----+-+-----+
+       +------>  /graph2 |  box+-------->        
+      /    <----+        |     |           graph4<-----
+ >---+--------+---+      +-----+             ^
+      graph3  +   +>                         |           
+              v                            
 options:
 - "graph1": {fill:[green, dotted]}
 - "graph3": {fill:[3]}
-- "graph2": {fill:[solid, red, 2]}
+- "graph2": {fill:[red, 2]}
+- "box": {fill:[[1, 1, 0]]}
+- "graph4": {fill:[red, 2]}

@@ -22,6 +22,7 @@ class DrawingBackend(object):
         self._scale = image_scale
         self.__aspect_ratio = 0.5
         self.__pixels_per_unit = (self.DEFAULT_PIXELS_PER_UNIT * self._scale * self.__aspect_ratio, self.DEFAULT_PIXELS_PER_UNIT * self._scale)
+        self.__global_scale = (self.DEFAULT_PIXELS_PER_UNIT * self._scale * self.__aspect_ratio, self.DEFAULT_PIXELS_PER_UNIT * self._scale)
         return
 
     def scale(self):
@@ -40,7 +41,7 @@ class DrawingBackend(object):
         return self._canvas_size
 
     def unit_size(self):
-        return self.__pixels_per_unit
+        return self.__pixels_per_unitself.__global_scale
 
     def run(self, drawable_objects, filename):
         sortable = lambda x: isinstance(x, Drawable)
@@ -63,7 +64,7 @@ class DrawingBackend(object):
                         scale = self.__pixels_per_unit[1]
                     self._canvas_size[1] = drawable_object.size()[1] * scale
                 self.__global_scale = [self._canvas_size[0] / drawable_object.size()[0], self._canvas_size[1] / drawable_object.size()[1]]
-                self._scale = self.__global_scale[0] / 10
+                self._scale = self.__global_scale[0] / (self.DEFAULT_PIXELS_PER_UNIT * self.__aspect_ratio)
         
         for drawable_object in drawable_objects:
             if isinstance(drawable_object, Scalable):
@@ -73,19 +74,25 @@ class DrawingBackend(object):
         self.draw_objects(drawable_objects)
         self.export_to_file(filename)
 
-    def draw_polygon_shadow(self):
+    def global_scale(self):
+        return self.__global_scale
+
+    def draw_polygon_shadow(self, obj):
         raise NotImplementedError
 
-    def draw_polygon(self):
+    def draw_polygon(self, obj):
         raise NotImplementedError
 
-    def draw_open_graph(self):
+    def draw_open_graph(self, obj):
         raise NotImplementedError
 
-    def draw_open_graph_shadow(self):
+    def draw_open_graph_shadow(self, obj):
         raise NotImplementedError
 
-    def draw_text(self):
+    def draw_text(self, obj):
+        raise NotImplementedError
+
+    def draw_text_shadow(self,obj):
         raise NotImplementedError
 
     def push_surface(self):
@@ -94,7 +101,7 @@ class DrawingBackend(object):
     def pop_surface(self):
         raise NotImplementedError
 
-    def translate(self):
+    def translate(self, x, y):
         raise NotImplementedError
 
     def blur_surface(self):
@@ -125,6 +132,9 @@ class DrawingBackend(object):
             for drawable_object in graphs:
                 if drawable_object.style().shadow() == 'on':
                     self.draw_open_graph_shadow(drawable_object)
+            for drawable_object in text:
+                if drawable_object.style().shadow() == 'on':
+                    self.draw_text_shadow(drawable_object)
             self.blur_surface()
             self.pop_surface()
             self.push_surface()

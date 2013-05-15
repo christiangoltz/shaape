@@ -8,6 +8,7 @@ from shaape.text import Text
 from shaape.translatable import Translatable
 from shaape.rotatable import Rotatable
 from shaape.node import Node
+from shaape.font import Font
 import nose
 import unittest
 from nose.tools import *

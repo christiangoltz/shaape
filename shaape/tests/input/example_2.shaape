@@ -1,7 +1,7 @@
                          
            +-------------+              
-           |important    |       
- ^         |area         | 
+           |Important    |       
+ ^         |Area         | 
 m|         |             |    
 o|         |          6  |  
 n|         |      5  +-+ |  5   5        
@@ -16,4 +16,5 @@ y|  3   3  | +-+ | | | | | | | | |
 options:
 - "^a$": {fill:[red],text:[[0, 0, 0, 0]]}
 - "^b$": {fill:[blue],text:[[0, 0, 0, 0]]}
-- "important|area": {fill:[[1, 1, 0, 0.6],[0, 1, 1, 0.2],no-shadow],frame:[[0,0,0,0]]}
+- "Important|Area": {fill:[[1, 1, 0, 0.6],[0, 1, 1, 0.2],no-shadow],frame:[[0,0,0,0]],
+                     text:["Verdana bold italic 12", [0, 0, 0.5, 0.5], [0.5, 0, 0, 0.5]]}

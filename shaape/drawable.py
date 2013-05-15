@@ -5,10 +5,14 @@ from node import *
 from style import Style
 
 class Drawable(object):
-    def __init__(self):
+    def __init__(self, options = []):
         self.__style = Style([], '', [])
         self.__z_order = 0
+        self.__options = options
         return
+
+    def options(self):
+        return self.__options
 
     def set_z_order(self, z_order):
         self.__z_order = z_order

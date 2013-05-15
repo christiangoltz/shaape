@@ -23,7 +23,7 @@ class StyleParser(Parser):
             'frame' : Style([], 'frame', [[0, 0, 0], 'solid', 1]),
             'line' : Style([], 'fill', [[0, 0, 0, 1], 'solid', 1]),
             'arrow' : Style([], 'fill', [[0, 0, 0]]),
-            'text' : Style([], 'text', [[0, 0, 0]])}
+            'text' : Style([], 'text', [[0, 0, 0], 'no-shadow'])}
 
         for obj in objects:
             if isinstance(obj, Drawable):
@@ -32,13 +32,22 @@ class StyleParser(Parser):
                 elif isinstance(obj, Polygon):
                     obj.set_style(default_style['fill'])
                     obj.frame().set_style(default_style['frame'])
+                    if 'dotted' in obj.options():
+                        obj.style().set_color(Style.COLORS['empty'])
+                        obj.frame().style().set_type('dotted')
+                    if 'emph' in obj.options():
+                        obj.set_width(obj.get_width() * 2)
                 elif isinstance(obj, OpenGraph):
                     obj.set_style(default_style['line'])
+                    if 'dotted' in obj.options():
+                        obj.style().set_type('dotted')
+                    if 'emph' in obj.options():
+                        obj.style().set_width(obj.style().width() * 4)
                 elif isinstance(obj, Text):
                     obj.set_style(default_style['text'])
 
         for style in styles:
-            name_pattern = re.compile(style.name_pattern())
+            name_pattern = re.compile(style.name_pattern(), re.UNICODE)
             for obj in named_drawables:
                 for name in obj.names():
                     if name_pattern.match(name):
@@ -53,6 +62,15 @@ class StyleParser(Parser):
                         if target_obj != None:
                             if style.priority() > target_obj.style().priority():
                                 target_obj.set_style(style)
+
+        arrows = filter(lambda x: isinstance(x, Arrow), objects)
+        for arrow in arrows:
+            for obj in arrow.pointed_objects():
+                if obj.style().priority() > arrow.style().priority():
+                    arrow.set_style(obj.style())
+            for obj in arrow.connected_objects():
+                if obj.style().priority() > arrow.style().priority():
+                    arrow.set_style(obj.style())
 
         self._parsed_data = raw_data
         self._objects = objects

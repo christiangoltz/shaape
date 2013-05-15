@@ -2,13 +2,14 @@ import cairo
 import os
 import errno
 import math
-import numpy as np
-from scipy import ndimage
 from drawingbackend import DrawingBackend
 import networkx as nx
 from translatable import Translatable
 from rotatable import Rotatable
 from node import Node
+import pangocairo
+import pango
+import warnings
 
 class CairoBackend(DrawingBackend):
     DEFAULT_MARGIN = (10, 10, 10, 10)
@@ -20,25 +21,33 @@ class CairoBackend(DrawingBackend):
         self.__surfaces = []
         self.__ctx = None
         self.__drawn_graph = None
+        self.__font_map = pangocairo.cairo_font_map_get_default()
+        self.__available_font_names = [f.get_name() for f in self.__font_map.list_families()]
         return
 
     def blur_surface(self):
-        blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0])), int(math.ceil(self.__image_size[1])))
-        top_surface = self.__surfaces[-1]
-        width = top_surface.get_width()
-        height = top_surface.get_height()
-        src = np.frombuffer(top_surface.get_data(), np.uint8)
-        src.shape = (height, width, 4)
-        dst = np.frombuffer(blurred_surface.get_data(), np.uint8)
-        dst.shape = (height, width, 4)
-        dst[:,:,3] = ndimage.gaussian_filter(src[:,:,3], sigma=3)
-        dst[:,:,0] = ndimage.gaussian_filter(src[:,:,0], sigma=3)
-        dst[:,:,1] = ndimage.gaussian_filter(src[:,:,1], sigma=3)
-        dst[:,:,2] = ndimage.gaussian_filter(src[:,:,2], sigma=3)
-        blurred_image = cairo.ImageSurface.create_for_data(dst, cairo.FORMAT_ARGB32, width, height)
-        self.__ctx.set_source_surface(blurred_image)
-        self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
-        self.__ctx.paint()
+        try:
+            import numpy as np
+            from scipy import ndimage
+
+            blurred_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.__image_size[0])), int(math.ceil(self.__image_size[1])))
+            top_surface = self.__surfaces[-1]
+            width = top_surface.get_width()
+            height = top_surface.get_height()
+            src = np.frombuffer(top_surface.get_data(), np.uint8)
+            src.shape = (height, width, 4)
+            dst = np.frombuffer(blurred_surface.get_data(), np.uint8)
+            dst.shape = (height, width, 4)
+            dst[:,:,3] = ndimage.gaussian_filter(src[:,:,3], sigma=3 * self.scale())
+            dst[:,:,0] = ndimage.gaussian_filter(src[:,:,0], sigma=3 * self.scale())
+            dst[:,:,1] = ndimage.gaussian_filter(src[:,:,1], sigma=3 * self.scale())
+            dst[:,:,2] = ndimage.gaussian_filter(src[:,:,2], sigma=3 * self.scale())
+            blurred_image = cairo.ImageSurface.create_for_data(dst, cairo.FORMAT_ARGB32, width, height)
+            self.__ctx.set_source_surface(blurred_image)
+            self.__ctx.set_operator(cairo.OPERATOR_SOURCE)
+            self.__ctx.paint()
+        except ImportError:
+            pass
 
     def new_surface(self, name = None):
         return cairo.ImageSurface(cairo.FORMAT_ARGB32, int(math.ceil(self.image_size()[0])), int(math.ceil(self.image_size()[1])))
@@ -105,11 +114,10 @@ class CairoBackend(DrawingBackend):
         width =  max(1, math.floor(drawable.style().width() * self._scale))
         color = drawable.style().color()[0]
         if len(color) == 3:
-            adapted_color = tuple(color[:3]) + tuple([opaqueness])
-        else:
-            adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
+            color = tuple(color) + tuple([1])
         if shadow:
-            adapted_color = map(lambda x: (1 - adapted_color[3]) * x, adapted_color[:3]) + [adapted_color[3]]
+            color = map(lambda x: (1 - color[3]) * x, color[:3]) + [color[3]]
+        adapted_color = tuple(color[:3]) + tuple([color[3] * opaqueness])
         self.__ctx.set_source_rgba(*adapted_color)
         self.apply_dash(drawable)
         self.__ctx.set_line_width(width)
@@ -218,8 +226,8 @@ class CairoBackend(DrawingBackend):
                     temp_end = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.5)
                     self.__ctx.line_to(*self._transform_to_sharp_space(Node(0, 0), temp_end))
                 line_end = nodes[i] + ((nodes[next_i] - nodes[i]) * 0.5)
-                cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.8)
-                cp2 = nodes[next_i] + ((nodes[i] - nodes[next_i]) * 0.8)
+                cp1 = nodes[i - 1] + ((nodes[i] - nodes[i - 1]) * 0.97)
+                cp2 = nodes[next_i] + ((nodes[i] - nodes[next_i]) * 0.97)
                 cp1 = self._transform_to_sharp_space(direction, cp1)
                 cp2 = self._transform_to_sharp_space(direction, cp2)
                 self.__ctx.curve_to(cp1[0], cp1[1], cp2[0], cp2[1], *self._transform_to_sharp_space(direction, line_end))
@@ -249,20 +257,51 @@ class CairoBackend(DrawingBackend):
         self.__ctx.restore()
         return
 
-    def draw_text(self, text_obj):
+    def __draw_text(self, text_obj, shadow = False):
         text = text_obj.text()
-        self.__ctx.select_font_face("monospace", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
-        xbearing, ybearing, width, height, xadvance, yadvance = self.__ctx.text_extents(text)
         self.__ctx.save()
-        self.apply_line(text_obj)
-        self.__ctx.set_font_size(text_obj.font_size() / 0.7)
-        fascent, fdescent, fheight, fxadvance, fyadvance = self.__ctx.font_extents()
+        pangocairo_context = pangocairo.CairoContext(self.__ctx)
+        layout = pangocairo_context.create_layout()
+        font = pango.FontDescription(text_obj.style().font().name())
+        if not font.get_family() in self.__available_font_names:
+            warnings.warn("Couldn't find font family for font name \"" + font.get_family() + "\". Using default font. Available fonts are: " + str(self.__available_font_names), RuntimeWarning)
+        font.set_size(int(font.get_size() * self._scale))
+        layout.set_font_description(font)
+        layout.set_text(text_obj.text())
+        if shadow == True:
+            self.apply_fill(text_obj, opaqueness = self.SHADOW_OPAQUENESS, shadow = True)
+        else:
+
+            self.apply_fill(text_obj, shadow = False)
+        self.__ctx.translate(*(text_obj.position()))
+            
+        letter_width, letter_height = layout.get_pixel_size()
+        unit_width, unit_height = self.global_scale()
+        diff_height = (unit_height - letter_height) / 2
+        diff_width = (unit_width - letter_width) / 2
+        self.__ctx.translate(0, diff_height)
         for cx, letter in enumerate(text):
-            xbearing, ybearing, width, height, xadvance, yadvance = (self.__ctx.text_extents(letter))
-            self.__ctx.move_to(text_obj.position()[0] + cx * (text_obj.font_size()), text_obj.position()[1] + text_obj.font_size() - fdescent + fheight / 2)
-            self.__ctx.show_text(letter)
+            layout.set_text(letter)
+            letter_width, letter_height = layout.get_pixel_size()
+            unit_width, unit_height = self.global_scale()
+            diff_height = (unit_height - letter_height) / 2
+            diff_width = (unit_width - letter_width) / 2
+            self.__ctx.translate(diff_width, 0)
+            fwidth, fheight = layout.get_pixel_size()
+            pangocairo_context.update_layout(layout)
+            pangocairo_context.layout_path(layout)
+            self.__ctx.translate(-diff_width, 0)
+            self.__ctx.translate(unit_width, 0)
+        self.__ctx.fill()
         self.__ctx.restore()
         return
+
+    
+    def draw_text(self, text_obj):
+        self.__draw_text(text_obj, shadow = False)
+
+    def draw_text_shadow(self, text_obj):
+        self.__draw_text(text_obj, shadow = True)
 
     def apply_transform(self, obj):
         if isinstance(obj, Translatable):
