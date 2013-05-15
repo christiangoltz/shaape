@@ -15,6 +15,7 @@ except ImportError:
 setup(name='shaape',
       version='1.0.0',
       description='Shaape - ascii art to image converter',
+      long_description=open('README.asciidoc').read(),
       author='Christian Goltz',
       author_email='goltzchristian@googlemail.com',
       package_data={'shaape': ['data']},
