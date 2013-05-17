@@ -1,8 +1,8 @@
 
  +-----------+
  |||||||||||||
- |-abcabcabc-|
- |-efdefdegd-|
+ |-abcabcabc-|   fontwithnosize
+ |-efdefdegd-|   fontwithzerosize
  |-ghighijkl-|
  |||||||||||||
  +-----------+
@@ -11,3 +11,5 @@ options:
 - "abc" : {text : ["Sans bold 15", red, shadow]}
 - "efd" : {text : ["Courier New italic 9", blue]}
 - "ghi" : {text : ["Monospace 8", green]}
+- ".*nosize.*" : {text : ["Monospace", green]}
+- ".*zerosize.*" : {text : ["Monospace 0", green]}
