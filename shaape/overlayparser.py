@@ -201,14 +201,17 @@ class OverlayParser(Parser):
                                     else:
                                         raise ValueError, "Wrong value for z_order."
 
-        cycles = nx.simple_cycles(z_order_graph)
-        if cycles:
-            warnings.warn("The diagram contains objects. that have an ambiguous z-order. Shaape estimates their z-order.", RuntimeWarning)
-        for cycle in cycles:
-            cycle_edges = [(cycle[i], cycle[i + 1]) for i in range(0, len(cycle) - 1)]
-            for edge in cycle_edges:
-                z_order_graph.remove_edge(edge[0], edge[1])
-                       
+        cycle_gen = nx.simple_cycles(z_order_graph)
+        try:
+            cycles = list(cycle_gen)
+            for cycle in cycles:
+                cycle_edges = [(cycle[i], cycle[i + 1]) for i in range(0, len(cycle) - 1)]
+                for edge in cycle_edges:
+                    z_order_graph.remove_edge(edge[0], edge[1])
+            if cycles:
+                warnings.warn("The diagram contains objects. that have an ambiguous z-order. Shaape estimates their z-order.", RuntimeWarning)
+        except:
+            pass
 
         current_z_order = 0
         while z_order_graph.nodes():
