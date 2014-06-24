@@ -13,7 +13,7 @@ except ImportError:
     sys.exit(1)
 
 setup(name='shaape',
-      version='1.0.0',
+      version='1.1.0',
       description='Shaape - ascii art to image converter',
       long_description=open('README.asciidoc').read(),
       author='Christian Goltz',

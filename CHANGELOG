@@ -1,7 +1,27 @@
 Shaape ChangeLog
 ================
+Version 1.1.0 (2013-06-24)
+------------------------
+.Features
+- UTF8 support
+- arrow styles
+- readme updated
+- new dotted lines
 
-Version 1.0 (2013-02-20)
+.Bugfixes/Improvements
+- Name assignments to polygons
+- mixed color definitions
+- unit tests fixed
+- chorded graph recognition fixed
+- asciidoc filter fixed
+- removed unnecessary syntax elements
+- blur only if scipy available
+- fixed to work with newer networkx
+- added more test images
+- chordfree calculation improved
+- using setuptools instead of distutils
+
+Version 1.0.0 (2013-02-20)
 ------------------------
 .Featues
 - basic styles for fills, frames and text using YaML

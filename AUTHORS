@@ -4,9 +4,14 @@ AUTHORS
 PRIMARY AUTHORS
 ---------------
 
-* Christian Goltz
+* Christian Goltz (https://github.com/christiangoltz)
 
 CONTRIBUTORS
 ------------
 
-* bmustiata (https://github.com/bmustiata) - Unicode support
+* Matthias Vogelgesang (https://github.com/matze)
+    - setuputils
+    - soft dependency on scipy and numpy
+    - misc fixes
+* bmustiata (https://github.com/bmustiata)
+    - Unicode support
