@@ -1,5 +1,9 @@
-import Image
-import ImageChops
+try:
+    from PIL import Image
+    from PIL import ImageChops
+except ImportError:
+    import Image
+    import ImageChops
 import math
 import operator
 import random

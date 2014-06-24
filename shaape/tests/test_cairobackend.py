@@ -20,6 +20,10 @@ import os
 import copy
 import errno
 from mock import patch
+try:
+    import builtins
+except ImportError:
+    import __builtin__ as builtins
 
 class TestCairoBackend(unittest.TestCase):
 
@@ -34,6 +38,9 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.set_margin(50, 40, 30, 20)
         assert self.__backend.margin() == (50, 40, 30, 20)
 
+    def blur_surface_import(name, globals, locals, fromlist, level):
+        raise ImportError
+
     def test_blur_surface(self):
         test_img_surface = cairo.ImageSurface.create_from_png(TestUtils.BLUR_INPUT)
         self.__backend.set_image_size(test_img_surface.get_width(), test_img_surface.get_height())
@@ -44,6 +51,11 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.blur_surface()
         self.__backend.export_to_file(TestUtils.BLUR_GENERATED_IMAGE)
         assert TestUtils.images_equal(TestUtils.BLUR_GENERATED_IMAGE, TestUtils.BLUR_EXPECTED_IMAGE), TestUtils.BLUR_GENERATED_IMAGE + " != " + TestUtils.BLUR_EXPECTED_IMAGE
+        saved_import = builtins.__import__
+        builtins.__import__ = self.blur_surface_import
+        self.__backend.blur_surface()
+        builtins.__import__ = saved_import
+
 
     def test_push_surface(self):
         assert len(self.__backend.surfaces()) == 0
