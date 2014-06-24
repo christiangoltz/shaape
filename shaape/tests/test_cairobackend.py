@@ -288,6 +288,10 @@ class TestCairoBackend(unittest.TestCase):
         self.__backend.pop_surface()
         self.__backend.push_surface()
         assert TestUtils.images_equal(TestUtils.TEXT_GENERATED_IMAGE, TestUtils.TEXT_EXPECTED_IMAGE)
+        text.style().font().set_name("123")
+        self.__backend.draw_text(text)
+        assert TestUtils.images_equal(TestUtils.TEXT_GENERATED_IMAGE, TestUtils.TEXT_EXPECTED_IMAGE)
+
 
     def test_apply_transform(self):
         translatable = Translatable((10, 20))

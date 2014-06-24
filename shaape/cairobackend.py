@@ -264,7 +264,7 @@ class CairoBackend(DrawingBackend):
         layout = pangocairo_context.create_layout()
         font = pango.FontDescription(text_obj.style().font().name())
         if not font.get_family() in self.__available_font_names:
-            warnings.warn("Couldn't find font family for font name \"" + font.get_family() + "\". Using default font. Available fonts are: " + str(self.__available_font_names), RuntimeWarning)
+            warnings.warn("Couldn't find font family for font name \"" + str(font.get_family()) + "\". Using default font. Available fonts are: " + str(self.__available_font_names), RuntimeWarning)
 
         font_size = font.get_size()
 
