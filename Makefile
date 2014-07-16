@@ -47,7 +47,7 @@ doc:
 	$(DOC_BIN) $(DOC_OPTS) $(SOURCES)
 
 upload-pipy: 
-	python setup.py sdist upload    
+	python2 setup.py sdist upload    
 
 clean:
 	$(RM) $(BUILD_DIR)    
