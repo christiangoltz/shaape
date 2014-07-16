@@ -25,7 +25,7 @@ except ImportError:
     sys.exit(1)
 
 setup(name='shaape',
-      version='1.1.0',
+      version='1.1.1',
       description='Shaape - ascii art to image converter',
       author='Christian Goltz',
       author_email='goltzchristian@googlemail.com',

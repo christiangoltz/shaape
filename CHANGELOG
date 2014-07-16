@@ -1,6 +1,11 @@
 Shaape ChangeLog
 ================
-Version 1.1.0 (2013-06-24)
+Version 1.1.1 (2014-07-16)
+------------------------
+.Bugfixes
+- Readme dependency removed from setup.py
+
+Version 1.1.0 (2014-06-24)
 ------------------------
 .Features
 - UTF8 support
