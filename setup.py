@@ -5,11 +5,23 @@ from setuptools import setup
 
 try:
     import cairo
+except ImportError:
+    print ("Some dependencies could not be found. Make sure to install "
+           "the Python bindings for Cairo(import cairo).")
+    sys.exit(1)
+
+try:
     import pango
+except ImportError:
+    print ("Some dependencies could not be found. Make sure to install "
+           "the Python bindings for Pango(import pango).")
+    sys.exit(1)
+
+try:
     import pangocairo
 except ImportError:
     print ("Some dependencies could not be found. Make sure to install "
-           "the Python bindings for Cairo and Pango.")
+           "the Python bindings for PangoCairo(import pangocairo).")
     sys.exit(1)
 
 setup(name='shaape',
