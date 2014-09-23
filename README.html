@@ -1384,20 +1384,26 @@ mock
 </div>
 </div>
 <div class="sect1">
-<h2 id="_download">Download</h2>
-<div class="sectionbody">
-<div class="paragraph"><div class="title">Git</div><p><code>$ git clone https://github.com/christiangoltz/shaape.git</code> clones into shaape</p></div>
-<div class="paragraph"><div class="title">PyPi</div><p><code>$ easy_install shaape</code> downloads and installs shaape</p></div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_installation">Installation</h2>
 <div class="sectionbody">
-<div class="paragraph"><p>If checked out from Git:
-To install shaape use:</p></div>
-<div class="paragraph"><p><code>$ sudo make install</code></p></div>
-<div class="paragraph"><p>To install the asciidoc filter use:</p></div>
-<div class="paragraph"><p><code>$ make install-filter</code></p></div>
+<div class="sect2">
+<h3 id="_system_dependencies">System dependencies</h3>
+<div class="paragraph"><p>Prior to installing shaape, make sure that you have installed <a href="http://cairographics.org">cairo</a> and <a href="http://www.pango.org">pango</a> libraries with Python bindings.</p></div>
+<div class="paragraph"><div class="title">OS X using Homebrew:</div><p><code>$ brew install pygtk py2cairo pango</code></p></div>
+<div class="paragraph"><div class="title">Gentoo:</div><p><code>$ emerge -av dev-python/pycairo x11-libs/pango</code></p></div>
+</div>
+<div class="sect2">
+<h3 id="_shaape">Shaape</h3>
+<div class="paragraph"><div class="title">Install from PyPI:</div><p><code>$ pip install shaape</code></p></div>
+<div class="literalblock">
+<div class="title">or from source:</div>
+<div class="content">
+<pre><code>$ git clone https://github.com/christiangoltz/shaape.git
+$ cd shaape
+$ sudo make install
+$ make install-filter  # install asiidoc filter</code></pre>
+</div></div>
+</div>
 </div>
 </div>
 <div class="sect1">

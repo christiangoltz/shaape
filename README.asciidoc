@@ -179,24 +179,33 @@ Dependencies
  * coverage
  * mock
 
-Download
---------
-.Git
-`$ git clone https://github.com/christiangoltz/shaape.git` clones into shaape
-
-.PyPi
-`$ easy_install shaape` downloads and installs shaape
-
-Installation 
+Installation
 ------------
-If checked out from Git:
-To install shaape use:
 
-`$ sudo make install`
+System dependencies
+~~~~~~~~~~~~~~~~~~~
 
-To install the asciidoc filter use:
+Prior to installing shaape, make sure that you have installed http://cairographics.org[cairo] and http://www.pango.org[pango] libraries with Python bindings.
 
-`$ make install-filter`
+.OS X using Homebrew:
+`$ brew install pygtk py2cairo pango`
+
+.Gentoo:
+`$ emerge -av dev-python/pycairo x11-libs/pango`
+
+Shaape
+~~~~~~
+
+.Install from PyPI:
+`$ pip install shaape`
+
+.or from source:
+....
+$ git clone https://github.com/christiangoltz/shaape.git
+$ cd shaape
+$ sudo make install
+$ make install-filter  # install asiidoc filter
+....
 
 Usage
 -----
